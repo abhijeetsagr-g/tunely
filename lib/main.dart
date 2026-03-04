@@ -1,7 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:tunely/logic/service/playback_service.dart';
-import 'package:tunely/ui/home/home_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,19 +13,17 @@ void main() async {
       androidNotificationOngoing: true,
     ),
   );
-
-  runApp(MyApp(service: audioHandler));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.service});
-  final PlaybackService service;
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: HomeView(service: service),
+      // home: HomeView(service: service),
     );
   }
 }

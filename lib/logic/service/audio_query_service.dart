@@ -1,21 +1,21 @@
 import 'package:on_audio_query/on_audio_query.dart';
 
-abstract class AudioQueryService {
-  static final OnAudioQuery _audioQuery = OnAudioQuery();
+class AudioQueryService {
+  final OnAudioQuery _audioQuery = OnAudioQuery();
 
   // Request Permission
-  static Future<bool> _hasPermission() async =>
-      _audioQuery.permissionsRequest();
+  Future<bool> _hasPermission() async => _audioQuery.permissionsRequest();
 
-  static Future<List<SongModel>> getFilteredSongs(
+  Future<List<SongModel>> getFilteredSongs(
     AudiosFromType type,
-    int target,
-  ) async {
+    int target, {
+    SongSortType sort = .TITLE,
+  }) async {
     if (await _hasPermission() == false) return [];
-    return await _audioQuery.queryAudiosFrom(type, target);
+    return await _audioQuery.queryAudiosFrom(type, target, sortType: sort);
   }
 
-  static Future<List<SongModel>> getSong({SongSortType sort = .TITLE}) async {
+  Future<List<SongModel>> getSong({SongSortType sort = .TITLE}) async {
     if (await _hasPermission() == false) return [];
     return _audioQuery.querySongs(
       sortType: SongSortType.TITLE,
@@ -26,12 +26,9 @@ abstract class AudioQueryService {
   }
 
   // filters
-  static Future<List<AlbumModel>> get getAlbums async =>
-      _audioQuery.queryAlbums();
-  static Future<List<ArtistModel>> get getArtists async =>
-      _audioQuery.queryArtists();
-  static Future<List<PlaylistModel>> get getPlaylists async =>
+  Future<List<AlbumModel>> get getAlbums async => _audioQuery.queryAlbums();
+  Future<List<ArtistModel>> get getArtists async => _audioQuery.queryArtists();
+  Future<List<PlaylistModel>> get getPlaylists async =>
       _audioQuery.queryPlaylists();
-  static Future<List<GenreModel>> get getGenres async =>
-      _audioQuery.queryGenres();
+  Future<List<GenreModel>> get getGenres async => _audioQuery.queryGenres();
 }
