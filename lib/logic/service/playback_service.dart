@@ -73,7 +73,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     queue.add(items);
 
     await _player.setAudioSources(
-      items.map((e) => AudioSource.uri(Uri.parse(e.id))).toList(),
+      items.map((e) => AudioSource.uri(Uri.parse(e.id), tag: e)).toList(),
       initialIndex: startIndex,
       initialPosition: Duration.zero,
     );
@@ -115,4 +115,12 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     await _player.dispose();
     return super.onTaskRemoved();
   }
+
+  // GETTERS
+  Stream<bool> get isPlaying => _player.playingStream;
+  Stream<ProcessingState> get playerStateStream =>
+      _player.processingStateStream;
+  Stream<Duration> get positionStream => _player.positionStream;
+  Stream<Duration?> get durationStream => _player.durationStream;
+  Stream<SequenceState> get sequenceStateStream => _player.sequenceStateStream;
 }

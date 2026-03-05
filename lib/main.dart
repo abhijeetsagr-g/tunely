@@ -1,6 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/logic/bloc/playback/playback_bloc.dart';
 import 'package:tunely/logic/service/playback_service.dart';
+import 'package:tunely/ui/home/home_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +16,12 @@ void main() async {
       androidNotificationOngoing: true,
     ),
   );
-  runApp(MyApp());
+  runApp(
+    BlocProvider(
+      create: (BuildContext context) => PlaybackBloc(audioHandler),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -22,8 +30,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      // home: HomeView(service: service),
+      theme: ThemeData.from(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: const HomeView(),
     );
   }
 }
