@@ -11,6 +11,7 @@ class Tune {
   final String artist;
   final String genre;
   final Duration duration;
+  final int dateAdded;
   late Uri artUri;
 
   Tune({
@@ -23,6 +24,7 @@ class Tune {
     required this.artist,
     required this.genre,
     required this.duration,
+    required this.dateAdded,
   }) {
     artUri = Uri.parse("content://media/external/audio/albumart/$albumId");
   }
@@ -32,6 +34,7 @@ class Tune {
       songId: song.id,
       path: song.data,
       title: song.title,
+      dateAdded: song.dateAdded ?? 0,
       trackIndex: song.track,
       albumId: song.albumId,
       album: song.album ?? "Unknown Album",
@@ -48,5 +51,6 @@ class Tune {
     album: album,
     duration: duration,
     artUri: artUri,
+    genre: genre,
   );
 }

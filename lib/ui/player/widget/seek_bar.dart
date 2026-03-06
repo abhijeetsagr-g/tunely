@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/utlis/fur_duration.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 
 class SeekBar extends StatefulWidget {
@@ -11,12 +12,6 @@ class SeekBar extends StatefulWidget {
 
 class _SeekBarState extends State<SeekBar> {
   double? _dragValue;
-
-  String _format(Duration d) {
-    final m = d.inMinutes.toString().padLeft(2, '0');
-    final s = (d.inSeconds % 60).toString().padLeft(2, '0');
-    return "$m:$s";
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +40,8 @@ class _SeekBarState extends State<SeekBar> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(_format(Duration(milliseconds: value.toInt()))),
-                Text(_format(state.dur)),
+                Text(formatDur(Duration(milliseconds: value.toInt()))),
+                Text(formatDur(state.dur)),
               ],
             ),
           ],

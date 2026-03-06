@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
-import 'package:tunely/ui/player/widget/album_art.dart';
+import 'package:tunely/ui/player/widget/player_album_art.dart';
 import 'package:tunely/ui/player/widget/control_buttons.dart';
 import 'package:tunely/ui/player/widget/seek_bar.dart';
 import 'package:tunely/ui/player/widget/song_info.dart';
@@ -49,7 +49,7 @@ class PlayerView extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            AlbumArt(),
+            PlayerAlbumArt(),
             Padding(
               padding: const EdgeInsets.all(8),
               child: Column(

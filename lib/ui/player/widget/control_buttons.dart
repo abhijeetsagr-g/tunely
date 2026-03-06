@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide RepeatMode;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 
 class ControlButtons extends StatelessWidget {

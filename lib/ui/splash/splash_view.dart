@@ -45,7 +45,7 @@ class _SplashViewState extends State<SplashView> {
             );
           }
         },
-        child: CircularProgressIndicator.adaptive(),
+        child: Center(child: CircularProgressIndicator.adaptive()),
       ),
     );
   }

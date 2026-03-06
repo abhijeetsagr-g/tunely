@@ -1,5 +1,7 @@
 part of 'playback_bloc.dart';
 
+enum TuneSortType { title, artist, recentlyAdded, album }
+
 abstract class PlaybackEvent {}
 
 class PlayingChange extends PlaybackEvent {
@@ -56,6 +58,11 @@ class PlayNext extends PlaybackEvent {}
 class ToggleShuffle extends PlaybackEvent {}
 
 class CycleRepeat extends PlaybackEvent {}
+
+class SortTunes extends PlaybackEvent {
+  final TuneSortType sort;
+  SortTunes(this.sort);
+}
 
 class Seek extends PlaybackEvent {
   final Duration pos;

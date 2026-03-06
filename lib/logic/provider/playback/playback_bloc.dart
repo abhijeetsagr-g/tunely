@@ -33,6 +33,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           repeatMode: .none,
           tunes: [],
           queue: [],
+          type: .recentlyAdded,
         ),
       ) {
     // Streams
@@ -134,6 +135,21 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         RepeatMode.all => LoopMode.all,
         RepeatMode.one => LoopMode.one,
       });
+    });
+
+    on<SortTunes>((event, emit) {
+      final sorted = [...state.tunes];
+      switch (event.sort) {
+        case TuneSortType.title:
+          sorted.sort((a, b) => a.title.compareTo(b.title));
+        case TuneSortType.artist:
+          sorted.sort((a, b) => a.artist.compareTo(b.artist));
+        case TuneSortType.recentlyAdded:
+          sorted.sort((a, b) => b.dateAdded.compareTo(a.dateAdded));
+        case TuneSortType.album:
+          sorted.sort((a, b) => b.album.compareTo(a.album));
+      }
+      emit(state.copyWith(tunes: sorted, type: event.sort));
     });
 
     on<SongLoaded>(
