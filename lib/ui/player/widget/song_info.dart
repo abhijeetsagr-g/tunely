@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/logic/bloc/playback/playback_bloc.dart';
+import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 
 class SongInfo extends StatelessWidget {
   const SongInfo({super.key});

@@ -4,7 +4,11 @@ class AudioQueryService {
   final OnAudioQuery _audioQuery = OnAudioQuery();
 
   // Request Permission
-  Future<bool> _hasPermission() async => _audioQuery.permissionsRequest();
+  Future<bool> _hasPermission() async {
+    final hasPermission = await _audioQuery.permissionsStatus();
+    if (hasPermission) return true;
+    return _audioQuery.permissionsRequest();
+  }
 
   Future<List<SongModel>> getFilteredSongs(
     AudiosFromType type,
@@ -25,10 +29,8 @@ class AudioQueryService {
     );
   }
 
-  // filters
-  Future<List<AlbumModel>> get getAlbums async => _audioQuery.queryAlbums();
-  Future<List<ArtistModel>> get getArtists async => _audioQuery.queryArtists();
-  Future<List<PlaylistModel>> get getPlaylists async =>
-      _audioQuery.queryPlaylists();
-  Future<List<GenreModel>> get getGenres async => _audioQuery.queryGenres();
+  Future<List<AlbumModel>> getAlbums() => _audioQuery.queryAlbums();
+  Future<List<ArtistModel>> getArtists() => _audioQuery.queryArtists();
+  Future<List<PlaylistModel>> getPlaylists() => _audioQuery.queryPlaylists();
+  Future<List<GenreModel>> getGenres() => _audioQuery.queryGenres();
 }

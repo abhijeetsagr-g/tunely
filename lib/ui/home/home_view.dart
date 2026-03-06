@@ -1,33 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:on_audio_query/on_audio_query.dart';
-import 'package:tunely/logic/bloc/playback/playback_bloc.dart';
-import 'package:tunely/logic/service/audio_query_service.dart';
+import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 import 'package:tunely/ui/player/player_view.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
-
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  final AudioQueryService _service = AudioQueryService();
-  List<SongModel> songs = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadSongs();
-  }
-
-  Future<void> loadSongs() async {
-    songs = await _service.getSong();
-
-    if (!mounted) return;
-    context.read<PlaybackBloc>().add(SongLoaded(songs));
-  }
 
   @override
   Widget build(BuildContext context) {

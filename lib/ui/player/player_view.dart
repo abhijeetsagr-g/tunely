@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/logic/bloc/playback/playback_bloc.dart';
+import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 import 'package:tunely/ui/player/widget/album_art.dart';
 import 'package:tunely/ui/player/widget/control_buttons.dart';
 import 'package:tunely/ui/player/widget/seek_bar.dart';
