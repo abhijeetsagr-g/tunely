@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/logic/bloc/playback/playback_bloc.dart';
 import 'package:tunely/logic/service/audio_query_service.dart';
+import 'package:tunely/ui/player/player_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -49,6 +50,11 @@ class _HomeViewState extends State<HomeView> {
                 onTap: () {
                   context.read<PlaybackBloc>().add(
                     PlaySong(index: index, tune: state.tunes),
+                  );
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PlayerView()),
                   );
                 },
               );

@@ -53,6 +53,10 @@ class PlayPrev extends PlaybackEvent {}
 
 class PlayNext extends PlaybackEvent {}
 
+class ToggleShuffle extends PlaybackEvent {}
+
+class CycleRepeat extends PlaybackEvent {}
+
 class Seek extends PlaybackEvent {
   final Duration pos;
   Seek(this.pos);

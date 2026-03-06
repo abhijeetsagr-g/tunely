@@ -10,7 +10,7 @@ class PlaybackState {
 
   final bool hasNext;
   final bool hasPrev;
-
+  final List<Tune> queue;
   final Tune? currentSong;
   final List<Tune> tunes;
   final Duration pos;
@@ -28,6 +28,7 @@ class PlaybackState {
     required this.dur,
     required this.repeatMode,
     required this.tunes,
+    required this.queue,
     this.currentSong,
   });
 
@@ -43,6 +44,7 @@ class PlaybackState {
     Duration? dur,
     RepeatMode? repeatMode,
     List<Tune>? tunes,
+    List<Tune>? queue,
   }) => PlaybackState(
     isPlaying: isPlaying ?? this.isPlaying,
     isBuffering: isBuffering ?? this.isBuffering,
@@ -55,6 +57,7 @@ class PlaybackState {
     dur: dur ?? this.dur,
     repeatMode: repeatMode ?? this.repeatMode,
     tunes: tunes ?? this.tunes,
+    queue: queue ?? this.queue,
   );
 }
 

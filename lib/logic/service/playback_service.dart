@@ -110,6 +110,14 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     }
   }
 
+  Future<void> setShuffle(bool enabled) async {
+    await _player.setShuffleModeEnabled(enabled);
+  }
+
+  Future<void> setRepeat(LoopMode mode) async {
+    await _player.setLoopMode(mode);
+  }
+
   @override
   Future<void> onTaskRemoved() async {
     await _player.dispose();

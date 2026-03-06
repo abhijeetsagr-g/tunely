@@ -32,6 +32,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           dur: Duration.zero,
           repeatMode: .none,
           tunes: [],
+          queue: [],
         ),
       ) {
     // Streams
@@ -59,6 +60,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         event.tune.map((e) => e.toMediaItem()).toList(),
         event.index,
       );
+      emit(state.copyWith(queue: event.tune));
     });
 
     on<Play>((event, emit) async => await _service.play());
@@ -72,13 +74,23 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     );
     on<SequenceChange>((event, emit) {
       if (event.sequence.currentIndex == null) return;
+      final queue = event.sequence.effectiveSequence.map((source) {
+        final item = source.tag as MediaItem;
+        return state.tunes.firstWhere((t) => t.path == item.id);
+      }).toList();
+      final canLoop =
+          event.sequence.loopMode == LoopMode.all ||
+          event.sequence.loopMode == LoopMode.one;
 
       emit(
         state.copyWith(
+          queue: queue,
+
           hasNext:
+              canLoop ||
               (event.sequence.currentIndex! + 1 <
-              event.sequence.sequence.length),
-          hasPrev: (event.sequence.currentIndex! > 0),
+                  event.sequence.sequence.length),
+          hasPrev: canLoop || (event.sequence.currentIndex! > 0),
           currentSong: Optional(
             state.tunes.firstWhereOrNull((t) {
               final item =
@@ -106,6 +118,23 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     on<ProcessStateChange>(
       (event, emit) => emit(state.copyWith(isBuffering: event.isBuffering)),
     );
+
+    on<ToggleShuffle>((event, emit) async {
+      await _service.setShuffle(!state.isShuffleMode);
+    });
+
+    on<CycleRepeat>((event, emit) async {
+      final next = switch (state.repeatMode) {
+        RepeatMode.none => RepeatMode.all,
+        RepeatMode.all => RepeatMode.one,
+        RepeatMode.one => RepeatMode.none,
+      };
+      await _service.setRepeat(switch (next) {
+        RepeatMode.none => LoopMode.off,
+        RepeatMode.all => LoopMode.all,
+        RepeatMode.one => LoopMode.one,
+      });
+    });
 
     on<SongLoaded>(
       (event, emit) => emit(
