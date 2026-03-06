@@ -34,9 +34,8 @@ class DurationChange extends PlaybackEvent {
 
 class ProcessStateChange extends PlaybackEvent {
   final bool isBuffering;
-  final bool isLoading;
 
-  ProcessStateChange(this.isBuffering, this.isLoading);
+  ProcessStateChange(this.isBuffering);
 }
 
 class PlaySong extends PlaybackEvent {
@@ -50,8 +49,11 @@ class Play extends PlaybackEvent {}
 
 class Pause extends PlaybackEvent {}
 
+class PlayPrev extends PlaybackEvent {}
+
+class PlayNext extends PlaybackEvent {}
+
 class Seek extends PlaybackEvent {
   final Duration pos;
-
   Seek(this.pos);
 }

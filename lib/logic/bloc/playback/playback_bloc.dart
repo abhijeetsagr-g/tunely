@@ -50,12 +50,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     });
 
     _playerStateSub = _service.playerStateStream.listen(
-      (event) => add(
-        ProcessStateChange(
-          event == ProcessingState.buffering,
-          event == ProcessingState.loading,
-        ),
-      ),
+      (event) => add(ProcessStateChange(event == ProcessingState.buffering)),
     );
 
     // events
@@ -68,6 +63,9 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
 
     on<Play>((event, emit) async => await _service.play());
     on<Pause>((event, emit) async => await _service.pause());
+    on<PlayNext>((event, emit) async => await _service.skipToNext());
+    on<PlayPrev>((event, emit) async => await _service.skipToPrevious());
+
     on<Seek>((event, emit) async => await _service.seek(event.pos));
     on<PlayingChange>(
       (event, emit) => emit(state.copyWith(isPlaying: event.isPlaying)),
