@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
@@ -9,15 +10,24 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   void _init() {
-    // set custom player state
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
 
-    // Listen to current Song
-    _player.currentIndexStream.listen((index) {
+    _player.sequenceStateStream.listen((state) {
+      final index = state.currentIndex;
+      debugPrint(
+        '[sequenceStateStream] fired — index: $index, queue.length: ${queue.value.length}',
+      );
       if (index == null) return;
       final q = queue.value;
-      if (mediaItem.value?.id != q[index].id) {
+      if (index < q.length) {
+        debugPrint(
+          '[sequenceStateStream] emitting mediaItem: ${q[index].title}',
+        );
         mediaItem.add(q[index]);
+      } else {
+        debugPrint(
+          '[sequenceStateStream] index out of bounds — skipping mediaItem emit',
+        );
       }
     });
   }
@@ -70,15 +80,22 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   // Playback Controls
   Future<void> playQueue(List<MediaItem> items, int startIndex) async {
-    queue.add(items);
-
+    debugPrint(
+      '[PlaybackService] queue.add() done — queue.value.length: ${queue.value.length}',
+    );
     await _player.setAudioSources(
       items.map((e) => AudioSource.uri(Uri.parse(e.id), tag: e)).toList(),
       initialIndex: startIndex,
       initialPosition: Duration.zero,
     );
+    debugPrint(
+      '[PlaybackService] playQueue called — startIndex: $startIndex, items: ${items.length}',
+    );
+    queue.add(items);
+    debugPrint(
+      '[PlaybackService] setAudioSources done — player.currentIndex: ${_player.currentIndex}',
+    );
 
-    mediaItem.add(items[startIndex]);
     play();
   }
 

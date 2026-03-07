@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/core/common/album_art.dart';
 import 'package:tunely/core/common/song_tile.dart';
-import 'package:tunely/core/utlis/fur_duration.dart';
 import 'package:tunely/data/model/tune.dart';
 
 class AlbumView extends StatelessWidget {

@@ -13,6 +13,7 @@ part 'playback_state.dart';
 
 class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
   final PlaybackService _service;
+  int? _pendingIndex;
 
   late final StreamSubscription<bool> _playSub;
   late final StreamSubscription<SequenceState?> _sequenceSub;
@@ -57,10 +58,12 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
 
     // events
     on<PlaySong>((event, emit) async {
+      _pendingIndex = event.index;
       await _service.playQueue(
         event.tune.map((e) => e.toMediaItem()).toList(),
         event.index,
       );
+      _pendingIndex = null;
       emit(state.copyWith(queue: event.tune));
     });
 
@@ -75,6 +78,12 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     );
     on<SequenceChange>((event, emit) {
       if (event.sequence.currentIndex == null) return;
+      if (event.sequence.sequence.isEmpty) return;
+      if (_pendingIndex != null &&
+          event.sequence.currentIndex != _pendingIndex) {
+        return;
+      }
+
       final queue = event.sequence.effectiveSequence.map((source) {
         final item = source.tag as MediaItem;
         return state.tunes.firstWhere((t) => t.path == item.id);
@@ -95,7 +104,10 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           currentSong: Optional(
             state.tunes.firstWhereOrNull((t) {
               final item =
-                  event.sequence.sequence[event.sequence.currentIndex!].tag
+                  event
+                          .sequence
+                          .effectiveSequence[event.sequence.currentIndex!]
+                          .tag
                       as MediaItem;
               return item.id == t.path;
             }),
