@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/core/common/album_art.dart';
 import 'package:tunely/core/common/song_tile.dart';
+import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/logic/provider/playback/playback_bloc.dart';
+import 'package:tunely/ui/player/player_view.dart';
 
 class AlbumView extends StatelessWidget {
   const AlbumView({super.key, required this.album, required this.tunes});
@@ -11,58 +15,101 @@ class AlbumView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            expandedHeight: 280,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                album.album,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              background: AlbumArt(
-                id: album.id,
-                size: Size(250, 250),
-                type: .ALBUM,
-              ),
-            ),
-          ),
+          const SliverAppBar(floating: true, pinned: false),
 
-          /// Album metadata
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    album.album,
-                    style: Theme.of(context).textTheme.headlineSmall,
+                  // Center the art for a focused look
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: AlbumArt(
+                        id: album.id,
+                        size: const Size(260, 260),
+                        type: ArtworkType.ALBUM, // Fixed syntax
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 24),
+
+                  // Album Title
                   Text(
-                    album.artist ?? "Unknown Artist",
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    album.album.toTitleCase(),
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: -0.5,
+                      fontSize: 24,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+
+                  // Artist & Info
                   Text(
-                    "${tunes.length} songs",
-                    style: Theme.of(context).textTheme.bodySmall,
+                    "${album.artist?.toUpperCase() ?? 'Unknown'} • ${album.numOfSongs} tracks",
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
+                  const SizedBox(height: 24),
+
+                  // Action Buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: () => context.read<PlaybackBloc>().add(
+                            PlaySong(index: 0, tune: tunes),
+                          ),
+                          icon: const Icon(Icons.play_arrow_rounded),
+                          label: const Text("Play"),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            final bloc = context.read<PlaybackBloc>();
+                            bloc.add(ShuffleAll(tunes: tunes));
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PlayerView(),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.shuffle_rounded),
+                          label: const Text("Play Shuffle"),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),
           ),
 
-          /// Song list
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final tune = tunes[index];
-              return SongTile(tune: tune, index: index, tunes: tunes);
-            }, childCount: tunes.length),
+          // List Section
+          SliverPadding(
+            padding: const EdgeInsets.only(bottom: 24),
+
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final tune = tunes[index];
+                return SongTile(tune: tune, index: index, tunes: tunes);
+              }, childCount: tunes.length),
+            ),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/common/album_art.dart';
+import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/fur_duration.dart';
 import 'package:tunely/data/model/tune.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
@@ -21,7 +22,7 @@ class SongTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isCurrent = context.select<PlaybackBloc, bool>(
-      (bloc) => bloc.state.currentSong == tune,
+      (bloc) => bloc.state.currentSong?.songId == tune.songId,
     );
     return ListTile(
       dense: true,
@@ -30,7 +31,7 @@ class SongTile extends StatelessWidget {
       selected: isCurrent,
       leading: AlbumArt(id: tune.songId!, size: Size(46, 46), type: .AUDIO),
       title: Text(
-        tune.title,
+        tune.title.toTitleCase(),
         style: TextStyle(fontSize: 14, fontWeight: .bold),
       ),
       subtitle: Text(

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -64,7 +66,14 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         event.index,
       );
       _pendingIndex = null;
-      emit(state.copyWith(queue: event.tune));
+    });
+
+    on<ShuffleAll>((event, emit) async {
+      await _service.setShuffle(true);
+      await _service.playQueue(
+        event.tunes.map((e) => e.toMediaItem()).toList(),
+        event.startIndex, // always start at 0, shuffle will reorder
+      );
     });
 
     on<Play>((event, emit) async => await _service.play());
@@ -79,6 +88,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     on<SequenceChange>((event, emit) {
       if (event.sequence.currentIndex == null) return;
       if (event.sequence.sequence.isEmpty) return;
+
       if (_pendingIndex != null &&
           event.sequence.currentIndex != _pendingIndex) {
         return;
@@ -92,27 +102,31 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           event.sequence.loopMode == LoopMode.all ||
           event.sequence.loopMode == LoopMode.one;
 
+      final shuffleIndices = event.sequence.shuffleIndices;
+      final currentIndex = event.sequence.currentIndex!;
+
+      // Find position of currentIndex within shuffleIndices
+      final effectiveIndex = event.sequence.shuffleModeEnabled
+          ? shuffleIndices.indexOf(currentIndex)
+          : currentIndex;
+
+      final currentItem =
+          event.sequence.effectiveSequence[effectiveIndex].tag as MediaItem;
+      final currentSong = state.tunes.firstWhereOrNull(
+        (t) => t.path == currentItem.id,
+      );
+
       emit(
         state.copyWith(
+          currentSong: Optional(currentSong),
           queue: queue,
 
+          isShuffleMode: event.sequence.shuffleModeEnabled,
           hasNext:
               canLoop ||
-              (event.sequence.currentIndex! + 1 <
-                  event.sequence.sequence.length),
-          hasPrev: canLoop || (event.sequence.currentIndex! > 0),
-          currentSong: Optional(
-            state.tunes.firstWhereOrNull((t) {
-              final item =
-                  event
-                          .sequence
-                          .effectiveSequence[event.sequence.currentIndex!]
-                          .tag
-                      as MediaItem;
-              return item.id == t.path;
-            }),
-          ),
-          isShuffleMode: event.sequence.shuffleModeEnabled,
+              (effectiveIndex + 1 < event.sequence.effectiveSequence.length),
+          hasPrev: canLoop || (effectiveIndex > 0),
+
           repeatMode: switch (event.sequence.loopMode) {
             LoopMode.off => RepeatMode.none,
             LoopMode.one => RepeatMode.one,
@@ -173,6 +187,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       ),
     );
   }
+
   @override
   Future<void> close() {
     _playSub.cancel();

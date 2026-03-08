@@ -14,20 +14,11 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
     _player.sequenceStateStream.listen((state) {
       final index = state.currentIndex;
-      debugPrint(
-        '[sequenceStateStream] fired — index: $index, queue.length: ${queue.value.length}',
-      );
+
       if (index == null) return;
       final q = queue.value;
       if (index < q.length) {
-        debugPrint(
-          '[sequenceStateStream] emitting mediaItem: ${q[index].title}',
-        );
         mediaItem.add(q[index]);
-      } else {
-        debugPrint(
-          '[sequenceStateStream] index out of bounds — skipping mediaItem emit',
-        );
       }
     });
   }
@@ -80,20 +71,11 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   // Playback Controls
   Future<void> playQueue(List<MediaItem> items, int startIndex) async {
-    debugPrint(
-      '[PlaybackService] queue.add() done — queue.value.length: ${queue.value.length}',
-    );
+    queue.add(items);
     await _player.setAudioSources(
       items.map((e) => AudioSource.uri(Uri.parse(e.id), tag: e)).toList(),
       initialIndex: startIndex,
       initialPosition: Duration.zero,
-    );
-    debugPrint(
-      '[PlaybackService] playQueue called — startIndex: $startIndex, items: ${items.length}',
-    );
-    queue.add(items);
-    debugPrint(
-      '[PlaybackService] setAudioSources done — player.currentIndex: ${_player.currentIndex}',
     );
 
     play();
@@ -128,6 +110,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   Future<void> setShuffle(bool enabled) async {
+    if (enabled) await _player.shuffle();
     await _player.setShuffleModeEnabled(enabled);
   }
 

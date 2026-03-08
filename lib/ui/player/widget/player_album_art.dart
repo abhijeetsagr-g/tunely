@@ -18,11 +18,7 @@ class PlayerAlbumArt extends StatelessWidget {
           child: AspectRatio(
             aspectRatio: 1,
             child: tune != null
-                ? AlbumArt(
-                    id: tune.albumId!,
-                    size: Size(120, 120),
-                    type: .ALBUM,
-                  )
+                ? AlbumArt(id: tune.songId!, size: Size(120, 120), type: .AUDIO)
                 : const Center(child: Icon(Icons.music_note, size: 100)),
           ),
         );

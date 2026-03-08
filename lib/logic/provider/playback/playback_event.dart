@@ -47,6 +47,14 @@ class PlaySong extends PlaybackEvent {
   PlaySong({required this.index, required this.tune});
 }
 
+class ShuffleAll extends PlaybackEvent {
+  final List<Tune> tunes;
+  final int startIndex;
+
+  ShuffleAll({required this.tunes})
+    : startIndex = Random().nextInt(tunes.length);
+}
+
 class Play extends PlaybackEvent {}
 
 class Pause extends PlaybackEvent {}
