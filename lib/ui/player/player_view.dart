@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
+import 'package:tunely/ui/player/widget/next_song_label.dart';
 import 'package:tunely/ui/player/widget/player_album_art.dart';
 import 'package:tunely/ui/player/widget/control_buttons.dart';
 import 'package:tunely/ui/player/widget/seek_bar.dart';
@@ -9,63 +11,35 @@ import 'package:tunely/ui/player/widget/song_info.dart';
 class PlayerView extends StatelessWidget {
   const PlayerView({super.key});
 
+  AppBar _appBar(BuildContext context) => AppBar(
+    // leading: SizedBox(),
+    centerTitle: true,
+    title: BlocSelector<PlaybackBloc, PlaybackState, String>(
+      selector: (state) => state.currentSong?.album ?? "Unknown",
+      builder: (context, album) => Text(
+        album.toTitleCase(),
+        style: Theme.of(context).textTheme.titleLarge,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.watch<PlaybackBloc>().state.currentSong?.album ?? "Unknown ",
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (_) => BlocBuilder<PlaybackBloc, PlaybackState>(
-                  buildWhen: (prev, curr) => prev.queue != curr.queue,
-                  builder: (context, state) {
-                    return ListView.builder(
-                      itemCount: state.queue.length,
-                      itemBuilder: (context, index) {
-                        final tune = state.queue[index];
-                        return ListTile(
-                          title: Text(tune.title),
-                          subtitle: Text(tune.artist),
-                          leading: Text('${index + 1}'),
-                          selected: tune == state.currentSong,
-                          selectedColor: Colors.purple,
-                        );
-                      },
-                    );
-                  },
-                ),
-              );
-            },
-            icon: Icon(Icons.queue),
-          ),
-        ],
-      ),
+      appBar: _appBar(context),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 30,
           children: [
             PlayerAlbumArt(),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 30),
-                  SongInfo(),
-
-                  /// Seek bar
-                  SeekBar(),
-
-                  const SizedBox(height: 20),
-                ],
-              ),
-            ),
+            SongInfo(),
+            SeekBar(),
             ControlButtons(),
+            NextSongLabel(),
           ],
         ),
       ),

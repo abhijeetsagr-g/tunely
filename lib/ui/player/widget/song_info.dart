@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 
 class SongInfo extends StatelessWidget {
@@ -14,16 +15,28 @@ class SongInfo extends StatelessWidget {
 
         if (tune == null) return const SizedBox();
 
-        return Column(
-          children: [
-            Text(
-              tune.title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 6),
-            Text(tune.artist, style: const TextStyle(color: Colors.grey)),
-          ],
+        return SizedBox(
+          height: 70,
+          child: Column(
+            children: [
+              Text(
+                tune.title.toTitleCase(),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                tune.artist,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall?.copyWith(color: Colors.grey),
+              ),
+            ],
+          ),
         );
       },
     );

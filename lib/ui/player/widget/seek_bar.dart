@@ -23,28 +23,37 @@ class _SeekBarState extends State<SeekBar> {
             .clamp(0, max.isNaN || max == 0 ? 1 : max)
             .toDouble();
 
-        return Column(
-          children: [
-            Slider(
-              min: 0,
-              max: max == 0 ? 1 : max,
-              value: value,
-              onChanged: (v) => setState(() => _dragValue = v),
-              onChangeEnd: (v) {
-                context.read<PlaybackBloc>().add(
-                  Seek(Duration(milliseconds: v.toInt())),
-                );
-                setState(() => _dragValue = null);
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(formatDur(Duration(milliseconds: value.toInt()))),
-                Text(formatDur(state.dur)),
-              ],
-            ),
-          ],
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            children: [
+              Slider(
+                min: 0,
+                max: max == 0 ? 1 : max,
+                value: value,
+                onChanged: (v) => setState(() => _dragValue = v),
+                onChangeEnd: (v) {
+                  context.read<PlaybackBloc>().add(
+                    Seek(Duration(milliseconds: v.toInt())),
+                  );
+                  setState(() => _dragValue = null);
+                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    formatDur(Duration(milliseconds: value.toInt())),
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                  Text(
+                    formatDur(state.dur),
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );

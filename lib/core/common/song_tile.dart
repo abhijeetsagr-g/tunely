@@ -5,7 +5,6 @@ import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/fur_duration.dart';
 import 'package:tunely/data/model/tune.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
-import 'package:tunely/ui/player/player_view.dart';
 
 class SongTile extends StatelessWidget {
   const SongTile({
@@ -27,8 +26,10 @@ class SongTile extends StatelessWidget {
     return ListTile(
       dense: true,
       contentPadding: EdgeInsets.symmetric(horizontal: 16),
-      textColor: isCurrent ? Colors.blue : null,
       selected: isCurrent,
+      selectedColor: Theme.of(context).primaryColor,
+      selectedTileColor: Theme.of(context).primaryColor.withAlpha(8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       leading: AlbumArt(id: tune.songId!, size: Size(46, 46), type: .AUDIO),
       title: Text(
         tune.title.toTitleCase(),
@@ -45,14 +46,8 @@ class SongTile extends StatelessWidget {
         constraints: BoxConstraints(),
         visualDensity: VisualDensity.compact,
       ),
-      onTap: () {
-        context.read<PlaybackBloc>().add(PlaySong(index: index, tune: tunes));
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PlayerView()),
-        );
-      },
+      onTap: () =>
+          context.read<PlaybackBloc>().add(PlaySong(index: index, tune: tunes)),
     );
   }
 }

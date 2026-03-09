@@ -56,7 +56,6 @@ class HomeView extends StatelessWidget {
 
                 const SliverToBoxAdapter(child: SizedBox(height: 30)),
 
-                // Songs Section
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -78,7 +77,6 @@ class HomeView extends StatelessWidget {
                   ),
                 ),
 
-                // Songs List
                 SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final tune = state.tunes[index];

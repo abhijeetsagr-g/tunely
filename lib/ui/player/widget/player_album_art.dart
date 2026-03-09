@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/core/common/album_art.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 
 class PlayerAlbumArt extends StatelessWidget {
@@ -12,13 +12,40 @@ class PlayerAlbumArt extends StatelessWidget {
       buildWhen: (prev, curr) => prev.currentSong != curr.currentSong,
       builder: (context, state) {
         final tune = state.currentSong;
-
         return Padding(
           padding: const EdgeInsets.all(24),
           child: AspectRatio(
             aspectRatio: 1,
             child: tune != null
-                ? AlbumArt(id: tune.songId!, size: Size(120, 120), type: .AUDIO)
+                ? Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(30),
+                          blurRadius: 24,
+                          offset: Offset(0, 8),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: QueryArtworkWidget(
+                        id: tune.songId!,
+                        type: .AUDIO,
+                        artworkFit: BoxFit.cover,
+                        keepOldArtwork: true,
+                        artworkBorder: BorderRadius.circular(16),
+                        nullArtworkWidget: Container(
+                          color: Colors.grey.shade900,
+                          child: const Icon(
+                            Icons.music_note,
+                            color: Colors.white54,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 : const Center(child: Icon(Icons.music_note, size: 100)),
           ),
         );

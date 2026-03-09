@@ -15,7 +15,7 @@ class DropDownSort extends StatelessWidget {
         PopupMenuItem(value: TuneSortType.artist, child: Text("Artist")),
         PopupMenuItem(
           value: TuneSortType.recentlyAdded,
-          child: Text("Recently Added"),
+          child: Text("Sort By: Recently Added"),
         ),
         PopupMenuItem(value: TuneSortType.album, child: Text("Albums")),
       ],

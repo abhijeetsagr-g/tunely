@@ -5,6 +5,37 @@ import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 class ControlButtons extends StatelessWidget {
   const ControlButtons({super.key});
 
+  Widget _buildIconButton({
+    required BuildContext context,
+    required IconData icon,
+    required VoidCallback? onPressed,
+    double iconSize = 22,
+    bool isActive = false,
+    bool isDisabled = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: isActive
+            ? Theme.of(context).primaryColor.withAlpha(15)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: IconButton(
+        iconSize: iconSize,
+        icon: Icon(
+          icon,
+          color: isDisabled
+              ? Theme.of(context).iconTheme.color?.withAlpha(30)
+              : isActive
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).iconTheme.color,
+        ),
+        onPressed: onPressed,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PlaybackBloc, PlaybackState>(
@@ -15,66 +46,55 @@ class ControlButtons extends StatelessWidget {
           prev.isShuffleMode != curr.isShuffleMode ||
           prev.repeatMode != curr.repeatMode,
       builder: (context, state) {
+        final bloc = context.read<PlaybackBloc>();
+
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Shuffle
-            IconButton(
-              onPressed: () =>
-                  context.read<PlaybackBloc>().add(ToggleShuffle()),
-              icon: Icon(
-                Icons.shuffle,
-                color: state.isShuffleMode ? Colors.purple : null,
-              ),
+            _buildIconButton(
+              context: context,
+              icon: Icons.shuffle,
+              onPressed: () => bloc.add(ToggleShuffle()),
+              isActive: state.isShuffleMode,
             ),
 
             /// Previous
-            IconButton(
+            _buildIconButton(
+              context: context,
+              icon: Icons.skip_previous,
               iconSize: 40,
-              icon: const Icon(Icons.skip_previous),
-              onPressed: state.hasPrev
-                  ? () => context.read<PlaybackBloc>().add(PlayPrev())
-                  : null,
+              isDisabled: !state.hasPrev,
+              onPressed: state.hasPrev ? () => bloc.add(PlayPrev()) : null,
             ),
-
-            const SizedBox(width: 20),
 
             /// Play / Pause
-            IconButton(
-              iconSize: 70,
-              icon: Icon(
-                state.isPlaying ? Icons.pause_circle : Icons.play_circle,
-              ),
-              onPressed: () {
-                if (state.isPlaying) {
-                  context.read<PlaybackBloc>().add(Pause());
-                } else {
-                  context.read<PlaybackBloc>().add(Play());
-                }
-              },
+            _buildIconButton(
+              iconSize: 60,
+              context: context,
+              icon: state.isPlaying ? Icons.pause_circle : Icons.play_circle,
+              onPressed: () => bloc.add(state.isPlaying ? Pause() : Play()),
             ),
 
-            const SizedBox(width: 20),
-
             /// Next
-            IconButton(
+            _buildIconButton(
+              context: context,
+              icon: Icons.skip_next,
               iconSize: 40,
-              icon: const Icon(Icons.skip_next),
-              onPressed: state.hasNext
-                  ? () => context.read<PlaybackBloc>().add(PlayNext())
-                  : null,
+              isDisabled: !state.hasNext,
+              onPressed: state.hasNext ? () => bloc.add(PlayNext()) : null,
             ),
 
             // Repeat Button
-            IconButton(
-              icon: Icon(switch (state.repeatMode) {
-                RepeatMode.none => Icons.repeat,
-
-                RepeatMode.one => Icons.repeat_one_on,
-
+            _buildIconButton(
+              context: context,
+              icon: switch (state.repeatMode) {
+                RepeatMode.none => Icons.repeat_sharp,
+                RepeatMode.one => Icons.repeat_one_sharp,
                 RepeatMode.all => Icons.repeat_on,
-              }),
-              onPressed: () => context.read<PlaybackBloc>().add(CycleRepeat()),
+              },
+              isActive: state.repeatMode != RepeatMode.none,
+              onPressed: () => bloc.add(CycleRepeat()),
             ),
           ],
         );

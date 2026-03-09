@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -85,6 +84,8 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     on<PlayingChange>(
       (event, emit) => emit(state.copyWith(isPlaying: event.isPlaying)),
     );
+
+    // important
     on<SequenceChange>((event, emit) {
       if (event.sequence.currentIndex == null) return;
       if (event.sequence.sequence.isEmpty) return;
@@ -115,10 +116,15 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       final currentSong = state.tunes.firstWhereOrNull(
         (t) => t.path == currentItem.id,
       );
+      final nextSong =
+          (effectiveIndex + 1 < event.sequence.effectiveSequence.length)
+          ? queue[effectiveIndex + 1]
+          : null;
 
       emit(
         state.copyWith(
           currentSong: Optional(currentSong),
+          nextSong: nextSong,
           queue: queue,
 
           isShuffleMode: event.sequence.shuffleModeEnabled,

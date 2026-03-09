@@ -17,6 +17,7 @@ class PlaybackState {
   final Duration dur;
   final RepeatMode repeatMode;
   final TuneSortType type;
+  final Tune? nextSong;
 
   PlaybackState({
     required this.isPlaying,
@@ -32,6 +33,7 @@ class PlaybackState {
     required this.queue,
     this.currentSong,
     required this.type,
+    this.nextSong,
   });
 
   PlaybackState copyWith({
@@ -48,6 +50,7 @@ class PlaybackState {
     List<Tune>? tunes,
     List<Tune>? queue,
     TuneSortType? type,
+    Tune? nextSong,
   }) => PlaybackState(
     isPlaying: isPlaying ?? this.isPlaying,
     isBuffering: isBuffering ?? this.isBuffering,
@@ -62,6 +65,7 @@ class PlaybackState {
     tunes: tunes ?? this.tunes,
     queue: queue ?? this.queue,
     type: type ?? this.type,
+    nextSong: nextSong ?? this.nextSong,
   );
 }
 
