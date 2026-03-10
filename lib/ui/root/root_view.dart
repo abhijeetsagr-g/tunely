@@ -4,6 +4,7 @@ import 'package:tunely/logic/provider/theme/theme_cubit.dart';
 import 'package:tunely/logic/provider/theme/theme_state.dart';
 import 'package:tunely/ui/home/home_view.dart';
 import 'package:tunely/ui/library/library_view.dart';
+import 'package:tunely/ui/root/mini_player_overlay.dart';
 import 'package:tunely/ui/settings/settings_view.dart';
 
 class RootView extends StatefulWidget {
@@ -13,8 +14,36 @@ class RootView extends StatefulWidget {
   State<RootView> createState() => _RootViewState();
 }
 
-class _RootViewState extends State<RootView> {
+class _RootViewState extends State<RootView> with RouteAware {
   int _currentIndex = 0;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null) routeObserver.subscribe(this, route);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    // a new route was pushed on top of RootView
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      miniPlayerBottom.value = 16;
+    });
+  }
+
+  @override
+  void didPopNext() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      miniPlayerBottom.value = kBottomNavigationBarHeight + 28;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

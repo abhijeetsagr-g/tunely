@@ -7,6 +7,7 @@ import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 import 'package:tunely/logic/provider/query/query_cubit.dart';
 import 'package:tunely/logic/provider/theme/theme_cubit.dart';
 import 'package:tunely/logic/service/playback_service.dart';
+
 import 'package:tunely/ui/album/album_view.dart';
 import 'package:tunely/ui/album/generic_view.dart';
 import 'package:tunely/ui/filtered_list/filtered_list_view.dart';
@@ -81,6 +82,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final accent = context.watch<ThemeCubit>().state.accent;
     return MaterialApp(
+      navigatorObservers: [routeObserver],
       debugShowCheckedModeBanner: false,
       navigatorKey: _navigatorKey,
       theme: AppTheme.light(accent),

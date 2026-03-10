@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/ui/root/widget/mini_player.dart';
 
+final routeObserver = RouteObserver<ModalRoute>();
 final isPlayerOpen = ValueNotifier<bool>(false);
 final miniPlayerBottom = ValueNotifier<double>(kBottomNavigationBarHeight + 28);
 
