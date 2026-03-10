@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/core/common/album_art.dart';
 import 'package:tunely/core/common/song_tile.dart';
+import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/data/model/tune.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
@@ -35,7 +36,7 @@ class AlbumView extends StatelessWidget {
                       child: AlbumArt(
                         id: album.id,
                         size: const Size(260, 260),
-                        type: ArtworkType.ALBUM, // Fixed syntax
+                        type: ArtworkType.ALBUM,
                       ),
                     ),
                   ),
@@ -67,26 +68,26 @@ class AlbumView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: FilledButton.icon(
-                          onPressed: () => context.read<PlaybackBloc>().add(
-                            PlaySong(index: 0, tune: tunes),
-                          ),
+                          onPressed: () {
+                            context.read<PlaybackBloc>().add(
+                              PlaySong(index: 0, tune: tunes),
+                            );
+
+                            Navigator.pushNamed(context, AppRoutes.player);
+                          },
+
                           icon: const Icon(Icons.play_arrow_rounded),
                           label: const Text("Play"),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: OutlinedButton.icon(
+                        child: TextButton.icon(
                           onPressed: () {
                             final bloc = context.read<PlaybackBloc>();
                             bloc.add(ShuffleAll(tunes: tunes));
 
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PlayerView(),
-                              ),
-                            );
+                            Navigator.pushNamed(context, AppRoutes.player);
                           },
                           icon: const Icon(Icons.shuffle_rounded),
                           label: const Text("Play Shuffle"),

@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const primary = Color(0xFF1A237E);
-  static const primaryLight = Color(0xFF534BAE);
-  static const black = Color(0xFF0A0A0A);
-  static const white = Color(0xFFFFFFFF);
+  static const Color black = Color(0xFF0A0A0A);
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color defaultAccent = Color(0xFF1A237E);
+  static const String font = "Inter";
 
-  static const font = "Inter";
-
-  static ThemeData get light => ThemeData(
+  static ThemeData light([Color accent = defaultAccent]) => ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: white,
-    primaryColor: primary,
+    primaryColor: accent,
     fontFamily: font,
 
-    colorScheme: const ColorScheme(
+    colorScheme: ColorScheme(
       brightness: Brightness.light,
-      primary: primary,
+      primary: accent,
       onPrimary: white,
-      secondary: primary,
+      secondary: accent,
       onSecondary: white,
       error: Colors.red,
       onError: white,
@@ -29,88 +27,116 @@ class AppTheme {
     appBarTheme: const AppBarTheme(
       backgroundColor: white,
       foregroundColor: black,
+      elevation: 0,
+      scrolledUnderElevation: 0,
       iconTheme: IconThemeData(color: black, size: 20),
       titleTextStyle: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
+        fontFamily: font,
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.2,
         color: black,
       ),
     ),
 
     iconTheme: const IconThemeData(color: black, size: 22),
 
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: white,
-      selectedItemColor: primary,
-      unselectedItemColor: Color.fromRGBO(10, 10, 10, 0.6),
+      selectedItemColor: accent,
+      unselectedItemColor: const Color.fromRGBO(10, 10, 10, 0.4),
+      elevation: 0,
       type: BottomNavigationBarType.fixed,
     ),
 
-    sliderTheme: const SliderThemeData(
-      activeTrackColor: primary,
-      thumbColor: primary,
-      inactiveTrackColor: Color.fromRGBO(10, 10, 10, 0.15),
-      overlayColor: Color.fromRGBO(26, 35, 126, 0.15),
+    sliderTheme: SliderThemeData(
+      activeTrackColor: accent,
+      inactiveTrackColor: const Color.fromRGBO(10, 10, 10, 0.15),
+      thumbColor: accent,
+      overlayColor: accent.withOpacity(0.15),
       trackHeight: 2,
+      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+      overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+      trackShape: const RoundedRectSliderTrackShape(),
+    ),
 
-      thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5),
-      overlayShape: RoundSliderOverlayShape(overlayRadius: 14),
-      trackShape: RoundedRectSliderTrackShape(),
+    chipTheme: ChipThemeData(
+      selectedColor: accent.withOpacity(0.15),
+      checkmarkColor: accent,
+      labelStyle: const TextStyle(fontFamily: font, fontSize: 13),
+      side: BorderSide(color: accent.withOpacity(0.4)),
     ),
 
     textTheme: const TextTheme(
-      // Large titles — Splash, section headers
       displayLarge: TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.5,
+        color: black,
       ),
       displayMedium: TextStyle(
         fontSize: 26,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.5,
+        color: black,
       ),
-
-      // AppBar title, page titles
       titleLarge: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         letterSpacing: -0.2,
+        color: black,
       ),
-      titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-
-      // Song title in PlayerView, card titles
-      bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-      // Artist name, subtitles
-      bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-      // Small labels — "Next: song name", timestamps
+      titleMedium: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        color: black,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+        color: black,
+      ),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: black,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: black,
+      ),
       bodySmall: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.2,
+        color: black,
       ),
-
-      // Buttons, chips, dropdowns
-      labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+      labelLarge: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: black,
+      ),
       labelSmall: TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.3,
+        color: black,
       ),
     ),
   );
 
-  static ThemeData get dark => ThemeData(
+  static ThemeData dark([Color accent = defaultAccent]) => ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: black,
-    primaryColor: primaryLight,
+    primaryColor: accent,
     fontFamily: font,
 
-    colorScheme: const ColorScheme(
+    colorScheme: ColorScheme(
       brightness: Brightness.dark,
-      primary: primary,
+      primary: accent,
       onPrimary: white,
-      secondary: primary,
+      secondary: accent,
       onSecondary: white,
       error: Colors.red,
       onError: white,
@@ -121,74 +147,101 @@ class AppTheme {
     appBarTheme: const AppBarTheme(
       backgroundColor: black,
       foregroundColor: white,
+      elevation: 0,
+      scrolledUnderElevation: 0,
       iconTheme: IconThemeData(color: white, size: 20),
       titleTextStyle: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
+        fontFamily: font,
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.2,
         color: white,
       ),
     ),
 
     iconTheme: const IconThemeData(color: white, size: 22),
 
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: black,
-      selectedItemColor: primary,
-      unselectedItemColor: Color.fromRGBO(255, 255, 255, 0.6),
+      selectedItemColor: accent,
+      unselectedItemColor: const Color.fromRGBO(255, 255, 255, 0.4),
       elevation: 0,
       type: BottomNavigationBarType.fixed,
     ),
 
-    sliderTheme: const SliderThemeData(
-      activeTrackColor: primaryLight,
-      inactiveTrackColor: Color.fromRGBO(255, 255, 255, 0.2),
-      thumbColor: primaryLight,
-      overlayColor: Color.fromRGBO(26, 35, 126, 0.25),
+    sliderTheme: SliderThemeData(
+      activeTrackColor: accent,
+      inactiveTrackColor: const Color.fromRGBO(255, 255, 255, 0.2),
+      thumbColor: accent,
+      overlayColor: accent.withOpacity(0.25),
       trackHeight: 2,
+      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+      overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+      trackShape: const RoundedRectSliderTrackShape(),
+    ),
 
-      thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5),
-      overlayShape: RoundSliderOverlayShape(overlayRadius: 14),
-      trackShape: RoundedRectSliderTrackShape(),
+    chipTheme: ChipThemeData(
+      selectedColor: accent.withOpacity(0.2),
+      checkmarkColor: accent,
+      labelStyle: const TextStyle(fontFamily: font, fontSize: 13, color: white),
+      side: BorderSide(color: accent.withOpacity(0.4)),
     ),
 
     textTheme: const TextTheme(
-      // Large titles — Splash, section headers
       displayLarge: TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.5,
+        color: white,
       ),
       displayMedium: TextStyle(
         fontSize: 26,
         fontWeight: FontWeight.w700,
         letterSpacing: -0.5,
+        color: white,
       ),
-
-      // AppBar title, page titles
       titleLarge: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         letterSpacing: -0.2,
+        color: white,
       ),
-      titleMedium: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-
-      // Song title in PlayerView, card titles
-      bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-      // Artist name, subtitles
-      bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
-      // Small labels — "Next: song name", timestamps
+      titleMedium: TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        color: white,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w500,
+        color: white,
+      ),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: white,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: white,
+      ),
       bodySmall: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.2,
+        color: white,
       ),
-
-      // Buttons, chips, dropdowns
-      labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+      labelLarge: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: white,
+      ),
       labelSmall: TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w400,
         letterSpacing: 0.3,
+        color: white,
       ),
     ),
   );

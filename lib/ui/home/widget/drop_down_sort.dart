@@ -13,20 +13,25 @@ class DropDownSort extends StatelessWidget {
       itemBuilder: (_) => const [
         PopupMenuItem(value: TuneSortType.title, child: Text("Title")),
         PopupMenuItem(value: TuneSortType.artist, child: Text("Artist")),
-        PopupMenuItem(
-          value: TuneSortType.recentlyAdded,
-          child: Text("Sort By: Recently Added"),
-        ),
-        PopupMenuItem(value: TuneSortType.album, child: Text("Albums")),
+        PopupMenuItem(value: TuneSortType.recentlyAdded, child: Text("New")),
+        PopupMenuItem(value: TuneSortType.album, child: Text("Album")),
       ],
-      child: Text(switch (context.select<PlaybackBloc, TuneSortType>(
-        (b) => b.state.type,
-      )) {
-        TuneSortType.title => "Title",
-        TuneSortType.artist => "Artist",
-        TuneSortType.recentlyAdded => "Recently Added",
-        TuneSortType.album => "Album",
-      }, style: const TextStyle(fontSize: 14)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 4,
+        children: [
+          Icon(Icons.sort, size: 16),
+          Text(switch (context.select<PlaybackBloc, TuneSortType>(
+            (b) => b.state.type,
+          )) {
+            TuneSortType.title => "Title",
+            TuneSortType.artist => "Artist",
+            TuneSortType.recentlyAdded => "New",
+            TuneSortType.album => "Album",
+          }, style: Theme.of(context).textTheme.labelLarge),
+          Icon(Icons.keyboard_arrow_down, size: 16),
+        ],
+      ),
     );
   }
 }

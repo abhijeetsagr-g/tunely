@@ -36,14 +36,14 @@ class AlbumCard extends StatelessWidget {
         }
       },
       child: SizedBox(
-        width: 180,
+        width: 150,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AlbumArt(
               id: album.id,
               type: ArtworkType.ALBUM,
-              size: Size(180, 180),
+              size: Size(150, 150),
             ),
             const SizedBox(height: 6),
             Text(

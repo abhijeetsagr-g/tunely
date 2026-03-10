@@ -67,6 +67,13 @@ class ToggleShuffle extends PlaybackEvent {}
 
 class CycleRepeat extends PlaybackEvent {}
 
+class SetSleepTimer extends PlaybackEvent {
+  final Duration duration;
+  SetSleepTimer(this.duration);
+}
+
+class CancelSleepTimer extends PlaybackEvent {}
+
 class SortTunes extends PlaybackEvent {
   final TuneSortType sort;
   SortTunes(this.sort);

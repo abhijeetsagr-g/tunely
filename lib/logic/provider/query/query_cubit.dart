@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/logic/provider/query/query_state.dart';
@@ -41,7 +44,17 @@ class QueryCubit extends Cubit<QueryState> {
     }
   }
 
-  Future<List<SongModel>> getAllSongs() async => await _service.getSong();
+  Future<List<SongModel>> getAllSongs() async {
+    final songs = await _service.getSong();
+    return songs.where((song) {
+      if (song.data.isEmpty) return false;
+      if (!File(song.data).existsSync()) return false;
+      if (song.duration == null || song.duration! < 1000) {
+        return false; // skip < 1 second
+      }
+      return true;
+    }).toList();
+  }
 
   Future<void> getFilteredSongs(AudiosFromType type, int targetId) async {
     emit(state.copyWith(isLoading: true));

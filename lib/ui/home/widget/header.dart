@@ -7,13 +7,13 @@ class Header extends StatelessWidget {
     final hour = DateTime.now().hour;
 
     if (hour >= 5 && hour <= 11) {
-      return "Morning Sunshine";
+      return "Good Morning";
     } else if (hour >= 12 && hour <= 17) {
-      return "MidDay Fun";
+      return "Bruh";
     } else if (hour >= 18 && hour <= 21) {
-      return "Good Evening";
+      return "Watch Sunset";
     } else {
-      return "Nighty Night";
+      return "Sleep Tight";
     }
   }
 
@@ -21,18 +21,9 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            _getGreeting(),
-            style: TextStyle(fontWeight: .bold, fontSize: 28),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.settings_outlined),
-          ),
-        ],
+      child: Text(
+        _getGreeting(),
+        style: Theme.of(context).textTheme.titleLarge,
       ),
     );
   }

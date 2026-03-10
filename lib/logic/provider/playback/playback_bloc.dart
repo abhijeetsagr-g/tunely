@@ -15,6 +15,7 @@ part 'playback_state.dart';
 class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
   final PlaybackService _service;
   int? _pendingIndex;
+  Timer? _timer;
 
   late final StreamSubscription<bool> _playSub;
   late final StreamSubscription<SequenceState?> _sequenceSub;
@@ -192,6 +193,17 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         ),
       ),
     );
+
+    on<SetSleepTimer>((event, emit) {
+      _timer?.cancel();
+      _timer = Timer(event.duration, () => _service.pause());
+      emit(state.copyWith(sleepTimer: Optional(event.duration)));
+    });
+
+    on<CancelSleepTimer>((event, emit) {
+      _timer?.cancel();
+      emit(state.copyWith(sleepTimer: Optional(null)));
+    });
   }
 
   @override
@@ -201,7 +213,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     _posSub.cancel();
     _durSub.cancel();
     _playerStateSub.cancel();
-
+    _timer?.cancel();
     return super.close();
   }
 }

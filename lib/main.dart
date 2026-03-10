@@ -5,9 +5,11 @@ import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 import 'package:tunely/logic/provider/query/query_cubit.dart';
+import 'package:tunely/logic/provider/theme/theme_cubit.dart';
 import 'package:tunely/logic/service/playback_service.dart';
-import 'package:tunely/ui/home/home_view.dart';
+
 import 'package:tunely/ui/player/player_view.dart';
+import 'package:tunely/ui/root/root_view.dart';
 import 'package:tunely/ui/splash/splash_view.dart';
 
 void main() async {
@@ -24,6 +26,7 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
         BlocProvider(create: (context) => QueryCubit()),
         BlocProvider(
           create: (BuildContext context) => PlaybackBloc(audioHandler),
@@ -39,15 +42,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = context.watch<ThemeCubit>().state.accent;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.dark,
+
+      theme: AppTheme.light(accent),
+      darkTheme: AppTheme.dark(accent),
+      themeMode: context.watch<ThemeCubit>().state.mode,
       initialRoute: AppRoutes.splash,
       routes: {
         AppRoutes.splash: (_) => const SplashView(),
-        AppRoutes.home: (_) => const HomeView(),
+        AppRoutes.home: (_) => const RootView(),
         AppRoutes.player: (_) => const PlayerView(),
       },
     );

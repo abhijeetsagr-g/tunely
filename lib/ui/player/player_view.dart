@@ -6,14 +6,20 @@ import 'package:tunely/ui/player/widget/next_song_label.dart';
 import 'package:tunely/ui/player/widget/player_album_art.dart';
 import 'package:tunely/ui/player/widget/control_buttons.dart';
 import 'package:tunely/ui/player/widget/seek_bar.dart';
+import 'package:tunely/ui/player/widget/show_sleeper_timer.dart';
 import 'package:tunely/ui/player/widget/song_info.dart';
 
 class PlayerView extends StatelessWidget {
   const PlayerView({super.key});
 
   AppBar _appBar(BuildContext context) => AppBar(
-    // leading: SizedBox(),
     centerTitle: true,
+    actions: [
+      IconButton(
+        onPressed: () => showSleepTimerSheet(context),
+        icon: Icon(Icons.timer_outlined),
+      ),
+    ],
     title: BlocSelector<PlaybackBloc, PlaybackState, String>(
       selector: (state) => state.currentSong?.album ?? "Unknown",
       builder: (context, album) => Text(

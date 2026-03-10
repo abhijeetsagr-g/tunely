@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 import 'package:tunely/logic/provider/query/query_cubit.dart';
-import 'package:tunely/logic/provider/query/query_state.dart';
-import 'package:tunely/ui/home/home_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -22,31 +20,19 @@ class _SplashViewState extends State<SplashView> {
   }
 
   Future<void> initialLoad(QueryCubit cubit) async {
-    final results = await Future.wait([
-      cubit.getAllSongs(),
-      cubit.initialLoad(),
-    ]);
+    final songs = await cubit.getAllSongs();
+    await cubit.initialLoad();
     if (mounted) {
-      context.read<PlaybackBloc>().add(
-        SongLoaded(results[0] as List<SongModel>),
-      );
+      final bloc = context.read<PlaybackBloc>();
+      bloc.add(SongLoaded(songs));
+      bloc.add(SortTunes(.recentlyAdded));
+
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocListener<QueryCubit, QueryState>(
-        listener: (context, state) {
-          if (!state.isLoading) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomeView()),
-            );
-          }
-        },
-        child: Center(child: CircularProgressIndicator.adaptive()),
-      ),
-    );
+    return Scaffold(body: Center(child: CircularProgressIndicator.adaptive()));
   }
 }

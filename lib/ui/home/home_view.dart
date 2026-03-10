@@ -11,86 +11,61 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: BlocBuilder<PlaybackBloc, PlaybackState>(
-          buildWhen: (prev, curr) => prev.tunes != curr.tunes,
-          builder: (context, state) {
-            if (state.tunes.isEmpty) {
-              return const Center(child: Text("No songs found"));
-            }
-            return CustomScrollView(
-              slivers: [
-                // Header
-                const SliverToBoxAdapter(child: Header()),
-
-                // Albums Section
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 8,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Albums".toUpperCase(),
-                          style: TextStyle(fontWeight: .bold, fontSize: 20),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text("See All"),
-                        ),
-                      ],
-                    ),
+    return SafeArea(
+      child: CustomScrollView(
+        slivers: [
+          const SliverToBoxAdapter(child: Header()),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Albums".toUpperCase(),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ),
-
-                const SliverToBoxAdapter(child: SizedBox(height: 10)),
-
-                // Album Shelf
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 230, child: AlbumShelf()),
-                ),
-
-                const SliverToBoxAdapter(child: SizedBox(height: 30)),
-
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 8,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "All Songs".toUpperCase(),
-                          style: TextStyle(fontWeight: .bold, fontSize: 20),
-                        ),
-
-                        // DropDown Sort Menu
-                        DropDownSort(),
-                      ],
-                    ),
+                  TextButton(onPressed: () {}, child: const Text("See All")),
+                ],
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 200, child: AlbumShelf()),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "All Songs".toUpperCase(),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ),
+                  const DropDownSort(),
+                ],
+              ),
+            ),
+          ),
 
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final tune = state.tunes[index];
-                    return SongTile(
-                      tune: tune,
-                      index: index,
-                      tunes: state.tunes,
-                    );
-                  }, childCount: state.tunes.length),
-                ),
-              ],
-            );
-          },
-        ),
+          BlocBuilder<PlaybackBloc, PlaybackState>(
+            buildWhen: (prev, curr) => prev.tunes != curr.tunes,
+            builder: (context, state) {
+              if (state.tunes.isEmpty) {
+                return const SliverToBoxAdapter(
+                  child: Center(child: Text("No songs found")),
+                );
+              }
+              return SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final tune = state.tunes[index];
+                  return SongTile(tune: tune, index: index, tunes: state.tunes);
+                }, childCount: state.tunes.length),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
