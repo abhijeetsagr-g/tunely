@@ -17,6 +17,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   collection: ^1.19.1
   audio_wave: ^0.1.0
+  shared_preferences: ^2.5.4
 
 dev_dependencies:
   flutter_test:
