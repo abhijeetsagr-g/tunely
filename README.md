@@ -8,15 +8,16 @@ An offline music player for Android built with Flutter. Tunely scans your device
 
 ## Screenshots
 
-<!-- Add screenshots inside the /screenshots folder in your repo root -->
-<!-- Format: screenshots/home.png, screenshots/player.png, etc. -->
-
 <p float="left">
   <img src="screenshots/home.png" width="200" />
   <img src="screenshots/player.png" width="200" />
   <img src="screenshots/album.png" width="200" />
-  <img src="screenshots/settings.png" width="200" />
+  <img src="screenshots/search.png.png" width="200" />
   <img src="screenshots/library.png" width="200" />
+  <img src="screenshots/timer.png" width="200" />
+  <img src="screenshots/settings.png" width="200" />
+
+
 </p>
 
 ---
