@@ -5,6 +5,7 @@ import 'package:tunely/logic/provider/theme/theme_state.dart';
 import 'package:tunely/ui/home/home_view.dart';
 import 'package:tunely/ui/library/library_view.dart';
 import 'package:tunely/ui/root/mini_player_overlay.dart';
+import 'package:tunely/ui/search/search_view.dart';
 import 'package:tunely/ui/settings/settings_view.dart';
 
 class RootView extends StatefulWidget {
@@ -52,7 +53,7 @@ class _RootViewState extends State<RootView> with RouteAware {
         builder: (context, _) {
           final pages = [
             HomeView(),
-            Center(child: Text("Search")),
+            SearchView(),
             LibraryView(),
             SettingsView(),
           ];

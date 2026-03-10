@@ -74,6 +74,12 @@ class SetSleepTimer extends PlaybackEvent {
 
 class CancelSleepTimer extends PlaybackEvent {}
 
+class SleepTick extends PlaybackEvent {
+  Duration remaining;
+
+  SleepTick(this.remaining);
+}
+
 class SortTunes extends PlaybackEvent {
   final TuneSortType sort;
   SortTunes(this.sort);

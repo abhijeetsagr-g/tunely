@@ -5,6 +5,7 @@ class Tune {
   final int? songId;
   final int? albumId;
   final int? trackIndex;
+  final int? artistId;
   final String path;
   final String album;
   final String title;
@@ -17,6 +18,7 @@ class Tune {
 
   Tune({
     this.songId,
+    this.artistId,
     required this.trackIndex,
     required this.albumId,
     required this.path,
@@ -33,6 +35,7 @@ class Tune {
   factory Tune.fromSongModel(SongModel song) {
     return Tune(
       songId: song.id,
+      artistId: song.artistId,
       path: song.data,
       title: song.title,
       dateAdded: song.dateAdded ?? 0,

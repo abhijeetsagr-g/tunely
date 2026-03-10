@@ -16,6 +16,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
   final PlaybackService _service;
   int? _pendingIndex;
   Timer? _timer;
+  Timer? _sleepCountdown;
 
   late final StreamSubscription<bool> _playSub;
   late final StreamSubscription<SequenceState?> _sequenceSub;
@@ -204,12 +205,35 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     // Timer Events
     on<SetSleepTimer>((event, emit) {
       _timer?.cancel();
-      _timer = Timer(event.duration, () => _service.pause());
+      _sleepCountdown?.cancel();
+
+      _timer = Timer(event.duration, () {
+        _service.pause();
+        add(CancelSleepTimer());
+      });
+
+      // tick every second
+      _sleepCountdown = Timer.periodic(const Duration(seconds: 1), (_) {
+        if (state.sleepTimer == null) return;
+        final remaining = state.sleepTimer! - const Duration(seconds: 1);
+        if (remaining <= Duration.zero) {
+          _sleepCountdown?.cancel();
+        } else {
+          add(SleepTick(remaining));
+        }
+      });
+
       emit(state.copyWith(sleepTimer: Optional(event.duration)));
+    });
+
+    on<SleepTick>((event, emit) {
+      emit(state.copyWith(sleepTimer: Optional(event.remaining)));
     });
 
     on<CancelSleepTimer>((event, emit) {
       _timer?.cancel();
+      _sleepCountdown?.cancel();
+
       emit(state.copyWith(sleepTimer: Optional(null)));
     });
   }
@@ -222,6 +246,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     _durSub.cancel();
     _playerStateSub.cancel();
     _timer?.cancel();
+    _sleepCountdown?.cancel();
     return super.close();
   }
 }

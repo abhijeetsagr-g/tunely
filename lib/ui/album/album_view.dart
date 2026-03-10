@@ -15,6 +15,12 @@ class AlbumView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sortedTunes = [...tunes]
+      ..sort((a, b) {
+        if (a.trackIndex == null) return 1;
+        if (b.trackIndex == null) return -1;
+        return a.trackIndex!.compareTo(b.trackIndex!);
+      });
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -102,13 +108,13 @@ class AlbumView extends StatelessWidget {
 
           // List Section
           SliverPadding(
-            padding: const EdgeInsets.only(bottom: 24),
+            padding: const EdgeInsets.only(bottom: 100),
 
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
-                final tune = tunes[index];
-                return SongTile(tune: tune, index: index, tunes: tunes);
-              }, childCount: tunes.length),
+                final tune = sortedTunes[index];
+                return SongTile(tune: tune, index: index, tunes: sortedTunes);
+              }, childCount: sortedTunes.length),
             ),
           ),
         ],
