@@ -10,9 +10,31 @@ import 'package:tunely/ui/player/widget/control_buttons.dart';
 import 'package:tunely/ui/player/widget/seek_bar.dart';
 import 'package:tunely/ui/player/widget/show_sleeper_timer.dart';
 import 'package:tunely/ui/player/widget/song_info.dart';
+import 'package:tunely/ui/root/mini_player_overlay.dart';
 
-class PlayerView extends StatelessWidget {
+class PlayerView extends StatefulWidget {
   const PlayerView({super.key});
+
+  @override
+  State<PlayerView> createState() => _PlayerViewState();
+}
+
+class _PlayerViewState extends State<PlayerView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      isPlayerOpen.value = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      isPlayerOpen.value = false;
+    });
+    super.dispose();
+  }
 
   void _onAlbumTap(BuildContext context) {
     final state = context.read<PlaybackBloc>().state;

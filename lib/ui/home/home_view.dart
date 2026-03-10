@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/common/song_tile.dart';
+import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 import 'package:tunely/ui/home/widget/album_shelf.dart';
 import 'package:tunely/ui/home/widget/drop_down_sort.dart';
@@ -25,7 +26,17 @@ class HomeView extends StatelessWidget {
                     "Albums".toUpperCase(),
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  TextButton(onPressed: () {}, child: const Text("See All")),
+                  TextButton.icon(
+                    icon: Icon(Icons.album),
+                    label: const Text("See All"),
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.filtered,
+                        arguments: FilteredListArgs(.album),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

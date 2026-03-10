@@ -8,18 +8,18 @@ import 'package:tunely/logic/provider/query/query_cubit.dart';
 import 'package:tunely/logic/provider/theme/theme_cubit.dart';
 import 'package:tunely/logic/service/playback_service.dart';
 import 'package:tunely/ui/album/album_view.dart';
+import 'package:tunely/ui/album/generic_view.dart';
 import 'package:tunely/ui/filtered_list/filtered_list_view.dart';
-
 import 'package:tunely/ui/player/player_view.dart';
+import 'package:tunely/ui/root/mini_player_overlay.dart';
 import 'package:tunely/ui/root/root_view.dart';
 import 'package:tunely/ui/splash/splash_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   final audioHandler = await AudioService.init(
     builder: () => PlaybackService(),
-    config: AudioServiceConfig(
+    config: const AudioServiceConfig(
       androidNotificationChannelName: "Tunely Playback",
       androidNotificationChannelId: "com.zeenfic.tunely",
       androidNotificationOngoing: true,
@@ -28,27 +28,61 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
-        BlocProvider(create: (context) => QueryCubit()),
-        BlocProvider(
-          create: (BuildContext context) => PlaybackBloc(audioHandler),
-        ),
+        BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
+        BlocProvider<QueryCubit>(create: (_) => QueryCubit()),
+        BlocProvider<PlaybackBloc>(create: (_) => PlaybackBloc(audioHandler)),
       ],
       child: const MyApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  OverlayEntry? _miniPlayerEntry;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _insertMiniPlayer());
+  }
+
+  void _insertMiniPlayer() {
+    final overlay = _navigatorKey.currentState?.overlay;
+    if (overlay == null) return;
+
+    _miniPlayerEntry = OverlayEntry(
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: context.read<PlaybackBloc>()),
+          BlocProvider.value(value: context.read<ThemeCubit>()),
+        ],
+        child: const MiniPlayerOverlay(),
+      ),
+    );
+
+    overlay.insert(_miniPlayerEntry!);
+  }
+
+  @override
+  void dispose() {
+    _miniPlayerEntry?.remove();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final accent = context.watch<ThemeCubit>().state.accent;
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
+      navigatorKey: _navigatorKey,
       theme: AppTheme.light(accent),
       darkTheme: AppTheme.dark(accent),
       themeMode: context.watch<ThemeCubit>().state.mode,
@@ -69,8 +103,11 @@ class MyApp extends StatelessWidget {
           case AppRoutes.filtered:
             final args = settings.arguments as FilteredListArgs;
             return MaterialPageRoute(
-              builder: (context) => FilteredListView(type: args.type),
+              builder: (_) => FilteredListView(type: args.type),
             );
+          case AppRoutes.generic:
+            final args = settings.arguments as GenericViewArgs;
+            return MaterialPageRoute(builder: (_) => GenericView(args: args));
           default:
             return MaterialPageRoute(builder: (_) => const RootView());
         }

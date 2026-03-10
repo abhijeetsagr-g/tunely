@@ -4,7 +4,6 @@ import 'package:tunely/logic/provider/theme/theme_cubit.dart';
 import 'package:tunely/logic/provider/theme/theme_state.dart';
 import 'package:tunely/ui/home/home_view.dart';
 import 'package:tunely/ui/library/library_view.dart';
-import 'package:tunely/ui/root/widget/mini_player.dart';
 import 'package:tunely/ui/settings/settings_view.dart';
 
 class RootView extends StatefulWidget {
@@ -34,7 +33,7 @@ class _RootViewState extends State<RootView> {
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          MiniPlayer(),
+          // MiniPlayer(),
           Container(
             decoration: BoxDecoration(
               border: Border(

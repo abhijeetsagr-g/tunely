@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/common/album_art.dart';
 import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 
@@ -34,7 +35,7 @@ class GenericList extends StatelessWidget {
               color: Theme.of(context).primaryColor.withAlpha(1),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: Icon(item.icon, color: Theme.of(context).primaryColor),
+            child: AlbumArt(id: item.id, size: Size(60, 60), type: .ARTIST),
           ),
           title: Text(
             item.name.toTitleCase(),
@@ -46,7 +47,17 @@ class GenericList extends StatelessWidget {
             "${item.count} tracks",
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              AppRoutes.generic,
+              arguments: GenericViewArgs(
+                type: type,
+                name: item.name,
+                id: item.id,
+              ),
+            );
+          },
         );
       },
     );
