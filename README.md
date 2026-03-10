@@ -2,7 +2,38 @@
 
 An offline music player for Android built with Flutter. Tunely scans your device library and lets you browse, play, and manage your music — no internet required.
 
-> Currently in active development. Beta release targeting April 2025.
+> Beta release in progress. Targeting Play Store by April 2025.
+
+---
+
+## Screenshots
+
+<!-- Add screenshots inside the /screenshots folder in your repo root -->
+<!-- Format: screenshots/home.png, screenshots/player.png, etc. -->
+
+<p float="left">
+  <img src="screenshots/home.png" width="200" />
+  <img src="screenshots/player.png" width="200" />
+  <img src="screenshots/album.png" width="200" />
+  <img src="screenshots/settings.png" width="200" />
+  <img src="screenshots/library.png" width="200" />
+</p>
+
+---
+
+## Features
+
+- Scans device library on launch — songs, albums, artists, genres, playlists
+- Browse by album, artist, genre, or playlist
+- Full playback controls — play, pause, next, prev, seek
+- Shuffle and repeat modes (none, repeat all, repeat one)
+- Album artwork display
+- Mini player persistent across all screens
+- Sleep timer with countdown
+- Dark / light mode toggle
+- Accent color picker (10 colors)
+- Background audio with lock screen controls
+- Settings persist across app restarts
 
 ---
 
@@ -15,40 +46,54 @@ An offline music player for Android built with Flutter. Tunely scans your device
 | Audio Playback | just_audio |
 | Background Audio | audio_service |
 | Media Scanning | on_audio_query |
+| Persistence | shared_preferences |
 
 ---
 
 ## Architecture
 
-Tunely follows a layered architecture with a clear separation between services, BLoCs, and UI.
+Tunely follows a layered architecture with clear separation between services, state, and UI.
 
-### Services
-
-**`PlaybackService`** — extends `BaseAudioHandler` with `QueueHandler` and `SeekHandler`. Owns the `just_audio` player instance and exposes streams for playback state, position, duration, and sequence changes. All audio operations go through here.
-
-**`AudioQueryService`** — wraps `on_audio_query`. Handles device permission checks and exposes methods to scan songs, albums, artists, genres, and playlists.
-
-### BLoCs
-
-**`PlaybackBloc`** — subscribes to `PlaybackService` streams and converts them into state. Owns:
-- `List<Tune> tunes` — full device library
-- `List<Tune> queue` — active playback queue (reflects shuffle order via `effectiveSequence`)
-- `currentSong`, `isPlaying`, `pos`, `dur`, `isShuffleMode`, `repeatMode`, `hasNext`, `hasPrev`
-
-**`AudioBloc`** — owns raw `on_audio_query` models. Handles library scanning and exposes albums, artists, genres, and playlists to the UI.
-
-### Data Model
-
-**`Tune`** — custom model that replaces `SongModel` as the single UI source of truth. Converts to/from `MediaItem` via `toMediaItem()` and `Tune.fromSongModel()`. Necessary because `SongModel` cannot be manually constructed.
+```
+┌─────────────────────────────────────────────┐
+│                     UI                       │
+│  SplashView → RootView (Home, Search,        │
+│  Library, Settings) → PlayerView →           │
+│  AlbumView → FilteredListView → GenericView  │
+└────────────────────┬────────────────────────┘
+                     │ events / state
+┌────────────────────▼────────────────────────┐
+│                   BLoC                       │
+│                                              │
+│  PlaybackBloc — owns tunes, queue,           │
+│  currentSong, playback state, sleep timer    │
+│                                              │
+│  QueryCubit — owns albums, artists,          │
+│  genres, playlists, filtered songs           │
+│                                              │
+│  ThemeCubit — owns ThemeMode + accent color  │
+└────────────────────┬────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────┐
+│                 Services                     │
+│                                              │
+│  PlaybackService — extends BaseAudioHandler  │
+│  owns just_audio player, exposes streams     │
+│                                              │
+│  AudioQueryService — wraps on_audio_query    │
+│  scans device library, checks permissions   │
+└─────────────────────────────────────────────┘
+```
 
 ### Key Design Decisions
 
-- `PlaybackService` owns the internal queue — BLoC only listens via streams
-- `AudioSource` tags store `MediaItem` for queue lookup
-- Queue order uses `effectiveSequence` (not `sequence`) to correctly reflect shuffle state
-- `SongLoaded` is dispatched from `SplashView` after `AudioBloc` finishes scanning
-- `Optional<T>` wrapper used in `copyWith` for nullable `currentSong`
-- `AudioBloc` stores raw `SongModel`; conversion to `Tune` happens in `PlaybackBloc`
+- `PlaybackService` owns the queue — BLoC only listens via streams
+- `effectiveSequence` (not `sequence`) used for correct shuffle order
+- `Tune` is the single UI model — replaces `SongModel` which can't be manually constructed
+- `Optional<T>` wrapper in `copyWith` to correctly nullify nullable fields like `currentSong`
+- `IndexedStack` in `RootView` preserves page state across tab switches
+- `MiniPlayerOverlay` inserted via `OverlayEntry` — persists above all routes
+- `ValueNotifier` controls mini player visibility and position without `RouteAware`
 
 ---
 
@@ -56,15 +101,15 @@ Tunely follows a layered architecture with a clear separation between services, 
 
 ```
 SplashView
-  └── dispatches GetAllSongs + GetAlbums
-        └── AudioBloc scans device via AudioQueryService
-              └── dispatches SongLoaded → PlaybackBloc stores List<Tune>
+  └── QueryCubit.getAllSongs() + initialLoad()
+        └── Songs dispatched via SongLoaded → PlaybackBloc
+              └── Navigate to RootView
 
 User taps song
   └── PlaySong(index, tunes) → PlaybackBloc
         └── PlaybackService.playQueue() → just_audio
-              └── sequenceStateStream fires → SequenceChange
-                    └── queue, currentSong, hasNext, hasPrev updated in state
+              └── sequenceStateStream → SequenceChange
+                    └── queue, currentSong, hasNext, hasPrev updated
 ```
 
 ---
@@ -73,67 +118,42 @@ User taps song
 
 ```
 lib/
+├── core/
+│   ├── common/          # Shared widgets (SongTile, AlbumArt, AlbumCard)
+│   ├── config/          # AppTheme, AppRoutes, AppColors
+│   ├── extensions/      # TitleCase
+│   └── utils/           # formatDur, showSnackbar
 ├── data/
 │   └── model/
 │       └── tune.dart
 ├── logic/
-│   ├── bloc/
-│   │   ├── audio_query/
-│   │   │   ├── audio_bloc.dart
-│   │   │   ├── audio_event.dart
-│   │   │   └── audio_state.dart
-│   │   └── playback/
-│   │       ├── playback_bloc.dart
-│   │       ├── playback_event.dart
-│   │       └── playback_state.dart
+│   ├── provider/
+│   │   ├── playback/    # PlaybackBloc, PlaybackEvent, PlaybackState
+│   │   ├── query/       # QueryCubit, QueryState
+│   │   └── theme/       # ThemeCubit, ThemeState
 │   └── service/
-│       ├── audio_query_service.dart
-│       └── playback_service.dart
+│       ├── playback_service.dart
+│       └── audio_query_service.dart
 └── ui/
     ├── splash/
+    ├── root/            # RootView, MiniPlayerOverlay, MiniPlayer
     ├── home/
-    │   └── widget/
-    │       └── album_card.dart
-    └── player/
-        └── widget/
-            ├── album_art.dart
-            ├── control_buttons.dart
-            ├── seek_bar.dart
-            └── song_info.dart
+    ├── player/
+    ├── album/
+    ├── library/
+    ├── filtered_list/
+    ├── generic/
+    ├── search/
+    └── settings/
 ```
-
----
-
-## Roadmap
-
-| Phase | Description | Status | Target |
-|---|---|---|---|
-| 1 | Core Playback Service | ✅ Complete | — |
-| 2 | Library Scanning | ✅ Complete | — |
-| 3 | BLoC Setup + PlayerView | ✅ Complete | — |
-| 4 | MVP UI + Beta Play Store | 🔨 In Progress | April 15 |
-| 5 | Queue Management | ⬜ Planned | April 30 |
-| 6 | Full Release | ⬜ Planned | May 20 |
-
----
-
-## Features (Current)
-
-- Scans device library on launch
-- Browse songs and albums
-- Full playback controls — play, pause, next, prev
-- Seek bar with position + duration
-- Shuffle mode (reflects correct queue order)
-- Repeat modes — none, repeat all, repeat one
-- Album artwork display
-- Background audio via `audio_service`
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Flutter SDK
+
+- Flutter SDK (3.x+)
 - Android device or emulator (API 21+)
 - Storage permission granted on first launch
 
@@ -144,8 +164,21 @@ flutter pub get
 flutter run
 ```
 
+### Release Build
+
+```bash
+flutter build apk --release
+```
+
 ---
 
-## License
+## Roadmap
 
-MIT
+| Phase | Description | Status | Target |
+|---|---|---|---|
+| 1 | Core Playback Service | ✅ Complete | — |
+| 2 | Library Scanning | ✅ Complete | — |
+| 3 | BLoC Setup | ✅ Complete | — |
+| 4 | MVP UI + Beta Play Store | 🔨 In Progress | April 15 |
+| 5 | Queue Management | ⬜ Planned | April 30 |
+| 6 | Full Release | ⬜ Planned | May 20 |
