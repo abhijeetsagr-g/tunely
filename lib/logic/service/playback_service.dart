@@ -9,6 +9,12 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   void _init() {
+    _player.processingStateStream.listen((state) {
+      if (state == ProcessingState.completed) {
+        _player.seek(Duration.zero);
+        _player.pause();
+      }
+    });
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
 
     _player.sequenceStateStream.listen((state) {
