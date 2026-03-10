@@ -53,7 +53,7 @@ class AppTheme {
       activeTrackColor: accent,
       inactiveTrackColor: const Color.fromRGBO(10, 10, 10, 0.15),
       thumbColor: accent,
-      overlayColor: accent.withOpacity(0.15),
+      overlayColor: accent.withAlpha(15),
       trackHeight: 2,
       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
       overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
@@ -61,10 +61,10 @@ class AppTheme {
     ),
 
     chipTheme: ChipThemeData(
-      selectedColor: accent.withOpacity(0.15),
+      selectedColor: accent.withAlpha(15),
       checkmarkColor: accent,
       labelStyle: const TextStyle(fontFamily: font, fontSize: 13),
-      side: BorderSide(color: accent.withOpacity(0.4)),
+      side: BorderSide(color: accent.withAlpha(4)),
     ),
 
     textTheme: const TextTheme(
@@ -173,7 +173,7 @@ class AppTheme {
       activeTrackColor: accent,
       inactiveTrackColor: const Color.fromRGBO(255, 255, 255, 0.2),
       thumbColor: accent,
-      overlayColor: accent.withOpacity(0.25),
+      overlayColor: accent.withAlpha(25),
       trackHeight: 2,
       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
       overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
@@ -181,10 +181,10 @@ class AppTheme {
     ),
 
     chipTheme: ChipThemeData(
-      selectedColor: accent.withOpacity(0.2),
+      selectedColor: accent.withAlpha(2),
       checkmarkColor: accent,
       labelStyle: const TextStyle(fontFamily: font, fontSize: 13, color: white),
-      side: BorderSide(color: accent.withOpacity(0.4)),
+      side: BorderSide(color: accent.withAlpha(4)),
     ),
 
     textTheme: const TextTheme(

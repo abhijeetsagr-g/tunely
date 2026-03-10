@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/common/album_art.dart';
 import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
+import 'package:tunely/logic/provider/theme/theme_cubit.dart';
 
 class MiniPlayer extends StatelessWidget {
   const MiniPlayer({super.key});
@@ -19,12 +20,18 @@ class MiniPlayer extends StatelessWidget {
         if (tune == null) {
           return const SizedBox.shrink();
         }
+
         return GestureDetector(
           onTap: () => Navigator.pushNamed(context, AppRoutes.player),
           child: Card(
             margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             elevation: 1,
             shape: RoundedRectangleBorder(
+              side: BorderSide(
+                color: context.watch<ThemeCubit>().state.mode == .dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
               borderRadius: BorderRadius.circular(12),
             ),
             color: Theme.of(context).colorScheme.surfaceContainerHighest,

@@ -98,8 +98,12 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
 
       final queue = event.sequence.effectiveSequence.map((source) {
         final item = source.tag as MediaItem;
-        return state.tunes.firstWhere((t) => t.path == item.id);
+        return state.queue.firstWhere(
+          (t) => t.path == item.id,
+          orElse: () => state.tunes.firstWhere((t) => t.path == item.id),
+        );
       }).toList();
+
       final canLoop =
           event.sequence.loopMode == LoopMode.all ||
           event.sequence.loopMode == LoopMode.one;

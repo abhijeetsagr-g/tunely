@@ -7,7 +7,6 @@ import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/data/model/tune.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
-import 'package:tunely/ui/player/player_view.dart';
 
 class AlbumView extends StatelessWidget {
   const AlbumView({super.key, required this.album, required this.tunes});

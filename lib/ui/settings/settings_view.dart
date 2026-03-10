@@ -60,7 +60,8 @@ class SettingsView extends StatelessWidget {
                         spacing: 12,
                         runSpacing: 12,
                         children: AppColors.accents.map((color) {
-                          final selected = color.value == state.accent.value;
+                          final selected =
+                              color.toARGB32() == state.accent.toARGB32();
 
                           return GestureDetector(
                             onTap: () => cubit.setAccent(color),
