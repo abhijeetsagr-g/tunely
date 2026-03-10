@@ -22,6 +22,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
   late final StreamSubscription<Duration> _posSub;
   late final StreamSubscription<Duration?> _durSub;
   late final StreamSubscription<ProcessingState> _playerStateSub;
+
   PlaybackBloc(this._service)
     : super(
         PlaybackState(
@@ -59,6 +60,30 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     );
 
     // events
+    on<SongLoaded>(
+      (event, emit) => emit(
+        state.copyWith(
+          isLoading: false,
+          tunes: event.songs.map((e) => Tune.fromSongModel(e)).toList(),
+        ),
+      ),
+    );
+
+    on<SortTunes>((event, emit) {
+      final sorted = [...state.tunes];
+      switch (event.sort) {
+        case TuneSortType.title:
+          sorted.sort((a, b) => a.title.compareTo(b.title));
+        case TuneSortType.artist:
+          sorted.sort((a, b) => a.artist.compareTo(b.artist));
+        case TuneSortType.recentlyAdded:
+          sorted.sort((a, b) => b.dateAdded.compareTo(a.dateAdded));
+        case TuneSortType.album:
+          sorted.sort((a, b) => b.album.compareTo(a.album));
+      }
+      emit(state.copyWith(tunes: sorted, type: event.sort));
+    });
+
     on<PlaySong>((event, emit) async {
       _pendingIndex = event.index;
       await _service.playQueue(
@@ -80,13 +105,41 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     on<Pause>((event, emit) async => await _service.pause());
     on<PlayNext>((event, emit) async => await _service.skipToNext());
     on<PlayPrev>((event, emit) async => await _service.skipToPrevious());
-
     on<Seek>((event, emit) async => await _service.seek(event.pos));
+
     on<PlayingChange>(
       (event, emit) => emit(state.copyWith(isPlaying: event.isPlaying)),
     );
 
+    on<ToggleShuffle>((event, emit) async {
+      await _service.setShuffle(!state.isShuffleMode);
+    });
+
+    on<CycleRepeat>((event, emit) async {
+      final next = switch (state.repeatMode) {
+        RepeatMode.none => RepeatMode.all,
+        RepeatMode.all => RepeatMode.one,
+        RepeatMode.one => RepeatMode.none,
+      };
+      await _service.setRepeat(switch (next) {
+        RepeatMode.none => LoopMode.off,
+        RepeatMode.all => LoopMode.all,
+        RepeatMode.one => LoopMode.one,
+      });
+    });
+
     // important
+    on<PositionChange>(
+      (event, emit) => emit(state.copyWith(pos: event.position)),
+    );
+    on<DurationChange>(
+      (event, emit) => emit(state.copyWith(dur: event.duration)),
+    );
+
+    on<ProcessStateChange>(
+      (event, emit) => emit(state.copyWith(isBuffering: event.isBuffering)),
+    );
+
     on<SequenceChange>((event, emit) {
       if (event.sequence.currentIndex == null) return;
       if (event.sequence.sequence.isEmpty) return;
@@ -96,13 +149,14 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         return;
       }
 
-      final queue = event.sequence.effectiveSequence.map((source) {
-        final item = source.tag as MediaItem;
-        return state.queue.firstWhere(
-          (t) => t.path == item.id,
-          orElse: () => state.tunes.firstWhere((t) => t.path == item.id),
-        );
-      }).toList();
+      final queue = event.sequence.effectiveSequence
+          .map<Tune?>((source) {
+            final item = source.tag as MediaItem;
+            return state.queue.firstWhereOrNull((t) => t.path == item.id) ??
+                state.tunes.firstWhereOrNull((t) => t.path == item.id);
+          })
+          .whereType<Tune>()
+          .toList();
 
       final canLoop =
           event.sequence.loopMode == LoopMode.all ||
@@ -146,58 +200,8 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         ),
       );
     });
-    on<PositionChange>(
-      (event, emit) => emit(state.copyWith(pos: event.position)),
-    );
-    on<DurationChange>(
-      (event, emit) => emit(state.copyWith(dur: event.duration)),
-    );
 
-    on<ProcessStateChange>(
-      (event, emit) => emit(state.copyWith(isBuffering: event.isBuffering)),
-    );
-
-    on<ToggleShuffle>((event, emit) async {
-      await _service.setShuffle(!state.isShuffleMode);
-    });
-
-    on<CycleRepeat>((event, emit) async {
-      final next = switch (state.repeatMode) {
-        RepeatMode.none => RepeatMode.all,
-        RepeatMode.all => RepeatMode.one,
-        RepeatMode.one => RepeatMode.none,
-      };
-      await _service.setRepeat(switch (next) {
-        RepeatMode.none => LoopMode.off,
-        RepeatMode.all => LoopMode.all,
-        RepeatMode.one => LoopMode.one,
-      });
-    });
-
-    on<SortTunes>((event, emit) {
-      final sorted = [...state.tunes];
-      switch (event.sort) {
-        case TuneSortType.title:
-          sorted.sort((a, b) => a.title.compareTo(b.title));
-        case TuneSortType.artist:
-          sorted.sort((a, b) => a.artist.compareTo(b.artist));
-        case TuneSortType.recentlyAdded:
-          sorted.sort((a, b) => b.dateAdded.compareTo(a.dateAdded));
-        case TuneSortType.album:
-          sorted.sort((a, b) => b.album.compareTo(a.album));
-      }
-      emit(state.copyWith(tunes: sorted, type: event.sort));
-    });
-
-    on<SongLoaded>(
-      (event, emit) => emit(
-        state.copyWith(
-          isLoading: false,
-          tunes: event.songs.map((e) => Tune.fromSongModel(e)).toList(),
-        ),
-      ),
-    );
-
+    // Timer Events
     on<SetSleepTimer>((event, emit) {
       _timer?.cancel();
       _timer = Timer(event.duration, () => _service.pause());

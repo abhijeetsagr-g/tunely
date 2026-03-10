@@ -81,6 +81,11 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   @override
+  Future<void> seek(Duration position) => _player.seek(position);
+
+  // Basic Controls
+
+  @override
   Future<void> play() => _player.play();
   @override
   Future<void> pause() => _player.pause();
@@ -88,13 +93,12 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   Future<void> stop() => _player.stop();
 
   @override
-  Future<void> seek(Duration position) => _player.seek(position);
-
-  @override
   Future<void> skipToNext() async {
     if (_player.hasNext) {
       _player.seekToNext();
     } else {
+      _player.seek(Duration.zero);
+      _player.pause();
       _player.stop();
     }
   }
@@ -108,6 +112,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     }
   }
 
+  // Repeat/ Loop
   Future<void> setShuffle(bool enabled) async {
     if (enabled) await _player.shuffle();
     await _player.setShuffleModeEnabled(enabled);

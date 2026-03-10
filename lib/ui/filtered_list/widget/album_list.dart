@@ -7,7 +7,7 @@ import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 
 class AlbumList extends StatelessWidget {
-  const AlbumList({required this.albums});
+  const AlbumList({super.key, required this.albums});
   final List<AlbumModel> albums;
 
   @override

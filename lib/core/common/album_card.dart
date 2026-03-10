@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/core/common/album_art.dart';
+import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/data/model/tune.dart';
 import 'package:tunely/logic/provider/query/query_cubit.dart';
-import 'package:tunely/ui/album/album_view.dart';
 
 class AlbumCard extends StatelessWidget {
   final AlbumModel album;
@@ -27,11 +27,10 @@ class AlbumCard extends StatelessWidget {
               .filteredSongs
               .map((element) => Tune.fromSongModel(element))
               .toList();
-          Navigator.push(
+          Navigator.pushNamed(
             context,
-            MaterialPageRoute(
-              builder: (_) => AlbumView(album: album, tunes: tunes),
-            ),
+            AppRoutes.album,
+            arguments: AlbumViewArgs(album: album, tunes: tunes),
           );
         }
       },

@@ -11,7 +11,8 @@ class NextSongLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PlaybackBloc, PlaybackState>(
       buildWhen: (prev, curr) =>
-          prev.nextSong != curr.nextSong || prev.repeatMode != curr.repeatMode,
+          prev.currentSong != curr.currentSong ||
+          prev.repeatMode != curr.repeatMode,
       builder: (context, state) {
         final next = state.repeatMode == .one
             ? state.currentSong
