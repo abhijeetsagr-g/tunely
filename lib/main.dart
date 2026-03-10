@@ -7,6 +7,8 @@ import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 import 'package:tunely/logic/provider/query/query_cubit.dart';
 import 'package:tunely/logic/provider/theme/theme_cubit.dart';
 import 'package:tunely/logic/service/playback_service.dart';
+import 'package:tunely/ui/album/album_view.dart';
+import 'package:tunely/ui/filtered_list/filtered_list_view.dart';
 
 import 'package:tunely/ui/player/player_view.dart';
 import 'package:tunely/ui/root/root_view.dart';
@@ -51,10 +53,27 @@ class MyApp extends StatelessWidget {
       darkTheme: AppTheme.dark(accent),
       themeMode: context.watch<ThemeCubit>().state.mode,
       initialRoute: AppRoutes.splash,
-      routes: {
-        AppRoutes.splash: (_) => const SplashView(),
-        AppRoutes.home: (_) => const RootView(),
-        AppRoutes.player: (_) => const PlayerView(),
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case AppRoutes.splash:
+            return MaterialPageRoute(builder: (_) => const SplashView());
+          case AppRoutes.home:
+            return MaterialPageRoute(builder: (_) => const RootView());
+          case AppRoutes.player:
+            return MaterialPageRoute(builder: (_) => const PlayerView());
+          case AppRoutes.album:
+            final args = settings.arguments as AlbumViewArgs;
+            return MaterialPageRoute(
+              builder: (_) => AlbumView(album: args.album, tunes: args.tunes),
+            );
+          case AppRoutes.filtered:
+            final args = settings.arguments as FilteredListArgs;
+            return MaterialPageRoute(
+              builder: (context) => FilteredListView(type: args.type),
+            );
+          default:
+            return MaterialPageRoute(builder: (_) => const RootView());
+        }
       },
     );
   }

@@ -11,6 +11,7 @@ class Tune {
   final String artist;
   final String genre;
   final Duration duration;
+
   final int dateAdded;
   late Uri artUri;
 

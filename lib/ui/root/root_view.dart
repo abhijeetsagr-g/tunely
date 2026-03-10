@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/logic/provider/theme/theme_cubit.dart';
+import 'package:tunely/logic/provider/theme/theme_state.dart';
 import 'package:tunely/ui/home/home_view.dart';
+import 'package:tunely/ui/library/library_view.dart';
 import 'package:tunely/ui/root/widget/mini_player.dart';
 import 'package:tunely/ui/settings/settings_view.dart';
 
@@ -13,18 +17,20 @@ class RootView extends StatefulWidget {
 class _RootViewState extends State<RootView> {
   int _currentIndex = 0;
 
-  final _pages = const [
-    HomeView(),
-    Center(child: Text("Search")),
-    Center(child: Text("Library")),
-
-    SettingsView(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _currentIndex, children: _pages),
+      body: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, _) {
+          final pages = [
+            HomeView(),
+            Center(child: Text("Search")),
+            LibraryView(),
+            SettingsView(),
+          ];
+          return IndexedStack(index: _currentIndex, children: pages);
+        },
+      ),
       bottomNavigationBar: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
