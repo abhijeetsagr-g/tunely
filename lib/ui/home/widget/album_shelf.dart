@@ -10,17 +10,17 @@ class AlbumShelf extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<QueryCubit, QueryState>(
-      buildWhen: (prev, curr) => prev.albums != curr.albums,
       builder: (context, state) {
-        if (state.albums.isEmpty) return const SizedBox();
+        final albums = context.read<QueryCubit>().albums;
+        if (albums.isEmpty) return const SizedBox();
         return ListView.builder(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          itemCount: state.albums.length,
+          itemCount: albums.length,
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.only(right: 16),
-              child: AlbumCard(album: state.albums[index]),
+              child: AlbumCard(album: albums[index]),
             );
           },
         );

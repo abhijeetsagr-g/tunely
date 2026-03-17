@@ -20,11 +20,10 @@ class _SplashViewState extends State<SplashView> {
   }
 
   Future<void> initialLoad(QueryCubit cubit) async {
-    final songs = await cubit.getAllSongs();
     await cubit.initialLoad();
     if (mounted) {
       final bloc = context.read<PlaybackBloc>();
-      bloc.add(SongLoaded(songs));
+
       bloc.add(SortTunes(.recentlyAdded));
 
       Navigator.pushReplacementNamed(context, AppRoutes.home);

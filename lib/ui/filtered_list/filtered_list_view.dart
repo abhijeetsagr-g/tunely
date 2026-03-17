@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/logic/provider/query/query_cubit.dart';
-import 'package:tunely/logic/provider/query/query_state.dart';
 import 'package:tunely/ui/filtered_list/widget/album_list.dart';
 import 'package:tunely/ui/filtered_list/widget/generic_list.dart';
 
@@ -21,13 +20,13 @@ class FilteredListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(_title)),
-      body: BlocBuilder<QueryCubit, QueryState>(
-        builder: (context, state) {
+      body: Builder(
+        builder: (context) {
+          final cubit = context.read<QueryCubit>();
           return switch (type) {
-            FilterType.album => AlbumList(albums: state.albums),
-
+            FilterType.album => AlbumList(albums: cubit.albums),
             FilterType.playlist => GenericList(
-              items: state.playlists
+              items: cubit.playlists
                   .map(
                     (p) =>
                         Item(p.playlist, Icons.queue_music, p.numOfSongs, p.id),
@@ -35,16 +34,14 @@ class FilteredListView extends StatelessWidget {
                   .toList(),
               type: type,
             ),
-
             FilterType.genres => GenericList(
-              items: state.genres
+              items: cubit.genres
                   .map((g) => Item(g.genre, Icons.category, g.numOfSongs, g.id))
                   .toList(),
               type: type,
             ),
-
             FilterType.artists => GenericList(
-              items: state.artists
+              items: cubit.artists
                   .map(
                     (a) => Item(
                       a.artist,

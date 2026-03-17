@@ -4,7 +4,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/core/common/album_art.dart';
 import 'package:tunely/core/config/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
-import 'package:tunely/logic/provider/playback/playback_bloc.dart';
+import 'package:tunely/logic/provider/query/query_cubit.dart';
 
 class AlbumList extends StatelessWidget {
   const AlbumList({super.key, required this.albums});
@@ -43,12 +43,7 @@ class AlbumList extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           onTap: () {
-            final tunes = context
-                .read<PlaybackBloc>()
-                .state
-                .tunes
-                .where((t) => t.albumId == album.id)
-                .toList();
+            final tunes = context.read<QueryCubit>().tunesByAlbum(album.id);
             Navigator.pushNamed(
               context,
               AppRoutes.album,

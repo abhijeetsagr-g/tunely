@@ -7,12 +7,11 @@ class PlaybackState {
   final bool isBuffering;
   final bool isLoading;
   final bool isShuffleMode;
-
+  final List<Tune> sortedTunes;
   final bool hasNext;
   final bool hasPrev;
   final List<Tune> queue;
   final Tune? currentSong;
-  final List<Tune> tunes;
   final Duration pos;
   final Duration dur;
   final RepeatMode repeatMode;
@@ -30,10 +29,10 @@ class PlaybackState {
     required this.pos,
     required this.dur,
     required this.repeatMode,
-    required this.tunes,
+    required this.sortedTunes,
     required this.queue,
-    this.currentSong,
     required this.type,
+    this.currentSong,
     this.nextSong,
     this.sleepTimer,
   });
@@ -49,10 +48,11 @@ class PlaybackState {
     Duration? pos,
     Duration? dur,
     RepeatMode? repeatMode,
-    List<Tune>? tunes,
+    List<Tune>? sortedTunes,
     List<Tune>? queue,
     TuneSortType? type,
     Tune? nextSong,
+
     Optional<Duration?>? sleepTimer,
   }) => PlaybackState(
     isPlaying: isPlaying ?? this.isPlaying,
@@ -65,11 +65,11 @@ class PlaybackState {
     pos: pos ?? this.pos,
     dur: dur ?? this.dur,
     repeatMode: repeatMode ?? this.repeatMode,
-    tunes: tunes ?? this.tunes,
     queue: queue ?? this.queue,
     type: type ?? this.type,
     nextSong: nextSong ?? this.nextSong,
     sleepTimer: sleepTimer != null ? sleepTimer.value : this.sleepTimer,
+    sortedTunes: sortedTunes ?? this.sortedTunes,
   );
 }
 

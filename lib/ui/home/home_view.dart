@@ -61,18 +61,22 @@ class HomeView extends StatelessWidget {
           ),
 
           BlocBuilder<PlaybackBloc, PlaybackState>(
-            buildWhen: (prev, curr) => prev.tunes != curr.tunes,
+            buildWhen: (prev, curr) => prev.sortedTunes != curr.sortedTunes,
             builder: (context, state) {
-              if (state.tunes.isEmpty) {
+              if (state.sortedTunes.isEmpty) {
                 return const SliverToBoxAdapter(
                   child: Center(child: Text("No songs found")),
                 );
               }
               return SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  final tune = state.tunes[index];
-                  return SongTile(tune: tune, index: index, tunes: state.tunes);
-                }, childCount: state.tunes.length),
+                  final tune = state.sortedTunes[index];
+                  return SongTile(
+                    tune: tune,
+                    index: index,
+                    tunes: state.sortedTunes,
+                  );
+                }, childCount: state.sortedTunes.length),
               );
             },
           ),

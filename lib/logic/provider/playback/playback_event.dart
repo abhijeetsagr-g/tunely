@@ -16,12 +16,6 @@ class SequenceChange extends PlaybackEvent {
   SequenceChange(this.sequence);
 }
 
-class SongLoaded extends PlaybackEvent {
-  final List<SongModel> songs;
-
-  SongLoaded(this.songs);
-}
-
 class PositionChange extends PlaybackEvent {
   final Duration position;
 

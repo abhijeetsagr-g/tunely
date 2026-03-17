@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/logic/repository/tune_repository.dart';
 import 'package:tunely/logic/service/playback_service.dart';
 
 part 'playback_event.dart';
@@ -14,6 +13,8 @@ part 'playback_state.dart';
 
 class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
   final PlaybackService _service;
+  final TuneRepository _repo;
+
   int? _pendingIndex;
   Timer? _timer;
   Timer? _sleepCountdown;
@@ -24,65 +25,42 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
   late final StreamSubscription<Duration?> _durSub;
   late final StreamSubscription<ProcessingState> _playerStateSub;
 
-  PlaybackBloc(this._service)
+  PlaybackBloc(this._service, this._repo)
     : super(
         PlaybackState(
           isPlaying: false,
           isBuffering: false,
-          isLoading: true,
+          isLoading: false,
           isShuffleMode: false,
           hasNext: false,
           hasPrev: false,
           pos: Duration.zero,
           dur: Duration.zero,
-          repeatMode: .none,
-          tunes: [],
+          repeatMode: RepeatMode.none,
           queue: [],
-          type: .recentlyAdded,
+          sortedTunes: [],
+          type: TuneSortType.recentlyAdded,
         ),
       ) {
-    // Streams
-    _playSub = _service.isPlaying.listen((event) => add(PlayingChange(event)));
-
-    _sequenceSub = _service.sequenceStateStream.listen((event) {
-      add(SequenceChange(event));
-    });
-
-    _posSub = _service.positionStream.listen(
-      (event) => add(PositionChange(event)),
+    _playSub = _service.isPlaying.listen((e) => add(PlayingChange(e)));
+    _sequenceSub = _service.sequenceStateStream.listen(
+      (e) => add(SequenceChange(e)),
     );
-
-    _durSub = _service.durationStream.listen((event) {
-      if (event != null) add(DurationChange(event));
+    _posSub = _service.positionStream.listen((e) => add(PositionChange(e)));
+    _durSub = _service.durationStream.listen((e) {
+      if (e != null) add(DurationChange(e));
     });
-
     _playerStateSub = _service.playerStateStream.listen(
-      (event) => add(ProcessStateChange(event == ProcessingState.buffering)),
-    );
-
-    // events
-    on<SongLoaded>(
-      (event, emit) => emit(
-        state.copyWith(
-          isLoading: false,
-          tunes: event.songs.map((e) => Tune.fromSongModel(e)).toList(),
-        ),
-      ),
+      (e) => add(ProcessStateChange(e == ProcessingState.buffering)),
     );
 
     on<SortTunes>((event, emit) {
-      final sorted = [...state.tunes];
-      switch (event.sort) {
-        case TuneSortType.title:
-          sorted.sort((a, b) => a.title.compareTo(b.title));
-        case TuneSortType.artist:
-          sorted.sort((a, b) => a.artist.compareTo(b.artist));
-        case TuneSortType.recentlyAdded:
-          sorted.sort((a, b) => b.dateAdded.compareTo(a.dateAdded));
-        case TuneSortType.album:
-          sorted.sort((a, b) => b.album.compareTo(a.album));
-      }
-      emit(state.copyWith(tunes: sorted, type: event.sort));
+      emit(
+        state.copyWith(
+          sortedTunes: _repo.sortTunes(event.sort),
+          type: event.sort,
+        ),
+      );
     });
 
     on<PlaySong>((event, emit) async {
@@ -98,7 +76,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       await _service.setShuffle(true);
       await _service.playQueue(
         event.tunes.map((e) => e.toMediaItem()).toList(),
-        event.startIndex, // always start at 0, shuffle will reorder
+        event.startIndex,
       );
     });
 
@@ -129,14 +107,12 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       });
     });
 
-    // important
     on<PositionChange>(
       (event, emit) => emit(state.copyWith(pos: event.position)),
     );
     on<DurationChange>(
       (event, emit) => emit(state.copyWith(dur: event.duration)),
     );
-
     on<ProcessStateChange>(
       (event, emit) => emit(state.copyWith(isBuffering: event.isBuffering)),
     );
@@ -154,7 +130,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           .map<Tune?>((source) {
             final item = source.tag as MediaItem;
             return state.queue.firstWhereOrNull((t) => t.path == item.id) ??
-                state.tunes.firstWhereOrNull((t) => t.path == item.id);
+                _repo.findByPath(item.id);
           })
           .whereType<Tune>()
           .toList();
@@ -166,16 +142,13 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       final shuffleIndices = event.sequence.shuffleIndices;
       final currentIndex = event.sequence.currentIndex!;
 
-      // Find position of currentIndex within shuffleIndices
       final effectiveIndex = event.sequence.shuffleModeEnabled
           ? shuffleIndices.indexOf(currentIndex)
           : currentIndex;
 
       final currentItem =
           event.sequence.effectiveSequence[effectiveIndex].tag as MediaItem;
-      final currentSong = state.tunes.firstWhereOrNull(
-        (t) => t.path == currentItem.id,
-      );
+      final currentSong = _repo.findByPath(currentItem.id);
       final nextSong =
           (effectiveIndex + 1 < event.sequence.effectiveSequence.length)
           ? queue[effectiveIndex + 1]
@@ -186,13 +159,11 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           currentSong: Optional(currentSong),
           nextSong: nextSong,
           queue: queue,
-
           isShuffleMode: event.sequence.shuffleModeEnabled,
           hasNext:
               canLoop ||
               (effectiveIndex + 1 < event.sequence.effectiveSequence.length),
           hasPrev: canLoop || (effectiveIndex > 0),
-
           repeatMode: switch (event.sequence.loopMode) {
             LoopMode.off => RepeatMode.none,
             LoopMode.one => RepeatMode.one,
@@ -202,7 +173,6 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       );
     });
 
-    // Timer Events
     on<SetSleepTimer>((event, emit) {
       _timer?.cancel();
       _sleepCountdown?.cancel();
@@ -212,7 +182,6 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         add(CancelSleepTimer());
       });
 
-      // tick every second
       _sleepCountdown = Timer.periodic(const Duration(seconds: 1), (_) {
         if (state.sleepTimer == null) return;
         final remaining = state.sleepTimer! - const Duration(seconds: 1);
@@ -226,14 +195,14 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       emit(state.copyWith(sleepTimer: Optional(event.duration)));
     });
 
-    on<SleepTick>((event, emit) {
-      emit(state.copyWith(sleepTimer: Optional(event.remaining)));
-    });
+    on<SleepTick>(
+      (event, emit) =>
+          emit(state.copyWith(sleepTimer: Optional(event.remaining))),
+    );
 
     on<CancelSleepTimer>((event, emit) {
       _timer?.cancel();
       _sleepCountdown?.cancel();
-
       emit(state.copyWith(sleepTimer: Optional(null)));
     });
   }

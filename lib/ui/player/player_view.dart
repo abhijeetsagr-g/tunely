@@ -41,7 +41,7 @@ class _PlayerViewState extends State<PlayerView> {
     final currentSong = state.currentSong;
     if (currentSong == null || currentSong.albumId == null) return;
 
-    final album = context.read<QueryCubit>().getAlbumById(currentSong.albumId!);
+    final album = context.read<QueryCubit>().albumById(currentSong.albumId!);
     if (album == null) return;
 
     final tunes = state.queue
