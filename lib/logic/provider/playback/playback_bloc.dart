@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:tunely/data/model/tune.dart';
-import 'package:tunely/logic/repository/tune_repository.dart';
+import 'package:tunely/data/repository/tune_repository.dart';
 import 'package:tunely/logic/service/playback_service.dart';
 
 part 'playback_event.dart';
@@ -38,8 +38,6 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           dur: Duration.zero,
           repeatMode: RepeatMode.none,
           queue: [],
-          sortedTunes: [],
-          type: TuneSortType.recentlyAdded,
         ),
       ) {
     _playSub = _service.isPlaying.listen((e) => add(PlayingChange(e)));
@@ -53,15 +51,6 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     _playerStateSub = _service.playerStateStream.listen(
       (e) => add(ProcessStateChange(e == ProcessingState.buffering)),
     );
-
-    on<SortTunes>((event, emit) {
-      emit(
-        state.copyWith(
-          sortedTunes: _repo.sortTunes(event.sort),
-          type: event.sort,
-        ),
-      );
-    });
 
     on<PlaySong>((event, emit) async {
       _pendingIndex = event.index;
@@ -78,6 +67,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         event.tunes.map((e) => e.toMediaItem()).toList(),
         event.startIndex,
       );
+      await _service.setRepeat(.all);
     });
 
     on<Play>((event, emit) async => await _service.play());

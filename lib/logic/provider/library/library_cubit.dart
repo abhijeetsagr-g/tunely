@@ -2,18 +2,26 @@ import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/data/model/tune.dart';
-import 'package:tunely/logic/provider/query/query_state.dart';
-import 'package:tunely/logic/repository/tune_repository.dart';
+import 'package:tunely/data/repository/tune_repository.dart';
 import 'package:tunely/logic/service/audio_query_service.dart';
+import 'library_state.dart';
 
-class QueryCubit extends Cubit<QueryState> {
+class LibraryCubit extends Cubit<LibraryState> {
   final _service = AudioQueryService();
   final TuneRepository _repo;
 
-  QueryCubit(this._repo)
-    : super(QueryState(filteredSongs: [], isLoading: false, errorMessage: ''));
+  LibraryCubit(this._repo)
+    : super(
+        LibraryState(
+          isLoading: false,
+          errorMessage: '',
+          filteredTunes: [],
+          sortedTunes: [],
+          sortType: TuneSortType.recentlyAdded,
+          recommendedTunes: [],
+        ),
+      );
 
-  // Validation
   bool _isValid(SongModel song) {
     if (song.data.isEmpty) return false;
     if (!File(song.data).existsSync()) return false;
@@ -21,30 +29,32 @@ class QueryCubit extends Cubit<QueryState> {
     return true;
   }
 
-  Future<List<SongModel>> _getAllSongs() async {
-    final songs = await _service.getSong();
-    return songs.where(_isValid).toList();
-  }
-
-  // Runs on Splash Screen
   Future<void> initialLoad() async {
     emit(state.copyWith(isLoading: true));
     try {
+      final songs = await _service.getSong();
+      final valid = songs.where(_isValid).toList();
       final albums = await _service.getAlbums();
       final artists = await _service.getArtists();
       final genres = await _service.getGenres();
       final playlists = await _service.getPlaylists();
-      final songs = await _getAllSongs();
 
-      _repo.loadAllSongs(songs);
+      _repo.loadAllSongs(valid);
       _repo.loadLibrary(
         albums: albums,
         artists: artists,
         genres: genres,
         playlists: playlists,
       );
+      final recommend = _repo.loadRecommend(5);
 
-      emit(state.copyWith(isLoading: false));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          recommendedTunes: recommend,
+          sortedTunes: _repo.sortTunes(state.sortType),
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
     }
@@ -54,31 +64,21 @@ class QueryCubit extends Cubit<QueryState> {
     emit(state.copyWith(isLoading: true));
     try {
       final songs = await _service.getFilteredSongs(type, targetId);
-      emit(
-        state.copyWith(
-          filteredSongs: songs.where(_isValid).toList(),
-          isLoading: false,
-        ),
-      );
+      final filteredSongs = songs.where(_isValid).toList();
+      final tunes = filteredSongs.map((e) => Tune.fromSongModel(e)).toList();
+
+      emit(state.copyWith(filteredTunes: tunes, isLoading: false));
     } catch (_) {
       emit(state.copyWith(isLoading: false));
     }
   }
 
-  void search(String query) {
-    if (query.trim().isEmpty) {
-      emit(state.copyWith(searchResult: null));
-      return;
-    }
-    emit(
-      state.copyWith(
-        searchResult: SearchResult(
-          songs: _repo.searchTune(query),
-          albums: _repo.searchAlbums(query),
-          artists: _repo.searchArtists(query),
-        ),
-      ),
-    );
+  void refreshRecommended([int count = 5]) {
+    emit(state.copyWith(recommendedTunes: _repo.loadRecommend(count)));
+  }
+
+  void sortBy(TuneSortType type) {
+    emit(state.copyWith(sortedTunes: _repo.sortTunes(type), sortType: type));
   }
 
   List<Tune> tunesByAlbum(int albumId) =>

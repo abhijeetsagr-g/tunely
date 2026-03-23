@@ -42,7 +42,7 @@ class Tune {
       trackIndex: song.track,
       albumId: song.albumId,
       album: song.album ?? "Unknown Album",
-      artist: song.artist ?? "Unknown Artist",
+      artist: (song.artist ?? "Unknown Artist").replaceAll('/', ' · '),
       genre: song.genre ?? "Unknown",
       duration: Duration(milliseconds: song.duration ?? 0),
     );

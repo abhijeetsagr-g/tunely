@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tunely/core/config/app_colors.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/logic/provider/theme/theme_state.dart';
 
 class ThemeCubit extends Cubit<ThemeState> {
   ThemeCubit()
-    : super(ThemeState(mode: ThemeMode.dark, accent: AppColors.accents[0])) {
+    : super(ThemeState(mode: ThemeMode.dark, accent: AppTheme.defaultAccent)) {
     _load();
   }
 
@@ -15,23 +15,27 @@ class ThemeCubit extends Cubit<ThemeState> {
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    final isDark = prefs.getBool(_modeKey) ?? true;
+    final modeName = prefs.getString(_modeKey) ?? 'dark';
     final accentValue =
-        prefs.getInt(_accentKey) ?? AppColors.accents[0].toARGB32();
-    emit(
-      ThemeState(
-        mode: isDark ? ThemeMode.dark : ThemeMode.light,
-        accent: Color(accentValue),
-      ),
-    );
+        prefs.getInt(_accentKey) ?? AppTheme.defaultAccent.toARGB32();
+
+    final mode = switch (modeName) {
+      'light' => ThemeMode.light,
+      'system' => ThemeMode.system,
+      _ => ThemeMode.dark,
+    };
+
+    emit(ThemeState(mode: mode, accent: Color(accentValue)));
   }
 
   Future<void> toggleTheme() async {
-    final newMode = state.mode == ThemeMode.dark
-        ? ThemeMode.light
-        : ThemeMode.dark;
+    final newMode = switch (state.mode) {
+      ThemeMode.dark => ThemeMode.light,
+      ThemeMode.light => ThemeMode.system,
+      ThemeMode.system => ThemeMode.dark,
+    };
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_modeKey, newMode == ThemeMode.dark);
+    await prefs.setString(_modeKey, newMode.name);
     emit(state.copyWith(mode: newMode));
   }
 
@@ -39,5 +43,9 @@ class ThemeCubit extends Cubit<ThemeState> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_accentKey, color.toARGB32());
     emit(state.copyWith(accent: color));
+  }
+
+  Future<void> resetAccent() async {
+    await setAccent(AppTheme.defaultAccent);
   }
 }

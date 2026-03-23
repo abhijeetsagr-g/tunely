@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/data/model/tune.dart';
-import 'package:tunely/logic/provider/playback/playback_bloc.dart';
+import 'package:tunely/logic/provider/library/library_state.dart';
 
 class TuneRepository {
   List<Tune> _tunes = [];
@@ -46,6 +46,9 @@ class TuneRepository {
     }
     return sorted;
   }
+
+  List<Tune> loadRecommend([int count = 8]) =>
+      (_tunes.toList()..shuffle()).take(count).toList();
 
   // Lookups
   Tune? findByPath(String path) =>

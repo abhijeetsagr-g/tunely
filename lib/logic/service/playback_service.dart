@@ -30,7 +30,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   PlaybackState _transformEvent(PlaybackEvent _) {
     return PlaybackState(
-      // notification script
       controls: [
         .skipToNext,
         if (_player.playing) .play else .pause,
@@ -78,9 +77,10 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   Future<void> playQueue(List<MediaItem> items, int startIndex) async {
     queue.add(items);
     await _player.setAudioSources(
-      items.map((e) => AudioSource.uri(Uri.parse(e.id), tag: e)).toList(),
+      preload: true,
       initialIndex: startIndex,
       initialPosition: Duration.zero,
+      items.map((e) => AudioSource.uri(Uri.parse(e.id), tag: e)).toList(),
     );
 
     play();

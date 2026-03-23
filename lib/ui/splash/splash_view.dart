@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/core/config/app_route.dart';
-import 'package:tunely/logic/provider/playback/playback_bloc.dart';
-import 'package:tunely/logic/provider/query/query_cubit.dart';
+import 'package:tunely/logic/provider/library/library_cubit.dart';
+import 'package:tunely/logic/provider/library/library_state.dart';
+import 'package:tunely/ui/home/home_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -15,23 +15,27 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    final cubit = context.read<QueryCubit>();
-    initialLoad(cubit);
-  }
-
-  Future<void> initialLoad(QueryCubit cubit) async {
-    await cubit.initialLoad();
-    if (mounted) {
-      final bloc = context.read<PlaybackBloc>();
-
-      bloc.add(SortTunes(.recentlyAdded));
-
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
-    }
+    context.read<LibraryCubit>().initialLoad();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Center(child: CircularProgressIndicator.adaptive()));
+    return Scaffold(
+      body: BlocListener<LibraryCubit, LibraryState>(
+        listenWhen: (prev, curr) => prev.isLoading && !curr.isLoading,
+        listener: (context, state) {
+          if (state.errorMessage.isNotEmpty) {
+            // TODO: SHOW SNACKBAR
+            return;
+          }
+          // TODO: PUSH IN SPLASH SCREEN
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeView()),
+          );
+        },
+        child: const Center(child: CircularProgressIndicator.adaptive()),
+      ),
+    );
   }
 }

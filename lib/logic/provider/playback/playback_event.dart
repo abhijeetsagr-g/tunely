@@ -1,7 +1,5 @@
 part of 'playback_bloc.dart';
 
-enum TuneSortType { title, artist, recentlyAdded, album }
-
 abstract class PlaybackEvent {}
 
 class PlayingChange extends PlaybackEvent {
@@ -72,11 +70,6 @@ class SleepTick extends PlaybackEvent {
   Duration remaining;
 
   SleepTick(this.remaining);
-}
-
-class SortTunes extends PlaybackEvent {
-  final TuneSortType sort;
-  SortTunes(this.sort);
 }
 
 class Seek extends PlaybackEvent {
