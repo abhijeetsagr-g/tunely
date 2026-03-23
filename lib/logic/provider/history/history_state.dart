@@ -1,4 +1,4 @@
-import 'package:tunely/data/model/tune.dart';
+part of 'history_cubit.dart';
 
 class HistoryState {
   final List<Tune> recentTunes;

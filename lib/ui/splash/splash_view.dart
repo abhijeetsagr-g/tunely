@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/logic/provider/history/history_cubit.dart';
 import 'package:tunely/logic/provider/library/library_cubit.dart';
 import 'package:tunely/logic/provider/library/library_state.dart';
 import 'package:tunely/ui/home/home_view.dart';
@@ -15,7 +16,10 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    context.read<LibraryCubit>().initialLoad();
+    context.read<LibraryCubit>().initialLoad().then((_) {
+      if (!mounted) return;
+      context.read<HistoryCubit>().load();
+    });
   }
 
   @override

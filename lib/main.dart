@@ -1,6 +1,8 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/data/repository/history_repository.dart';
+import 'package:tunely/logic/provider/history/history_cubit.dart';
 import 'package:tunely/logic/provider/library/library_cubit.dart';
 import 'package:tunely/logic/provider/now_playing/now_playing_cubit.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
@@ -14,6 +16,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final repo = TuneRepository();
+  final historyRepo = HistoryRepository();
+  await historyRepo.init();
+
   final audioHandler = await AudioService.init(
     builder: () => PlaybackService(),
     config: const AudioServiceConfig(
@@ -37,6 +42,7 @@ void main() async {
           BlocProvider<PlaybackBloc>(
             create: (_) => PlaybackBloc(audioHandler, repo),
           ),
+          BlocProvider(create: (context) => HistoryCubit(historyRepo, repo)),
         ],
         child: const MyApp(),
       ),

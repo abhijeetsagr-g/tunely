@@ -4,7 +4,7 @@ class SectionHeader extends StatefulWidget {
   const SectionHeader({
     super.key,
     required this.title,
-    required this.onRefresh,
+    this.onRefresh,
     this.buttonLabel,
     this.onButtonPressed,
   });
@@ -12,7 +12,7 @@ class SectionHeader extends StatefulWidget {
   final String title;
   final String? buttonLabel;
   final VoidCallback? onButtonPressed;
-  final VoidCallback onRefresh;
+  final VoidCallback? onRefresh;
 
   @override
   State<SectionHeader> createState() => _SectionHeaderState();
@@ -55,16 +55,19 @@ class _SectionHeaderState extends State<SectionHeader>
                 ),
             ],
           ),
-          RotationTransition(
-            turns: _controller,
-            child: IconButton(
-              onPressed: () {
-                _controller.forward(from: 0.0);
-                widget.onRefresh();
-              },
-              icon: const Icon(Icons.refresh),
+          if (widget.onRefresh != null)
+            RotationTransition(
+              turns: _controller,
+              child: IconButton(
+                onPressed: !mounted
+                    ? null
+                    : () {
+                        _controller.forward(from: 0.0);
+                        widget.onRefresh!();
+                      },
+                icon: const Icon(Icons.refresh),
+              ),
             ),
-          ),
         ],
       ),
     );

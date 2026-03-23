@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/ui/home/widget/history_section.dart';
 import 'package:tunely/ui/home/widget/recommended_album.dart';
 import 'package:tunely/ui/home/widget/recommended_list.dart';
 
@@ -11,6 +12,7 @@ class HomeView extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
+            floating: true,
             centerTitle: true,
             title: Text.rich(
               TextSpan(
@@ -33,6 +35,9 @@ class HomeView extends StatelessWidget {
 
           RecommendedList(),
           RecommendedAlbums(),
+          HistorySection(),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 10)),
         ],
       ),
     );

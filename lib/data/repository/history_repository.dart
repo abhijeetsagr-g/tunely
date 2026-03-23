@@ -1,41 +1,56 @@
-import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tunely/data/model/play_history.dart';
 
 class HistoryRepository {
-  late final Isar _isar;
+  static const _boxName = 'play_history';
+  late final Box<PlayHistory> _box;
 
   Future<void> init() async {
-    final dir = await getApplicationDocumentsDirectory();
-    _isar = await Isar.open([PlayHistorySchema], directory: dir.path);
+    await Hive.initFlutter();
+    Hive.registerAdapter(PlayHistoryAdapter());
+    _box = await Hive.openBox<PlayHistory>(_boxName);
   }
 
   Future<void> record(PlayHistory entry) async {
-    await _isar.writeTxn(() => _isar.playHistorys.put(entry));
+    await _box.add(entry);
   }
 
-  Future<List<PlayHistory>> recentlyPlayed({int limit = 20}) {
-    return _isar.playHistorys
-        .where()
-        .sortByPlayedAtDesc()
-        .limit(limit)
-        .findAll();
-  }
+  Future<List<PlayHistory>> recentlyPlayed({int limit = 20}) async {
+    final all = _box.values.toList()
+      ..sort((a, b) => b.playedAt.compareTo(a.playedAt));
 
-  Future<int> playCount(int songId) {
-    return _isar.playHistorys.filter().songIdEqualTo(songId).count();
+    final seen = <int>{};
+    final unique = <PlayHistory>[];
+    for (final h in all) {
+      if (seen.add(h.songId)) {
+        unique.add(h);
+        if (unique.length == limit) break;
+      }
+    }
+    return unique;
   }
 
   Future<List<PlayHistory>> topPlayed({int limit = 10}) async {
-    final all = await _isar.playHistorys.where().findAll();
+    final all = _box.values.toList();
+
     final counts = <int, int>{};
+    final latest = <int, PlayHistory>{};
     for (final h in all) {
       counts[h.songId] = (counts[h.songId] ?? 0) + 1;
+      latest[h.songId] = h;
     }
-    final sorted = all.toSet().toList()
-      ..sort(
-        (a, b) => (counts[b.songId] ?? 0).compareTo(counts[a.songId] ?? 0),
-      );
+
+    final sorted = latest.values.toList()
+      ..sort((a, b) => counts[b.songId]!.compareTo(counts[a.songId]!));
+
     return sorted.take(limit).toList();
+  }
+
+  Future<int> playCount(int songId) async {
+    return _box.values.where((h) => h.songId == songId).length;
+  }
+
+  Future<void> clearAll() async {
+    await _box.clear();
   }
 }
