@@ -1,14 +1,21 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:tunely/data/model/play_history.dart';
+import 'package:tunely/data/model/session.dart';
 
 class HistoryRepository {
   static const _boxName = 'play_history';
   late final Box<PlayHistory> _box;
 
+  static const _sessionBox = 'session';
+  late final Box<Session> _session;
+
   Future<void> init() async {
     await Hive.initFlutter();
     Hive.registerAdapter(PlayHistoryAdapter());
     _box = await Hive.openBox<PlayHistory>(_boxName);
+
+    Hive.registerAdapter(SessionAdapter());
+    _session = await Hive.openBox<Session>(_sessionBox);
   }
 
   Future<void> record(PlayHistory entry) async {
@@ -49,6 +56,20 @@ class HistoryRepository {
   Future<int> playCount(int songId) async {
     return _box.values.where((h) => h.songId == songId).length;
   }
+
+  Future<void> saveSession({
+    required String currentPath,
+    required int positionMs,
+    required List<String> queuePaths,
+  }) async {
+    final s = Session()
+      ..currentPath = currentPath
+      ..positionMs = positionMs
+      ..queuePaths = queuePaths;
+    await _session.put('latest', s);
+  }
+
+  Session? get lastSession => _session.get('latest');
 
   Future<void> clearAll() async {
     await _box.clear();

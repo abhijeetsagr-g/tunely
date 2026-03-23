@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/data/model/tune.dart';
 import 'package:tunely/ui/common/song_tile.dart';
 import 'package:tunely/logic/provider/history/history_cubit.dart';
-import 'package:tunely/logic/provider/playback/playback_bloc.dart';
-import 'package:tunely/ui/home/widget/section_header.dart';
 
 class RecentList extends StatelessWidget {
   const RecentList({super.key});

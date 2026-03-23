@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tunely/ui/home/widget/history_section.dart';
 import 'package:tunely/ui/home/widget/recommended_album.dart';
 import 'package:tunely/ui/home/widget/recommended_list.dart';
+import 'package:tunely/ui/mini_player/mini_player.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/data/model/play_history.dart';
+import 'package:tunely/data/model/session.dart';
 import 'package:tunely/data/model/tune.dart';
 import 'package:tunely/data/repository/history_repository.dart';
 import 'package:tunely/data/repository/tune_repository.dart';
@@ -33,6 +34,21 @@ class HistoryCubit extends Cubit<HistoryState> {
 
     emit(HistoryState(recentTunes: _resolve(recent), topTunes: _resolve(top)));
   }
+
+  Future<void> saveSession({
+    required String currentPath,
+    required int positionMs,
+    required List<String> queuePaths,
+  }) async {
+    await _historyRepo.saveSession(
+      currentPath: currentPath,
+      positionMs: positionMs,
+      queuePaths: queuePaths,
+    );
+  }
+
+  bool get hasSession => _historyRepo.lastSession != null;
+  Session? get lastSession => _historyRepo.lastSession;
 
   Future<void> clearAll() async {
     await _historyRepo.clearAll();
