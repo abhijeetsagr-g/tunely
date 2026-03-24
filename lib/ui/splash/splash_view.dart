@@ -28,6 +28,10 @@ class _SplashViewState extends State<SplashView> {
       body: BlocListener<LibraryCubit, LibraryState>(
         listenWhen: (prev, curr) => prev.isLoading && !curr.isLoading,
         listener: (context, state) async {
+          final playback = context.read<PlaybackBloc>();
+          final repo = context.read<TuneRepository>();
+          final session = context.read<HistoryCubit>().lastSession;
+
           if (state.errorMessage.isNotEmpty) {
             // TODO: SHOW SNACKBAR
             return;
@@ -35,33 +39,28 @@ class _SplashViewState extends State<SplashView> {
 
           await context.read<HistoryCubit>().load();
 
-          final session = context.read<HistoryCubit>().lastSession;
           if (session != null) {
-            final repo = context.read<TuneRepository>();
             final queue = session.queuePaths
                 .map((p) => repo.findByPath(p))
                 .whereType<Tune>()
                 .toList();
+
             if (queue.isNotEmpty) {
               final index = session.queuePaths.indexOf(session.currentPath);
-              context.read<PlaybackBloc>().add(
-                PlaySong(tune: queue, index: index < 0 ? 0 : index),
-              );
+              playback.add(PlaySong(tune: queue, index: index < 0 ? 0 : index));
+
               await Future.delayed(const Duration(milliseconds: 500));
-              if (!mounted) return;
-              context.read<PlaybackBloc>().add(
-                Seek(Duration(milliseconds: session.positionMs)),
-              );
-              context.read<PlaybackBloc>().add(Pause());
+
+              playback.add(Seek(Duration(milliseconds: session.positionMs)));
+              playback.add(Pause());
             }
           }
 
-          if (mounted) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeView()),
-            );
-          }
+          // TODO: CHANGE TO PROPER PUSH
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeView()),
+          );
         },
         child: const Center(child: CircularProgressIndicator.adaptive()),
       ),

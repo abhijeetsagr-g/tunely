@@ -44,7 +44,7 @@ void main() async {
           ),
           BlocProvider(create: (context) => HistoryCubit(historyRepo, repo)),
         ],
-        child: const MyApp(),
+        child: MyApp(showOnboarding: false),
       ),
     ),
   );

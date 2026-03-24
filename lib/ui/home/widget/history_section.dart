@@ -31,41 +31,73 @@ class _HistorySectionState extends State<HistorySection> {
         return SliverMainAxisGroup(
           slivers: [
             SliverToBoxAdapter(
-              child: SizedBox(
-                height: 420,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      // height: 330,
-                      child: PageView(
-                        controller: _controller,
-                        onPageChanged: (i) => setState(() => _currentPage = i),
-                        children: const [RecentList(), MostPlayedList()],
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: Theme.of(context).brightness == Brightness.dark
+                        ? [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(120),
+                              blurRadius: 16,
+                              spreadRadius: 2,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                        : [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(20),
+                              blurRadius: 12,
+                              spreadRadius: 1,
+                              offset: const Offset(0, 2),
+                            ),
+                            BoxShadow(
+                              color: Colors.black.withAlpha(10),
+                              blurRadius: 4,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                  ),
+                  height: 420,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        // height: 330,
+                        child: PageView(
+                          controller: _controller,
+                          onPageChanged: (i) =>
+                              setState(() => _currentPage = i),
+                          children: const [RecentList(), MostPlayedList()],
+                        ),
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(2, (i) {
-                        final active = i == _currentPage;
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
-                          width: active ? 16 : 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: active
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withAlpha(30),
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                        );
-                      }),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(2, (i) {
+                          final active = i == _currentPage;
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            width: active ? 16 : 6,
+                            height: 6,
+                            decoration: BoxDecoration(
+                              color: active
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withAlpha(30),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          );
+                        }),
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ),
                 ),
               ),
             ),

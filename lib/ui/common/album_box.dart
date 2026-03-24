@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:tunely/ui/album/album_view.dart';
 import 'package:tunely/ui/common/album_art.dart';
 
 class AlbumBox extends StatelessWidget {
-  const AlbumBox({super.key, required this.album, required this.onTap});
+  const AlbumBox({super.key, required this.album});
   final AlbumModel album;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,15 @@ class AlbumBox extends StatelessWidget {
       elevation: 3,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          // TODO: REPLACE WITH ALBUMVIEW PUSH
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AlbumView(albumId: album.id),
+            ),
+          );
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -38,8 +46,8 @@ class AlbumBox extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    "${album.numOfSongs} - ${album.artist ?? 'Unknown Artist'}",
-                    style: Theme.of(context).textTheme.bodySmall,
+                    "${album.artist ?? 'Unknown Artist'} • ${album.numOfSongs} Songs",
+                    style: Theme.of(context).textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

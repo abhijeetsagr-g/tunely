@@ -26,11 +26,18 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
       MemoryImage(bytes),
     );
 
-    final color =
+    final raw =
         palette.vibrantColor?.color ??
         palette.dominantColor?.color ??
         _theme.state.accent;
 
+    final color = _ensureMinLightness(raw, minLightness: 0.45);
     await _theme.setAccent(color);
+  }
+
+  Color _ensureMinLightness(Color color, {double minLightness = 0.45}) {
+    final hsl = HSLColor.fromColor(color);
+    if (hsl.lightness >= minLightness) return color;
+    return hsl.withLightness(minLightness).toColor();
   }
 }

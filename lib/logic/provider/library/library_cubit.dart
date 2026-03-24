@@ -82,7 +82,8 @@ class LibraryCubit extends Cubit<LibraryState> {
   }
 
   List<Tune> tunesByAlbum(int albumId) =>
-      _repo.tunes.where((t) => t.albumId == albumId).toList();
+      _repo.tunes.where((t) => t.albumId == albumId).toList()
+        ..sort((a, b) => (a.trackIndex ?? 0).compareTo(b.trackIndex ?? 0));
 
   List<AlbumModel> get albums => _repo.albums;
   List<ArtistModel> get artists => _repo.artists;

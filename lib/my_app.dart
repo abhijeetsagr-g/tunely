@@ -5,10 +5,12 @@ import 'package:tunely/logic/provider/history/history_cubit.dart';
 import 'package:tunely/logic/provider/now_playing/now_playing_cubit.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 import 'package:tunely/logic/provider/theme/theme_cubit.dart';
+import 'package:tunely/ui/on_boarding/on_boarding_view.dart';
 import 'package:tunely/ui/splash/splash_view.dart';
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.showOnboarding});
+  final bool showOnboarding;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -59,7 +61,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         theme: AppTheme.light(accent: themeState.accent),
         darkTheme: AppTheme.dark(accent: themeState.accent),
         themeMode: themeState.mode,
-        home: const SplashView(),
+        home: widget.showOnboarding
+            ? const OnboardingView()
+            : const SplashView(),
       ),
     );
   }

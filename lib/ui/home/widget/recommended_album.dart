@@ -10,18 +10,32 @@ class RecommendedAlbums extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final albums = context.read<LibraryCubit>().albums;
+    final all = context.read<LibraryCubit>().albums;
+    final albums = (List.of(all)).take(5).toList();
 
     return SliverMainAxisGroup(
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 24, 10, 0),
-            child: Text(
-              "Albums",
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            child: Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text(
+                  "Albums",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
+
+                TextButton.icon(
+                  onPressed: () {
+                    // TODO: Open AlbumListView
+                  },
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  label: const Text("Show All"),
+                ),
+              ],
             ),
           ),
         ),
@@ -36,12 +50,7 @@ class RecommendedAlbums extends StatelessWidget {
             ),
             delegate: SliverChildBuilderDelegate((context, index) {
               final album = albums[index];
-              return AlbumBox(
-                album: album,
-                onTap: () {
-                  //TODO: OPEN ALBUM VIEW
-                },
-              );
+              return AlbumBox(album: album);
             }, childCount: albums.length),
           ),
         ),
