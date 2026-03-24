@@ -15,6 +15,7 @@ class ThemeCubit extends Cubit<ThemeState> {
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_modeKey);
     final modeName = prefs.getString(_modeKey) ?? 'dark';
     final accentValue =
         prefs.getInt(_accentKey) ?? AppTheme.defaultAccent.toARGB32();

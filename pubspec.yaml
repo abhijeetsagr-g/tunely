@@ -16,17 +16,27 @@ dependencies:
   just_audio: ^0.10.5
   flutter_bloc: ^9.1.1
   collection: ^1.19.1
-  audio_wave: ^0.1.0
   shared_preferences: ^2.5.4
+  palette_generator: ^0.3.3+7
+  path_provider: ^2.1.5
+  hive_flutter: ^1.1.0
+  cached_network_image: ^3.4.1
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.0
+  analyzer: ^6.4.1  
+
 
 flutter:
   uses-material-design: true
+
   fonts:
+    # Inter Font Family
     - family: Inter
       fonts:
         - asset: assets/fonts/Inter-Regular.ttf
@@ -37,6 +47,24 @@ flutter:
           weight: 600
         - asset: assets/fonts/Inter-Bold.ttf
           weight: 700
+
+    # Manrope Font Family
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Manrope-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Manrope-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Manrope-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Manrope-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Manrope-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Manrope-ExtraBold.ttf
+          weight: 800
 
   # assets:
   #   - images/a_dot_burr.jpeg

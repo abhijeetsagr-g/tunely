@@ -2,6 +2,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/data/repository/history_repository.dart';
+import 'package:tunely/logic/provider/artist_image/artist_image_cubit.dart';
 import 'package:tunely/logic/provider/history/history_cubit.dart';
 import 'package:tunely/logic/provider/library/library_cubit.dart';
 import 'package:tunely/logic/provider/now_playing/now_playing_cubit.dart';
@@ -36,13 +37,14 @@ void main() async {
           BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
           BlocProvider<LibraryCubit>(create: (_) => LibraryCubit(repo)),
           BlocProvider(create: (context) => SearchCubit(repo)),
+          BlocProvider(create: (context) => HistoryCubit(historyRepo, repo)),
+          BlocProvider(create: (context) => ArtistImageCubit()),
           BlocProvider<NowPlayingCubit>(
             create: (ctx) => NowPlayingCubit(ctx.read<ThemeCubit>()),
           ),
           BlocProvider<PlaybackBloc>(
             create: (_) => PlaybackBloc(audioHandler, repo),
           ),
-          BlocProvider(create: (context) => HistoryCubit(historyRepo, repo)),
         ],
         child: MyApp(showOnboarding: false),
       ),

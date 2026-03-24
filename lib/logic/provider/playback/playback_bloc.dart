@@ -58,6 +58,8 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         event.tune.map((e) => e.toMediaItem()).toList(),
         event.index,
       );
+      if (!event.autoPlay) await _service.pause();
+
       _pendingIndex = null;
     });
 

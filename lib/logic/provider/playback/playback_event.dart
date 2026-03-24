@@ -35,8 +35,8 @@ class ProcessStateChange extends PlaybackEvent {
 class PlaySong extends PlaybackEvent {
   final int index;
   final List<Tune> tune;
-
-  PlaySong({required this.index, required this.tune});
+  final bool autoPlay;
+  PlaySong({required this.index, required this.tune, this.autoPlay = true});
 }
 
 class ShuffleAll extends PlaybackEvent {

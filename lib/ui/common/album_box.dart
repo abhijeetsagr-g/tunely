@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:tunely/ui/album/album_view.dart';
+import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/ui/common/album_art.dart';
 
 class AlbumBox extends StatelessWidget {
@@ -14,13 +14,7 @@ class AlbumBox extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          // TODO: REPLACE WITH ALBUMVIEW PUSH
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AlbumView(albumId: album.id),
-            ),
-          );
+          Navigator.pushNamed(context, AppRoute.album, arguments: album.id);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

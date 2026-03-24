@@ -16,10 +16,6 @@ class MiniPlayer extends StatelessWidget {
       builder: (context, state) {
         final tune = state.currentSong;
 
-        if (tune == null) {
-          return const SizedBox.shrink();
-        }
-
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           elevation: 1,
@@ -36,7 +32,11 @@ class MiniPlayer extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child: Row(
               children: [
-                AlbumArt(id: tune.songId!, size: Size(48, 48), type: .AUDIO),
+                AlbumArt(
+                  id: tune?.songId ?? 0,
+                  size: Size(48, 48),
+                  type: .AUDIO,
+                ),
 
                 const SizedBox(width: 12),
 
@@ -47,13 +47,13 @@ class MiniPlayer extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        tune.title,
+                        tune?.title ?? "No Song Playing",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        tune.artist,
+                        tune?.artist ?? "No artist",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.bodySmall,

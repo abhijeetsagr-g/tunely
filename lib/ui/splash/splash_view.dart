@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/data/model/tune.dart';
 import 'package:tunely/data/repository/tune_repository.dart';
 import 'package:tunely/logic/provider/history/history_cubit.dart';
 import 'package:tunely/logic/provider/library/library_cubit.dart';
 import 'package:tunely/logic/provider/library/library_state.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
-import 'package:tunely/ui/home/home_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -20,6 +20,10 @@ class _SplashViewState extends State<SplashView> {
   void initState() {
     super.initState();
     context.read<LibraryCubit>().initialLoad();
+  }
+
+  void changePage() {
+    Navigator.pushReplacementNamed(context, AppRoute.root);
   }
 
   @override
@@ -47,20 +51,17 @@ class _SplashViewState extends State<SplashView> {
 
             if (queue.isNotEmpty) {
               final index = session.queuePaths.indexOf(session.currentPath);
-              playback.add(PlaySong(tune: queue, index: index < 0 ? 0 : index));
-
-              await Future.delayed(const Duration(milliseconds: 500));
-
-              playback.add(Seek(Duration(milliseconds: session.positionMs)));
-              playback.add(Pause());
+              playback.add(
+                PlaySong(
+                  tune: queue,
+                  index: index < 0 ? 0 : index,
+                  autoPlay: false,
+                ),
+              );
             }
           }
 
-          // TODO: CHANGE TO PROPER PUSH
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomeView()),
-          );
+          changePage();
         },
         child: const Center(child: CircularProgressIndicator.adaptive()),
       ),

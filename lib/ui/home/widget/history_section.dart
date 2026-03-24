@@ -36,32 +36,7 @@ class _HistorySectionState extends State<HistorySection> {
                   borderRadius: BorderRadius.circular(12),
                 ),
 
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: Theme.of(context).brightness == Brightness.dark
-                        ? [
-                            BoxShadow(
-                              color: Colors.black.withAlpha(120),
-                              blurRadius: 16,
-                              spreadRadius: 2,
-                              offset: const Offset(0, 4),
-                            ),
-                          ]
-                        : [
-                            BoxShadow(
-                              color: Colors.black.withAlpha(20),
-                              blurRadius: 12,
-                              spreadRadius: 1,
-                              offset: const Offset(0, 2),
-                            ),
-                            BoxShadow(
-                              color: Colors.black.withAlpha(10),
-                              blurRadius: 4,
-                              offset: const Offset(0, 1),
-                            ),
-                          ],
-                  ),
+                child: SizedBox(
                   height: 420,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
