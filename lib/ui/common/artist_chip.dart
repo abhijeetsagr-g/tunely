@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/ui/common/artist_image.dart';
 
 class ArtistChip extends StatelessWidget {
@@ -16,7 +17,9 @@ class ArtistChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        Navigator.pushNamed(context, AppRoute.artist, arguments: id);
+      },
       child: Card(
         elevation: 2,
         child: Container(

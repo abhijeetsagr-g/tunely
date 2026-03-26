@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/logic/provider/library/library_cubit.dart';
 import 'package:tunely/logic/provider/library/library_state.dart';
 
@@ -26,17 +25,7 @@ class ArtistWrap extends StatelessWidget {
                   spacing: 8,
                   runSpacing: 8,
                   children: artists.map((artist) {
-                    return ArtistChip(
-                      id: artist.id,
-                      artistName: artist.artist,
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          AppRoute.artist,
-                          arguments: artist.id,
-                        );
-                      },
-                    );
+                    return ArtistChip(id: artist.id, artistName: artist.artist);
                   }).toList(),
                 ),
               ),

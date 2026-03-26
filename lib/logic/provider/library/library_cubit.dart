@@ -52,7 +52,7 @@ class LibraryCubit extends Cubit<LibraryState> {
         state.copyWith(
           isLoading: false,
           recommendedTunes: recommend,
-          sortedTunes: _repo.sortTunes(state.sortType),
+          sortedTunes: _repo.sortTunes(.title),
         ),
       );
     } catch (e) {

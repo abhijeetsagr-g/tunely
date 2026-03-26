@@ -10,6 +10,7 @@ import 'package:tunely/logic/provider/theme/theme_cubit.dart';
 import 'package:tunely/ui/album/album_view.dart';
 import 'package:tunely/ui/artist/artist_view.dart';
 import 'package:tunely/ui/on_boarding/on_boarding_view.dart';
+import 'package:tunely/ui/player/player_view.dart';
 import 'package:tunely/ui/root/root_view.dart';
 import 'package:tunely/ui/splash/splash_view.dart';
 
@@ -85,11 +86,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 builder: (_) => AlbumView(albumId: albumId),
               );
 
-            // case AppRoute.player:
-            //   return MaterialPageRoute(
-            //     settings: settings,
-            //     builder: (_) => const PlayerView(),
-            //   );
+            case AppRoute.player:
+              return MaterialPageRoute(
+                settings: settings,
+                builder: (_) => const PlayerView(),
+              );
 
             case AppRoute.artist:
               final artistId = settings.arguments as int;

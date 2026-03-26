@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/core/const/app_route.dart';
 
-final ValueNotifier<bool> miniPlayerVisible = ValueNotifier(false);
-final ValueNotifier<double> miniPlayerBottom = ValueNotifier(80);
+final ValueNotifier<bool> miniPlayerVisible = ValueNotifier(true);
+final ValueNotifier<double> miniPlayerBottom = ValueNotifier(16);
 
 class MiniPlayerObserver extends NavigatorObserver {
   @override
@@ -21,15 +21,24 @@ class MiniPlayerObserver extends NavigatorObserver {
   }
 
   void _update(Route route) {
+    if (route is PopupRoute) {
+      miniPlayerVisible.value = false;
+      return;
+    }
+
     final name = route.settings.name;
+
     switch (name) {
       case AppRoute.player:
-        miniPlayerVisible.value = false;
       case AppRoute.splash:
         miniPlayerVisible.value = false;
+        break;
+
       case AppRoute.root:
         miniPlayerVisible.value = true;
-        miniPlayerBottom.value = 20;
+        miniPlayerBottom.value = 100;
+        break;
+
       default:
         miniPlayerVisible.value = true;
         miniPlayerBottom.value = 16;
