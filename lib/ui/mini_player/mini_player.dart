@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
+import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/logic/provider/playback/playback_bloc.dart';
 import 'package:tunely/logic/provider/theme/theme_cubit.dart';
 import 'package:tunely/ui/common/album_art.dart';
@@ -50,7 +51,7 @@ class MiniPlayer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          tune?.title ?? "No Song Playing",
+                          tune?.title.toTitleCase() ?? "No Song Playing",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(fontWeight: FontWeight.w600),

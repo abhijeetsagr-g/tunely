@@ -32,13 +32,13 @@ class ArtistChip extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              ArtistImage(
-                artistName: artistName,
-                size: 32,
-                borderRadius: 16,
-                artistId: id,
+              ArtistImage(size: Size(32, 32), borderRadius: 16, artistId: id),
+              Text(
+                artistName.replaceAll('/', '•'),
+                maxLines: 1,
+                overflow: .ellipsis,
+                style: Theme.of(context).textTheme.labelLarge,
               ),
-              Text(artistName, style: Theme.of(context).textTheme.labelLarge),
             ],
           ),
         ),

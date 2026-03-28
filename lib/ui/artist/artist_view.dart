@@ -87,9 +87,8 @@ class _ArtistViewState extends State<ArtistView> {
                 children: [
                   Center(
                     child: ArtistImage(
-                      artistName: artist?.artist ?? '',
                       artistId: widget.artistId,
-                      size: 260,
+                      size: Size(260, 260),
                       borderRadius: 130,
                     ),
                   ),
