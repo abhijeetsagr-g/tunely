@@ -30,6 +30,7 @@ class MiniPlayerObserver extends NavigatorObserver {
 
     switch (name) {
       case AppRoute.player:
+      case AppRoute.lyrics:
       case AppRoute.splash:
         miniPlayerVisible.value = false;
         break;

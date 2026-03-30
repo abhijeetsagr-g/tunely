@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/data/model/tune.dart';
-import 'package:tunely/logic/provider/library/library_state.dart';
+import 'package:tunely/features/library/cubit/library_state.dart';
 
 class TuneRepository {
   List<Tune> _tunes = [];

@@ -3,16 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/common/mini_player_state.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/logic/provider/history/history_cubit.dart';
-import 'package:tunely/logic/provider/now_playing/now_playing_cubit.dart';
-import 'package:tunely/logic/provider/playback/playback_bloc.dart';
-import 'package:tunely/logic/provider/theme/theme_cubit.dart';
-import 'package:tunely/ui/album/album_view.dart';
-import 'package:tunely/ui/artist/artist_view.dart';
-import 'package:tunely/ui/on_boarding/on_boarding_view.dart';
-import 'package:tunely/ui/player/player_view.dart';
-import 'package:tunely/ui/root/root_view.dart';
-import 'package:tunely/ui/splash/splash_view.dart';
+import 'package:tunely/features/history/history_cubit.dart';
+import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
+import 'package:tunely/features/lyrics/view/lyrics_view.dart';
+import 'package:tunely/features/player/cubit/now_playing_cubit.dart';
+import 'package:tunely/features/player/bloc/playback_bloc.dart';
+import 'package:tunely/features/theme/theme_cubit.dart';
+import 'package:tunely/features/album/album_view.dart';
+import 'package:tunely/features/artist/artist_view.dart';
+import 'package:tunely/features/onboarding/on_boarding_view.dart';
+import 'package:tunely/features/player/view/player_view.dart';
+import 'package:tunely/features/shell/root_view.dart';
+import 'package:tunely/features/onboarding/splash_view.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key, required this.showOnboarding});
@@ -60,6 +62,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         );
         if (state.currentSong != null) {
           context.read<HistoryCubit>().record(state.currentSong!);
+          context.read<LyricCubit>().loadLyrics(state.currentSong!);
         }
       },
 
@@ -97,6 +100,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               return MaterialPageRoute(
                 builder: (context) => ArtistView(artistId: artistId),
               );
+            case AppRoute.lyrics:
+              return MaterialPageRoute(
+                settings: settings,
+                builder: (context) => LyricsView(),
+              );
 
             default:
               return MaterialPageRoute(
@@ -109,7 +117,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(accent: themeState.accent),
         darkTheme: AppTheme.dark(accent: themeState.accent),
-        themeMode: .dark,
+        themeMode: .system,
         home: widget.showOnboarding
             ? const OnboardingView()
             : const SplashView(),
