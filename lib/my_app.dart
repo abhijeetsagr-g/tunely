@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/common/mini_player_state.dart';
+import 'package:tunely/core/config/app_router.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/history/history_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
-import 'package:tunely/features/lyrics/view/lyrics_view.dart';
 import 'package:tunely/features/player/cubit/now_playing_cubit.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
 import 'package:tunely/features/theme/theme_cubit.dart';
-import 'package:tunely/features/album/album_view.dart';
-import 'package:tunely/features/artist/artist_view.dart';
 import 'package:tunely/features/onboarding/on_boarding_view.dart';
-import 'package:tunely/features/player/view/player_view.dart';
-import 'package:tunely/features/shell/root_view.dart';
 import 'package:tunely/features/onboarding/splash_view.dart';
 
 class MyApp extends StatefulWidget {
@@ -69,51 +65,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       child: MaterialApp(
         navigatorObservers: [MiniPlayerObserver()],
         initialRoute: AppRoute.splash,
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case AppRoute.splash:
-              return MaterialPageRoute(
-                builder: (context) => const SplashView(),
-              );
-
-            case AppRoute.root:
-              return MaterialPageRoute(
-                settings: settings,
-                builder: (_) => const RootView(),
-              );
-
-            case AppRoute.album:
-              final albumId = settings.arguments as int;
-              return MaterialPageRoute(
-                settings: settings,
-                builder: (_) => AlbumView(albumId: albumId),
-              );
-
-            case AppRoute.player:
-              return MaterialPageRoute(
-                settings: settings,
-                builder: (_) => const PlayerView(),
-              );
-
-            case AppRoute.artist:
-              final artistId = settings.arguments as int;
-              return MaterialPageRoute(
-                builder: (context) => ArtistView(artistId: artistId),
-              );
-            case AppRoute.lyrics:
-              return MaterialPageRoute(
-                settings: settings,
-                builder: (context) => LyricsView(),
-              );
-
-            default:
-              return MaterialPageRoute(
-                settings: settings,
-                builder: (_) => const RootView(),
-              );
-          }
-        },
-
+        onGenerateRoute: AppRouter.onGenerateRoute,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(accent: themeState.accent),
         darkTheme: AppTheme.dark(accent: themeState.accent),

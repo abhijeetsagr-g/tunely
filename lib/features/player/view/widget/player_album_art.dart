@@ -22,7 +22,9 @@ class PlayerAlbumArt extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(30),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withAlpha(80),
                           blurRadius: 24,
                           offset: Offset(0, 8),
                         ),
