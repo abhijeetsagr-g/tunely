@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/core/extensions/title_case.dart';
-import 'package:tunely/data/model/tune.dart';
-import 'package:tunely/features/player/bloc/playback_bloc.dart';
 import 'package:tunely/features/player/view/widget/control_buttons.dart';
 import 'package:tunely/features/player/view/widget/next_song_label.dart';
 import 'package:tunely/features/player/view/widget/player_album_art.dart';

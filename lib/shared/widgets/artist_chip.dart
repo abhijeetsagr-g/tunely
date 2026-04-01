@@ -3,22 +3,16 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/shared/widgets/artist_image.dart';
 
 class ArtistChip extends StatelessWidget {
-  const ArtistChip({
-    super.key,
-    required this.artistName,
-    this.onTap,
-    required this.id,
-  });
+  const ArtistChip({super.key, required this.artistName, this.onTap});
 
   final String artistName;
-  final int id;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, AppRoute.artist, arguments: id);
+        Navigator.pushNamed(context, AppRoute.artist, arguments: artistName);
       },
       child: Card(
         elevation: 2,
@@ -32,11 +26,15 @@ class ArtistChip extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              ArtistImage(size: Size(32, 32), borderRadius: 16, artistId: id),
+              ArtistImage(
+                size: const Size(32, 32),
+                borderRadius: 16,
+                artistName: artistName,
+              ),
               Text(
-                artistName.replaceAll('/', '•'),
+                artistName,
                 maxLines: 1,
-                overflow: .ellipsis,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelLarge,
               ),
             ],

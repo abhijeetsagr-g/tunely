@@ -62,7 +62,7 @@ class SongTile extends StatelessWidget {
       ),
 
       subtitle: Text(
-        tune.artist,
+        tune.artist.replaceAll('/', ' • '),
         style: Theme.of(
           context,
         ).textTheme.labelLarge?.copyWith(color: Colors.grey),

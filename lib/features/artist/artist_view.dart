@@ -10,8 +10,8 @@ import 'package:tunely/shared/widgets/artist_image.dart';
 import 'package:tunely/shared/widgets/song_tile.dart';
 
 class ArtistView extends StatefulWidget {
-  const ArtistView({super.key, required this.artistId});
-  final int artistId;
+  const ArtistView({super.key, required this.artistName});
+  final String artistName;
 
   @override
   State<ArtistView> createState() => _ArtistViewState();
@@ -24,8 +24,7 @@ class _ArtistViewState extends State<ArtistView> {
   Map<String, List<Tune>> _groupByAlbum(List<Tune> tunes) {
     final map = <String, List<Tune>>{};
     for (final tune in tunes) {
-      final album = tune.album;
-      map.putIfAbsent(album, () => []).add(tune);
+      map.putIfAbsent(tune.album, () => []).add(tune);
     }
     return map;
   }
@@ -33,7 +32,7 @@ class _ArtistViewState extends State<ArtistView> {
   @override
   void initState() {
     super.initState();
-    final tunes = context.read<LibraryCubit>().tunesByArtist(widget.artistId);
+    final tunes = context.read<LibraryCubit>().tunesByArtist(widget.artistName);
     _grouped = _groupByAlbum(tunes);
     _collapsed = {};
   }
@@ -62,8 +61,8 @@ class _ArtistViewState extends State<ArtistView> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<LibraryCubit>();
-    final artist = cubit.artistById(widget.artistId);
-    final tunes = cubit.tunesByArtist(widget.artistId);
+    final tunes = cubit.tunesByArtist(widget.artistName);
+    final albumCount = _grouped.keys.length;
     final theme = Theme.of(context);
     final items = _items;
 
@@ -87,14 +86,14 @@ class _ArtistViewState extends State<ArtistView> {
                 children: [
                   Center(
                     child: ArtistImage(
-                      artistId: widget.artistId,
-                      size: Size(260, 260),
+                      artistName: widget.artistName,
+                      size: const Size(260, 260),
                       borderRadius: 130,
                     ),
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    artist?.artist.toTitleCase() ?? 'Unknown Artist',
+                    widget.artistName.toTitleCase(),
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       letterSpacing: -0.5,
@@ -104,7 +103,7 @@ class _ArtistViewState extends State<ArtistView> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    "${artist?.numberOfAlbums ?? 0} albums • ${artist?.numberOfTracks ?? 0} tracks",
+                    "$albumCount albums • ${tunes.length} tracks",
                     style: theme.textTheme.titleMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -147,7 +146,7 @@ class _ArtistViewState extends State<ArtistView> {
 
                 if (item is String) {
                   final albumId = tunes
-                      .firstWhere((t) => (t.album) == item)
+                      .firstWhere((t) => t.album == item)
                       .albumId;
                   final isCollapsed = _collapsed.contains(item);
 

@@ -10,7 +10,7 @@ class AppPageRoute<T> extends PageRouteBuilder<T> {
   }) : super(
          transitionDuration: const Duration(milliseconds: 300),
          reverseTransitionDuration: const Duration(milliseconds: 250),
-         pageBuilder: (context, _, __) => builder(context),
+         pageBuilder: (context, _, _) => builder(context),
          transitionsBuilder: (context, animation, secondaryAnimation, child) {
            final curved = CurvedAnimation(
              parent: animation,

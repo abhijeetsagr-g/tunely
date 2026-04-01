@@ -10,14 +10,20 @@ class TuneRepository {
   List<GenreModel> _genres = [];
   List<PlaylistModel> _playlists = [];
 
+  Map<String, List<int>> _artistTuneMap = {};
+  Map<String, int> _artistIdMap = {};
+
   List<Tune> get tunes => List.unmodifiable(_tunes);
   List<AlbumModel> get albums => List.unmodifiable(_albums);
   List<ArtistModel> get artists => List.unmodifiable(_artists);
   List<GenreModel> get genres => List.unmodifiable(_genres);
   List<PlaylistModel> get playlists => List.unmodifiable(_playlists);
+  List<String> get artistNames =>
+      List.unmodifiable(_artistTuneMap.keys.toList());
 
   void loadAllSongs(List<SongModel> songs) {
     _tunes = songs.map((e) => Tune.fromSongModel(e)).toList();
+    _buildArtistMap();
   }
 
   void loadLibrary({
@@ -31,6 +37,27 @@ class TuneRepository {
     _genres = genres;
     _playlists = playlists;
   }
+
+  void _buildArtistMap() {
+    _artistTuneMap = {};
+    _artistIdMap = {};
+    for (final tune in _tunes) {
+      final artists = tune.artist.split('/').map((a) => a.trim());
+      for (final artist in artists) {
+        _artistTuneMap.putIfAbsent(artist, () => []).add(tune.songId!);
+        if (tune.artistId != null) {
+          _artistIdMap.putIfAbsent(artist, () => tune.artistId!);
+        }
+      }
+    }
+  }
+
+  List<Tune> tunesByArtistName(String name) {
+    final ids = _artistTuneMap[name] ?? [];
+    return _tunes.where((t) => ids.contains(t.songId)).toList();
+  }
+
+  int? artistIdByName(String name) => _artistIdMap[name];
 
   List<Tune> sortTunes(TuneSortType type) {
     final sorted = [..._tunes];
@@ -50,7 +77,6 @@ class TuneRepository {
   List<Tune> loadRecommend([int count = 8]) =>
       (_tunes.toList()..shuffle()).take(count).toList();
 
-  // Lookups
   Tune? findByPath(String path) =>
       _tunes.firstWhereOrNull((t) => t.path == path);
   AlbumModel? albumById(int id) => _albums.firstWhereOrNull((a) => a.id == id);
@@ -60,12 +86,11 @@ class TuneRepository {
   PlaylistModel? playlistById(int id) =>
       _playlists.firstWhereOrNull((p) => p.id == id);
 
-  // Search
   List<AlbumModel> searchAlbums(String query) => _albums
       .where((a) => a.album.toLowerCase().contains(query.toLowerCase()))
       .toList();
-  List<ArtistModel> searchArtists(String query) => _artists
-      .where((a) => a.artist.toLowerCase().contains(query.toLowerCase()))
+  List<String> searchArtists(String query) => _artistTuneMap.keys
+      .where((a) => a.toLowerCase().contains(query.toLowerCase()))
       .toList();
   List<Tune> searchTune(String query) =>
       _tunes.where((t) => t.title.toLowerCase().contains(query)).toList();

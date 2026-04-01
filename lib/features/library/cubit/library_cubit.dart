@@ -46,13 +46,12 @@ class LibraryCubit extends Cubit<LibraryState> {
         genres: genres,
         playlists: playlists,
       );
-      final recommend = _repo.loadRecommend(5);
 
       emit(
         state.copyWith(
           isLoading: false,
-          recommendedTunes: recommend,
-          sortedTunes: _repo.sortTunes(.title),
+          recommendedTunes: _repo.loadRecommend(5),
+          sortedTunes: _repo.sortTunes(TuneSortType.title),
         ),
       );
     } catch (e) {
@@ -66,7 +65,6 @@ class LibraryCubit extends Cubit<LibraryState> {
       final songs = await _service.getFilteredSongs(type, targetId);
       final filteredSongs = songs.where(_isValid).toList();
       final tunes = filteredSongs.map((e) => Tune.fromSongModel(e)).toList();
-
       emit(state.copyWith(filteredTunes: tunes, isLoading: false));
     } catch (_) {
       emit(state.copyWith(isLoading: false));
@@ -85,17 +83,23 @@ class LibraryCubit extends Cubit<LibraryState> {
       _repo.tunes.where((t) => t.albumId == albumId).toList()
         ..sort((a, b) => (a.trackIndex ?? 0).compareTo(b.trackIndex ?? 0));
 
-  List<Tune> tunesByArtist(int artistId) =>
-      _repo.tunes.where((t) => t.artistId == artistId).toList()
+  // changed: name-based lookup
+  List<Tune> tunesByArtist(String artistName) =>
+      _repo.tunesByArtistName(artistName)
         ..sort((a, b) => (a.trackIndex ?? 0).compareTo(b.trackIndex ?? 0));
 
+  // changed: now List<String>
+  List<String> get artistNames => _repo.artistNames;
+  int? artistIdByName(String name) => _repo.artistIdByName(name);
+
   List<AlbumModel> get albums => _repo.albums;
-  List<ArtistModel> get artists => _repo.artists;
   List<PlaylistModel> get playlists => _repo.playlists;
   List<GenreModel> get genres => _repo.genres;
 
   AlbumModel? albumById(int id) => _repo.albumById(id);
   PlaylistModel? playlistById(int id) => _repo.playlistById(id);
   GenreModel? genreById(int id) => _repo.genreById(id);
+
+  // kept for anything still needing ArtistModel (artwork, etc.)
   ArtistModel? artistById(int id) => _repo.artistById(id);
 }

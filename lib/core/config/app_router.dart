@@ -41,11 +41,11 @@ class AppRouter {
         );
 
       case AppRoute.artist:
-        final artistId = settings.arguments as int;
+        final artist = settings.arguments as String;
         return AppPageRoute(
           settings: settings,
           transition: RouteTransition.slide,
-          builder: (_) => ArtistView(artistId: artistId),
+          builder: (_) => ArtistView(artistName: artist),
         );
 
       case AppRoute.lyrics:

@@ -3,9 +3,7 @@ import 'package:tunely/data/model/tune.dart';
 
 class SearchState {
   final SearchResult? result;
-
   SearchState({this.result});
-
   SearchState copyWith({SearchResult? result}) =>
       SearchState(result: result ?? this.result);
 }
@@ -13,7 +11,7 @@ class SearchState {
 class SearchResult {
   final List<Tune> songs;
   final List<AlbumModel> albums;
-  final List<ArtistModel> artists;
+  final List<String> artists;
 
   SearchResult({
     required this.songs,

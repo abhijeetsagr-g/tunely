@@ -202,9 +202,7 @@ class _SearchViewState extends State<SearchView> {
                         spacing: 16,
                         runSpacing: 12,
                         children: state.result!.artists
-                            .map(
-                              (a) => ArtistChip(artistName: a.artist, id: a.id),
-                            )
+                            .map((a) => ArtistChip(artistName: a))
                             .toList(),
                       ),
                     ),
