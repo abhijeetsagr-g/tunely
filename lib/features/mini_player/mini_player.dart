@@ -44,7 +44,6 @@ class MiniPlayer extends StatelessWidget {
 
                   const SizedBox(width: 12),
 
-                  /// Title + Artist
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +56,7 @@ class MiniPlayer extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          tune?.artist ?? "No artist",
+                          tune?.artist.replaceAll('/', ' • ') ?? "No artist",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.bodySmall,

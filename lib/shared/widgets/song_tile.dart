@@ -81,6 +81,9 @@ class SongTile extends StatelessWidget {
             icon: Icon(Icons.more_vert, color: Colors.grey),
             onPressed: () {
               // TODO: show bottom sheet / menu
+              if (!isCurrent) {
+                context.read<PlaybackBloc>().add(AddToQueue(tune));
+              }
             },
             padding: EdgeInsets.zero,
             constraints: BoxConstraints(),

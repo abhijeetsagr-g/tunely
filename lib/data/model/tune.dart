@@ -51,7 +51,7 @@ class Tune {
   MediaItem toMediaItem() => MediaItem(
     id: path,
     title: title,
-    artist: artist,
+    artist: artist.replaceAll('/', ' • '),
     album: album,
     duration: duration,
     artUri: artUri,

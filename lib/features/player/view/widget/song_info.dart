@@ -28,7 +28,7 @@ class SongInfo extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                tune.artist,
+                tune.artist.replaceAll('/', ' • '),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(

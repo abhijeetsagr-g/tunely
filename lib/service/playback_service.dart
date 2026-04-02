@@ -117,6 +117,34 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     }
   }
 
+  // Queue Management
+  @override
+  Future<void> skipToQueueItem(int index) async {
+    await _player.seek(Duration.zero, index: index);
+  }
+
+  @override
+  Future<void> addQueueItem(MediaItem mediaItem) async {
+    final current = queue.value;
+    queue.add([...current, mediaItem]);
+    await _player.addAudioSource(
+      AudioSource.uri(Uri.parse(mediaItem.id), tag: mediaItem),
+    );
+  }
+
+  Future<void> playNext(MediaItem item) async {
+    final insertIndex = (_player.currentIndex ?? 0) + 1;
+    await _player.insertAudioSource(
+      insertIndex,
+      AudioSource.uri(Uri.parse(item.id), tag: item),
+    );
+    // update queue manually
+    final current = queue.value;
+    final updated = [...current];
+    updated.insert(insertIndex, item);
+    queue.add(updated);
+  }
+
   // Repeat/ Loop
   Future<void> setShuffle(bool enabled) async {
     if (enabled) await _player.shuffle();

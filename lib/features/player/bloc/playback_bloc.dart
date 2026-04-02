@@ -52,6 +52,14 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       (e) => add(ProcessStateChange(e == ProcessingState.buffering)),
     );
 
+    on<SkipToQueueItem>(
+      (event, emit) async => await _service.skipToQueueItem(event.index),
+    );
+
+    on<AddToQueue>(
+      (event, emit) async => await _service.playNext(event.tune.toMediaItem()),
+    );
+
     on<PlaySong>((event, emit) async {
       _pendingIndex = event.index;
       await _service.playQueue(

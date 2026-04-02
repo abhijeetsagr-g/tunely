@@ -39,6 +39,16 @@ class PlaySong extends PlaybackEvent {
   PlaySong({required this.index, required this.tune, this.autoPlay = true});
 }
 
+class SkipToQueueItem extends PlaybackEvent {
+  final int index;
+  SkipToQueueItem(this.index);
+}
+
+class AddToQueue extends PlaybackEvent {
+  final Tune tune;
+  AddToQueue(this.tune);
+}
+
 class ShuffleAll extends PlaybackEvent {
   final List<Tune> tunes;
   final int startIndex;
