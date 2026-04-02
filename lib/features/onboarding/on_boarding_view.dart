@@ -1,106 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tunely/features/onboarding/permission_page.dart';
-import 'package:tunely/features/onboarding/welcome.dart';
-import 'package:tunely/features/onboarding/splash_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/const/app_route.dart';
+import 'package:tunely/features/onboarding/widget/get_started.dart';
+import 'package:tunely/features/onboarding/widget/permission_view.dart';
+import 'package:tunely/features/onboarding/widget/theme_view.dart';
+import 'package:tunely/features/theme/theme_cubit.dart';
 
-class OnboardingView extends StatefulWidget {
-  const OnboardingView({super.key});
+enum OnboardingStep { start, permissions, theme }
+
+class OnBoardingView extends StatefulWidget {
+  const OnBoardingView({super.key});
 
   @override
-  State<OnboardingView> createState() => _OnboardingViewState();
+  State<OnBoardingView> createState() => _OnBoardingViewState();
 }
 
-class _OnboardingViewState extends State<OnboardingView> {
-  final _controller = PageController();
-  int _currentPage = 0;
-  bool _permissionGranted = false;
-
-  final _totalPages = 2;
-
-  void _next() {
-    _controller.nextPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  Future<void> _finish() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('onboarding_done', true);
-    if (!mounted) return;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const SplashView()),
-    );
-  }
-
-  bool get _canProceed {
-    if (_currentPage == 1) return _permissionGranted;
-    return true;
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+class _OnBoardingViewState extends State<OnBoardingView> {
+  OnboardingStep step = OnboardingStep.start;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _controller,
-                onPageChanged: (i) => setState(() => _currentPage = i),
-                children: [
-                  const WelcomePage(),
-                  PermissionPage(
-                    onGranted: () => setState(() => _permissionGranted = true),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(_totalPages, (i) {
-                final active = i == _currentPage;
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: active ? 16 : 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: active
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.primary.withAlpha(60),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: _canProceed
-                      ? (_currentPage < _totalPages - 1 ? _next : _finish)
-                      : null,
-                  child: Text(
-                    _currentPage < _totalPages - 1 ? 'Next' : 'Get Started',
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 32),
-          ],
-        ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: _buildStep(),
       ),
     );
+  }
+
+  Widget _buildStep() {
+    switch (step) {
+      case OnboardingStep.start:
+        return GetStarted(
+          key: const ValueKey('start'),
+          onTap: () {
+            setState(() => step = OnboardingStep.permissions);
+          },
+        );
+
+      case OnboardingStep.permissions:
+        return PermissionView(
+          key: const ValueKey('permissions'),
+          onAllGranted: () {
+            setState(() => step = OnboardingStep.theme);
+          },
+        );
+
+      case OnboardingStep.theme:
+        return ThemeBoardingView(
+          key: const ValueKey('theme'),
+          onDone: () {
+            context.read<ThemeCubit>().completeOnboarding();
+            Navigator.pushReplacementNamed(context, AppRoute.splash);
+          },
+        );
+    }
   }
 }

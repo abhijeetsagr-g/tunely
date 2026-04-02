@@ -30,6 +30,10 @@ void main() async {
 
   final audioQueryService = AudioQueryService();
 
+  final themeCubit = ThemeCubit();
+
+  await themeCubit.load();
+
   final audioHandler = await AudioService.init(
     builder: () => PlaybackService(),
     config: const AudioServiceConfig(
@@ -44,7 +48,7 @@ void main() async {
       value: repo,
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
+          BlocProvider<ThemeCubit>.value(value: themeCubit),
           BlocProvider<LibraryCubit>(
             create: (_) => LibraryCubit(repo, audioQueryService),
           ),
@@ -59,7 +63,7 @@ void main() async {
           ),
           BlocProvider(create: (context) => LyricCubit(lyricsService)),
         ],
-        child: MyApp(showOnboarding: false),
+        child: MyApp(showOnboarding: !themeCubit.seenOnboarding),
       ),
     ),
   );

@@ -4,6 +4,7 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/album/album_view.dart';
 import 'package:tunely/features/artist/artist_view.dart';
 import 'package:tunely/features/lyrics/view/lyrics_view.dart';
+import 'package:tunely/features/onboarding/on_boarding_view.dart';
 import 'package:tunely/features/onboarding/splash_view.dart';
 import 'package:tunely/features/player/view/player_view.dart';
 import 'package:tunely/features/shell/root_view.dart';
@@ -16,6 +17,13 @@ class AppRouter {
           settings: settings,
           transition: RouteTransition.fade,
           builder: (_) => const SplashView(),
+        );
+
+      case AppRoute.onboard:
+        return AppPageRoute(
+          settings: settings,
+          transition: RouteTransition.scale,
+          builder: (context) => const OnBoardingView(),
         );
 
       case AppRoute.root:

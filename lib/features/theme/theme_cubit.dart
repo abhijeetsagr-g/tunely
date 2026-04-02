@@ -6,27 +6,49 @@ import 'package:tunely/features/theme/theme_state.dart';
 
 class ThemeCubit extends Cubit<ThemeState> {
   ThemeCubit()
-    : super(ThemeState(mode: ThemeMode.dark, accent: AppTheme.defaultAccent)) {
-    _load();
-  }
+    : super(ThemeState(mode: ThemeMode.dark, accent: AppTheme.defaultAccent));
 
   static const _modeKey = 'theme_mode';
   static const _accentKey = 'accent_color';
+  static const _seenOnboardingKey = 'seen_onboarding';
+  static const _dynamicThemeKey = 'dynamic_theme_enabled';
 
-  Future<void> _load() async {
+  bool _dynamicThemeEnabled = true;
+  bool get dynamicThemeEnabled => _dynamicThemeEnabled;
+
+  bool _seenOnboarding = false;
+  bool get seenOnboarding => _seenOnboarding;
+
+  Future<void> load() async {
     final prefs = await SharedPreferences.getInstance();
-
     final modeName = prefs.getString(_modeKey) ?? 'dark';
     final accentValue =
         prefs.getInt(_accentKey) ?? AppTheme.defaultAccent.toARGB32();
-
     final mode = switch (modeName) {
       'light' => ThemeMode.light,
       'system' => ThemeMode.system,
       _ => ThemeMode.dark,
     };
 
+    final dynamicTheme = prefs.getBool(_dynamicThemeKey) ?? true;
+    _dynamicThemeEnabled = dynamicTheme;
+
+    _seenOnboarding = prefs.getBool(_seenOnboardingKey) ?? false;
     emit(ThemeState(mode: mode, accent: Color(accentValue)));
+  }
+
+  Future<void> completeOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_seenOnboardingKey, true);
+    _seenOnboarding = true;
+  }
+
+  Future<void> toggleDynamicTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    _dynamicThemeEnabled = !_dynamicThemeEnabled;
+    await prefs.setBool(_dynamicThemeKey, _dynamicThemeEnabled);
+
+    emit(state);
   }
 
   Future<void> toggleTheme() async {
@@ -38,6 +60,7 @@ class ThemeCubit extends Cubit<ThemeState> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_modeKey, newMode.name);
     emit(state.copyWith(mode: newMode));
+    debugPrint("THEME CHANGED");
   }
 
   Future<void> setAccent(Color color) async {

@@ -17,7 +17,6 @@ class AudioQueryService {
     int target, {
     SongSortType sort = SongSortType.TITLE,
   }) async {
-    if (await _hasPermission() == false) return [];
     return await _audioQuery.queryAudiosFrom(type, target, sortType: sort);
   }
 

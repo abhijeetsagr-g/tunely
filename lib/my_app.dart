@@ -9,8 +9,6 @@ import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
 import 'package:tunely/features/player/cubit/now_playing_cubit.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
 import 'package:tunely/features/theme/theme_cubit.dart';
-import 'package:tunely/features/onboarding/on_boarding_view.dart';
-import 'package:tunely/features/onboarding/splash_view.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key, required this.showOnboarding});
@@ -63,17 +61,30 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       },
 
       child: MaterialApp(
-        navigatorObservers: [MiniPlayerObserver()],
-        initialRoute: AppRoute.splash,
+        navigatorObservers: [MiniPlayerObserver(), RouteLogger()],
+        initialRoute: widget.showOnboarding
+            ? AppRoute.onboard
+            : AppRoute.splash,
         onGenerateRoute: AppRouter.onGenerateRoute,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(accent: themeState.accent),
         darkTheme: AppTheme.dark(accent: themeState.accent),
-        themeMode: .system,
-        home: widget.showOnboarding
-            ? const OnboardingView()
-            : const SplashView(),
+        themeMode: themeState.mode,
       ),
+    );
+  }
+}
+
+class RouteLogger extends NavigatorObserver {
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    debugPrint('PUSH: ${route.settings.name}');
+  }
+
+  @override
+  void didReplace({Route? newRoute, Route? oldRoute}) {
+    debugPrint(
+      'REPLACE: ${oldRoute?.settings.name} → ${newRoute?.settings.name}',
     );
   }
 }

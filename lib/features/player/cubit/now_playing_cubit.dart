@@ -15,6 +15,8 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
 
   Future<void> extractColors(int? songId) async {
     if (songId == null) return;
+    if (!_theme.dynamicThemeEnabled) return;
+
     _currentId = songId;
 
     final bytes = await _query.getArtwork(songId, ArtworkType.AUDIO, 50);
