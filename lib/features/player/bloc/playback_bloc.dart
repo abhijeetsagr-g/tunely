@@ -64,12 +64,12 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     });
 
     on<ShuffleAll>((event, emit) async {
-      await _service.setShuffle(true);
       await _service.playQueue(
         event.tunes.map((e) => e.toMediaItem()).toList(),
         event.startIndex,
       );
-      await _service.setRepeat(.all);
+
+      await _service.setShuffle(true);
     });
 
     on<Play>((event, emit) async => await _service.play());

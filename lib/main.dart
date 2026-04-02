@@ -7,6 +7,7 @@ import 'package:tunely/data/repository/lyrics_repository.dart';
 import 'package:tunely/features/history/history_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
+import 'package:tunely/service/audio_query_service.dart';
 import 'package:tunely/service/lyrics_service.dart';
 import 'package:tunely/features/player/cubit/now_playing_cubit.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
@@ -27,6 +28,8 @@ void main() async {
   await lyricsRepo.init();
   final lyricsService = LyricsService(lyricsRepo);
 
+  final audioQueryService = AudioQueryService();
+
   final audioHandler = await AudioService.init(
     builder: () => PlaybackService(),
     config: const AudioServiceConfig(
@@ -42,11 +45,14 @@ void main() async {
       child: MultiBlocProvider(
         providers: [
           BlocProvider<ThemeCubit>(create: (_) => ThemeCubit()),
-          BlocProvider<LibraryCubit>(create: (_) => LibraryCubit(repo)),
+          BlocProvider<LibraryCubit>(
+            create: (_) => LibraryCubit(repo, audioQueryService),
+          ),
           BlocProvider(create: (context) => SearchCubit(repo)),
           BlocProvider(create: (context) => HistoryCubit(historyRepo, repo)),
           BlocProvider<NowPlayingCubit>(
-            create: (ctx) => NowPlayingCubit(ctx.read<ThemeCubit>()),
+            create: (ctx) =>
+                NowPlayingCubit(ctx.read<ThemeCubit>(), audioQueryService),
           ),
           BlocProvider<PlaybackBloc>(
             create: (_) => PlaybackBloc(audioHandler, repo),

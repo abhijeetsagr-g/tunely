@@ -11,15 +11,20 @@ class HistoryRepository {
 
   Future<void> init() async {
     await Hive.initFlutter();
-    Hive.registerAdapter(PlayHistoryAdapter());
-    _box = await Hive.openBox<PlayHistory>(_boxName);
+    if (!Hive.isAdapterRegistered(PlayHistoryAdapter().typeId)) {
+      Hive.registerAdapter(PlayHistoryAdapter());
+    }
+    if (!Hive.isAdapterRegistered(SessionAdapter().typeId)) {
+      Hive.registerAdapter(SessionAdapter());
+    }
 
-    Hive.registerAdapter(SessionAdapter());
+    _box = await Hive.openBox<PlayHistory>(_boxName);
     _session = await Hive.openBox<Session>(_sessionBox);
   }
 
   Future<void> record(PlayHistory entry) async {
     await _box.add(entry);
+    if (_box.length > 100) await _box.deleteAt(0);
   }
 
   Future<List<PlayHistory>> recentlyPlayed({int limit = 20}) async {

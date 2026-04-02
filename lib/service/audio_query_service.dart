@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:on_audio_query/on_audio_query.dart';
 
 class AudioQueryService {
@@ -27,6 +29,11 @@ class AudioQueryService {
       uriType: UriType.EXTERNAL,
       ignoreCase: true,
     );
+  }
+
+  Future<Uint8List?> getArtwork(int id, ArtworkType type, int quality) async {
+    final artwork = await _audioQuery.queryArtwork(id, type, quality: quality);
+    return artwork;
   }
 
   // get Models

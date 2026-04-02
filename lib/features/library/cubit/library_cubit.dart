@@ -7,17 +7,16 @@ import 'package:tunely/service/audio_query_service.dart';
 import 'library_state.dart';
 
 class LibraryCubit extends Cubit<LibraryState> {
-  final _service = AudioQueryService();
+  final AudioQueryService _service;
   final TuneRepository _repo;
 
-  LibraryCubit(this._repo)
+  LibraryCubit(this._repo, this._service)
     : super(
         LibraryState(
           isLoading: false,
           errorMessage: '',
           filteredTunes: [],
           sortedTunes: [],
-          sortType: TuneSortType.recentlyAdded,
           recommendedTunes: [],
         ),
       );
@@ -40,6 +39,7 @@ class LibraryCubit extends Cubit<LibraryState> {
       final playlists = await _service.getPlaylists();
 
       _repo.loadAllSongs(valid);
+
       _repo.loadLibrary(
         albums: albums,
         artists: artists,
@@ -51,13 +51,16 @@ class LibraryCubit extends Cubit<LibraryState> {
         state.copyWith(
           isLoading: false,
           recommendedTunes: _repo.loadRecommend(5),
-          sortedTunes: _repo.sortTunes(TuneSortType.title),
+          sortedTunes: _repo.sorted(_repo.tunes, .album),
         ),
       );
     } catch (e) {
       emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
     }
   }
+
+  List<Tune> sortTunes(List<Tune> tunes, TuneSortType type) =>
+      _repo.sorted(tunes, type);
 
   Future<void> getFilteredSongs(AudiosFromType type, int targetId) async {
     emit(state.copyWith(isLoading: true));
@@ -73,10 +76,6 @@ class LibraryCubit extends Cubit<LibraryState> {
 
   void refreshRecommended([int count = 5]) {
     emit(state.copyWith(recommendedTunes: _repo.loadRecommend(count)));
-  }
-
-  void sortBy(TuneSortType type) {
-    emit(state.copyWith(sortedTunes: _repo.sortTunes(type), sortType: type));
   }
 
   List<Tune> tunesByAlbum(int albumId) =>

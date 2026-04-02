@@ -8,8 +8,13 @@ class LyricsRepository {
   late Box<LyricResult> _box;
 
   Future<void> init() async {
-    Hive.registerAdapter(LyricLineAdapter());
-    Hive.registerAdapter(LyricResultAdapter());
+    if (!Hive.isAdapterRegistered(LyricLineAdapter().typeId)) {
+      Hive.registerAdapter(LyricLineAdapter());
+    }
+    if (!Hive.isAdapterRegistered(LyricResultAdapter().typeId)) {
+      Hive.registerAdapter(LyricResultAdapter());
+    }
+
     _box = await Hive.openBox<LyricResult>(_boxName);
   }
 

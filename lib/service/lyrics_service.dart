@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 
 class LyricsService {
   final LyricsRepository _repository;
-  final _client = http.Client();
   static const _base = 'https://lrclib.net/api';
 
   LyricsService(this._repository);
@@ -20,8 +19,7 @@ class LyricsService {
     }
 
     LyricResult? result = await _fetchDirect(tune);
-    result ??= await fetchSearch(tune.title, tune.artist);
-
+    result ??= await fetchSearch(_parseTitle(tune.title), tune.artist);
     if (result != null) {
       await _repository.save(key, result);
     }
@@ -38,7 +36,7 @@ class LyricsService {
       '&duration=${tune.duration.inSeconds}',
     );
 
-    final res = await _client.get(uri);
+    final res = await http.get(uri);
 
     if (res.statusCode == 200) {
       final json = jsonDecode(res.body);
@@ -55,7 +53,7 @@ class LyricsService {
       '&artist_name=${Uri.encodeComponent(artist)}',
     );
 
-    final res = await _client.get(uri);
+    final res = await http.get(uri);
 
     if (res.statusCode == 200) {
       final list = jsonDecode(res.body) as List;

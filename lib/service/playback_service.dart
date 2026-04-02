@@ -104,7 +104,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       _player.seekToNext();
     } else {
       _player.seek(Duration.zero);
-      _player.pause();
       _player.stop();
     }
   }

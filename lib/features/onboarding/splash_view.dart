@@ -36,11 +36,6 @@ class _SplashViewState extends State<SplashView> {
           final repo = context.read<TuneRepository>();
           final session = context.read<HistoryCubit>().lastSession;
 
-          if (state.errorMessage.isNotEmpty) {
-            // TODO: SHOW SNACKBAR
-            return;
-          }
-
           await context.read<HistoryCubit>().load();
 
           if (session != null) {

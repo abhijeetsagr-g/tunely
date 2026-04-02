@@ -1,7 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/data/model/tune.dart';
-import 'package:tunely/features/library/cubit/library_state.dart';
+
+enum TuneSortType { title, artist, recentlyAdded, album }
 
 class TuneRepository {
   List<Tune> _tunes = [];
@@ -12,6 +13,7 @@ class TuneRepository {
 
   Map<String, List<int>> _artistTuneMap = {};
   Map<String, int> _artistIdMap = {};
+  Map<String, Tune> _tuneByPath = {};
 
   List<Tune> get tunes => List.unmodifiable(_tunes);
   List<AlbumModel> get albums => List.unmodifiable(_albums);
@@ -23,6 +25,7 @@ class TuneRepository {
 
   void loadAllSongs(List<SongModel> songs) {
     _tunes = songs.map((e) => Tune.fromSongModel(e)).toList();
+    _tuneByPath = {for (final t in _tunes) t.path: t};
     _buildArtistMap();
   }
 
@@ -59,26 +62,25 @@ class TuneRepository {
 
   int? artistIdByName(String name) => _artistIdMap[name];
 
-  List<Tune> sortTunes(TuneSortType type) {
-    final sorted = [..._tunes];
+  List<Tune> sorted(List<Tune> tunes, TuneSortType type) {
+    final copy = [...tunes];
     switch (type) {
       case TuneSortType.title:
-        sorted.sort((a, b) => a.title.compareTo(b.title));
+        copy.sort((a, b) => a.title.compareTo(b.title));
       case TuneSortType.artist:
-        sorted.sort((a, b) => a.artist.compareTo(b.artist));
+        copy.sort((a, b) => a.artist.compareTo(b.artist));
       case TuneSortType.recentlyAdded:
-        sorted.sort((a, b) => b.dateAdded.compareTo(a.dateAdded));
+        copy.sort((a, b) => b.dateAdded.compareTo(a.dateAdded));
       case TuneSortType.album:
-        sorted.sort((a, b) => a.album.compareTo(b.album));
+        copy.sort((a, b) => a.album.compareTo(b.album));
     }
-    return sorted;
+    return copy;
   }
 
   List<Tune> loadRecommend([int count = 8]) =>
       (_tunes.toList()..shuffle()).take(count).toList();
 
-  Tune? findByPath(String path) =>
-      _tunes.firstWhereOrNull((t) => t.path == path);
+  Tune? findByPath(String path) => _tuneByPath[path];
   AlbumModel? albumById(int id) => _albums.firstWhereOrNull((a) => a.id == id);
   ArtistModel? artistById(int id) =>
       _artists.firstWhereOrNull((a) => a.id == id);
