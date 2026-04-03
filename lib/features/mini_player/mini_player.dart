@@ -25,7 +25,7 @@ class MiniPlayer extends StatelessWidget {
             elevation: 1,
             shape: RoundedRectangleBorder(
               side: BorderSide(
-                color: context.watch<ThemeCubit>().state.mode == .dark
+                color: Theme.of(context).brightness == .dark
                     ? Colors.white
                     : Colors.black,
               ),

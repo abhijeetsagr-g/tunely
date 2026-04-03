@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/features/home/widget/artist_wrap.dart';
+import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/home/widget/history_section.dart';
 import 'package:tunely/features/home/widget/recommended_album.dart';
 import 'package:tunely/features/home/widget/recommended_list.dart';
@@ -31,14 +31,20 @@ class HomeView extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoute.settings);
+              },
+              icon: Icon(Icons.settings),
+            ),
+          ],
         ),
 
         RecommendedList(),
         RecommendedAlbums(),
         HistorySection(),
-
-        ArtistWrap(),
-        const SliverToBoxAdapter(child: SizedBox(height: 10)),
+        SliverToBoxAdapter(child: const SizedBox(height: 150)),
       ],
     );
   }

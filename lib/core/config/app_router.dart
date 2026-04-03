@@ -8,6 +8,7 @@ import 'package:tunely/features/onboarding/on_boarding_view.dart';
 import 'package:tunely/features/onboarding/splash_view.dart';
 import 'package:tunely/features/player/view/player_view.dart';
 import 'package:tunely/features/shell/root_view.dart';
+import 'package:tunely/features/theme/view/settings_view.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -59,8 +60,14 @@ class AppRouter {
       case AppRoute.lyrics:
         return AppPageRoute(
           settings: settings,
-          transition: RouteTransition.fade,
+          transition: RouteTransition.scale,
           builder: (_) => LyricsView(),
+        );
+
+      case AppRoute.settings:
+        return AppPageRoute(
+          settings: settings,
+          builder: (context) => SettingsView(),
         );
 
       default:

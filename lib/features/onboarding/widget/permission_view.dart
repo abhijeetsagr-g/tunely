@@ -32,7 +32,7 @@ class _PermissionViewState extends State<PermissionView> {
 
   bool get _allGranted =>
       _statuses.values.every((s) => s.isGranted || s.isLimited);
-
+  bool _isRequesting = false;
   @override
   void initState() {
     super.initState();
@@ -47,9 +47,20 @@ class _PermissionViewState extends State<PermissionView> {
   }
 
   Future<void> _request(String key) async {
-    final status = await _permissions[key]!.request();
-    setState(() => _statuses[key] = status);
-    if (_allGranted) widget.onAllGranted();
+    if (_isRequesting) return; // 🚫 block if already running
+
+    _isRequesting = true;
+
+    try {
+      final status = await _permissions[key]!.request();
+      if (!mounted) return;
+
+      setState(() => _statuses[key] = status);
+
+      if (_allGranted) widget.onAllGranted();
+    } finally {
+      _isRequesting = false; // ✅ release lock
+    }
   }
 
   @override

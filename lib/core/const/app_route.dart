@@ -6,4 +6,5 @@ class AppRoute {
   static const artist = 'artist';
   static const lyrics = 'lyrics';
   static const onboard = 'onboard';
+  static const settings = 'settings';
 }

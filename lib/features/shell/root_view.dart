@@ -90,7 +90,7 @@ class _RootViewState extends State<RootView> {
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) => setState(() => _currentIndex = index),
-        children: const [LibraryView(), HomeView(), SearchView()],
+        children: [LibraryView(), HomeView(), SearchView()],
       ),
       bottomNavigationBar: BottomNav(
         currentIndex: _currentIndex,

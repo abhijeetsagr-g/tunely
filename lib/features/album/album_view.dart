@@ -24,11 +24,18 @@ class AlbumView extends StatelessWidget {
           SliverAppBar(
             floating: true,
             pinned: false,
+            centerTitle: true,
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
               },
               icon: Icon(Icons.keyboard_arrow_down),
+            ),
+            title: Text(
+              "${album?.artist?.replaceAll('/', ' • ').toTitleCase()}",
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
 
@@ -64,12 +71,6 @@ class AlbumView extends StatelessWidget {
                   ),
 
                   // Artist & Info
-                  Text(
-                    "${album.artist?.toTitleCase() ?? 'Unknown'} • ${album.numOfSongs} tracks",
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
                   const SizedBox(height: 24),
 
                   // Action Buttons

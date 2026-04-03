@@ -38,7 +38,7 @@ void main() async {
     builder: () => PlaybackService(),
     config: const AudioServiceConfig(
       androidNotificationChannelName: "Tunely Playback",
-      androidNotificationChannelId: "com.zeenfic.tunely",
+      androidNotificationChannelId: "com.abhijeetsagr.tunely",
       androidNotificationOngoing: true,
     ),
   );

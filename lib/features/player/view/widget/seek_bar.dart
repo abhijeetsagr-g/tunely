@@ -31,6 +31,8 @@ class _SeekBarState extends State<SeekBar> {
                 min: 0,
                 max: max == 0 ? 1 : max,
                 value: value,
+                activeColor: Theme.of(context).primaryColor,
+
                 onChanged: (v) => setState(() => _dragValue = v),
                 onChangeEnd: (v) {
                   context.read<PlaybackBloc>().add(
@@ -46,6 +48,7 @@ class _SeekBarState extends State<SeekBar> {
                     formatDur(Duration(milliseconds: value.toInt())),
                     style: Theme.of(context).textTheme.labelMedium,
                   ),
+
                   Text(
                     formatDur(state.dur),
                     style: Theme.of(context).textTheme.labelMedium,

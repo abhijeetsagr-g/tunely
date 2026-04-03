@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/features/home/widget/artist_wrap.dart';
 import 'package:tunely/shared/widgets/segmented_control.dart';
 import 'package:tunely/features/library/view/widget/library_album_list.dart';
 import 'package:tunely/features/library/view/widget/library_song_list.dart';
@@ -27,7 +28,6 @@ class _LibraryViewState extends State<LibraryView> {
               ),
             ),
           ),
-
           ..._buildSlivers(),
         ],
       ),
@@ -38,13 +38,14 @@ class _LibraryViewState extends State<LibraryView> {
     switch (current) {
       case LibraryFilter.songs:
         return const [LibrarySongList()];
-
       case LibraryFilter.albums:
         return const [LibraryAlbumList()];
-
       case LibraryFilter.artists:
-        return const [
-          SliverFillRemaining(child: Center(child: Text("Artists"))),
+        return [
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            sliver: const SliverToBoxAdapter(child: ArtistWrap()),
+          ),
         ];
     }
   }

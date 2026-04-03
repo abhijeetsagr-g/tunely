@@ -49,6 +49,11 @@ class AddToQueue extends PlaybackEvent {
   AddToQueue(this.tune);
 }
 
+class PlayAfterThis extends PlaybackEvent {
+  final Tune tune;
+  PlayAfterThis(this.tune);
+}
+
 class ShuffleAll extends PlaybackEvent {
   final List<Tune> tunes;
   final int startIndex;

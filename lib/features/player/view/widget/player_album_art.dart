@@ -24,7 +24,7 @@ class PlayerAlbumArt extends StatelessWidget {
                         BoxShadow(
                           color: Theme.of(
                             context,
-                          ).colorScheme.primary.withAlpha(80),
+                          ).colorScheme.primary.withAlpha(70),
                           blurRadius: 24,
                           offset: Offset(0, 8),
                         ),

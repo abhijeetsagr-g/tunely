@@ -38,6 +38,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           dur: Duration.zero,
           repeatMode: RepeatMode.none,
           queue: [],
+          currentIndex: 0,
         ),
       ) {
     _playSub = _service.isPlaying.listen((e) => add(PlayingChange(e)));
@@ -52,12 +53,23 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       (e) => add(ProcessStateChange(e == ProcessingState.buffering)),
     );
 
-    on<SkipToQueueItem>(
-      (event, emit) async => await _service.skipToQueueItem(event.index),
+    on<SkipToQueueItem>((event, emit) async {
+      final sequence = await _service.sequenceStateStream.first;
+
+      final targetIndex = sequence.shuffleModeEnabled
+          ? sequence.shuffleIndices[event.index]
+          : event.index;
+
+      await _service.skipToQueueItem(targetIndex);
+    });
+    on<AddToQueue>(
+      // TODO: NEED TO CHANGE IN FUTURE
+      (event, emit) async =>
+          await _service.addQueueItem(event.tune.toMediaItem()),
     );
 
-    on<AddToQueue>(
-      (event, emit) async => await _service.playNext(event.tune.toMediaItem()),
+    on<PlayAfterThis>(
+      (event, emit) async => _service.playNext(event.tune.toMediaItem()),
     );
 
     on<PlaySong>((event, emit) async {
@@ -157,6 +169,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       emit(
         state.copyWith(
           currentSong: Optional(currentSong),
+          currentIndex: effectiveIndex,
           nextSong: nextSong,
           queue: queue,
           isShuffleMode: event.sequence.shuffleModeEnabled,

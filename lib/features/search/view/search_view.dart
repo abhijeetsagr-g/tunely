@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/common/mini_player_state.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/search/cubit/search_state.dart';
+import 'package:tunely/features/search/view/widget/empty_hint.dart';
+import 'package:tunely/features/search/view/widget/search_bar.dart';
+import 'package:tunely/features/search/view/widget/search_section_header.dart';
 import 'package:tunely/shared/widgets/artist_chip.dart';
-
 import 'package:tunely/shared/widgets/song_tile.dart';
 import 'package:tunely/shared/widgets/album_box.dart';
 
@@ -24,6 +26,14 @@ class _SearchViewState extends State<SearchView> {
   bool _artistsExpanded = true;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
@@ -33,116 +43,82 @@ class _SearchViewState extends State<SearchView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
+        final hasQuery = state.result != null;
+        final isEmpty =
+            hasQuery &&
+            state.result!.songs.isEmpty &&
+            state.result!.albums.isEmpty &&
+            state.result!.artists.isEmpty;
+
         return CustomScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           slivers: [
+            // ── App bar with large title + search ────────────────────────
             SliverAppBar(
               floating: true,
               snap: true,
-              titleSpacing: 0,
-              toolbarHeight: 72,
-              title: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextField(
-                  controller: _controller,
-                  focusNode: _focusNode,
-                  onChanged: (q) => context.read<SearchCubit>().search(q),
-                  decoration: InputDecoration(
-                    hintText: 'Songs, albums, artists...',
-                    prefixIcon: const Icon(Icons.search),
-                    suffixIcon: ListenableBuilder(
-                      listenable: _controller,
-                      builder: (_, _) => _controller.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.close),
-                              onPressed: () {
-                                _controller.clear();
-                                context.read<SearchCubit>().clear();
-                              },
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                    filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest,
-                    contentPadding: EdgeInsets.zero,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide.none,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(
-                        color: colorScheme.primary,
-                        width: 1.5,
-                      ),
+              expandedHeight: 120,
+              toolbarHeight: 0,
+              flexibleSpace: FlexibleSpaceBar(
+                collapseMode: CollapseMode.pin,
+                background: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Search',
+                          style: theme.textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        MySearchBar(
+                          controller: _controller,
+                          focusNode: _focusNode,
+                          onChanged: (q) =>
+                              context.read<SearchCubit>().search(q),
+                          onClear: () {
+                            _controller.clear();
+                            context.read<SearchCubit>().clear();
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
 
-            // Idle
-            if (state.result == null)
+            // ── Idle state ───────────────────────────────────────────────
+            if (!hasQuery)
               SliverFillRemaining(
                 hasScrollBody: false,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.search,
-                        size: 64,
-                        color: colorScheme.onSurface.withValues(alpha: 0.2),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Search your library',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurface.withValues(alpha: 0.4),
-                        ),
-                      ),
-                    ],
-                  ),
+                child: EmptyHint(
+                  icon: Icons.search_rounded,
+                  message: 'Songs, albums, artists',
+                  sub: 'Start typing to search your library',
                 ),
               )
-            // No results
-            else if (state.result!.songs.isEmpty &&
-                state.result!.albums.isEmpty &&
-                state.result!.artists.isEmpty)
+            // ── No results ───────────────────────────────────────────────
+            else if (isEmpty)
               SliverFillRemaining(
                 hasScrollBody: false,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.music_off,
-                        size: 64,
-                        color: colorScheme.onSurface.withValues(alpha: 0.2),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'No results for "${_controller.text}"',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: colorScheme.onSurface.withValues(alpha: 0.4),
-                        ),
-                      ),
-                    ],
-                  ),
+                child: EmptyHint(
+                  icon: Icons.music_off_rounded,
+                  message: 'No results',
+                  sub: 'Nothing matched "${_controller.text}"',
                 ),
               )
-            // Results
+            // ── Results ──────────────────────────────────────────────────
             else ...[
               if (state.result!.songs.isNotEmpty) ...[
-                _SectionHeader(
+                SearchSectionHeader(
                   label: 'Songs',
                   count: state.result!.songs.length,
                   expanded: _songsExpanded,
@@ -161,7 +137,7 @@ class _SearchViewState extends State<SearchView> {
               ],
 
               if (state.result!.albums.isNotEmpty) ...[
-                _SectionHeader(
+                SearchSectionHeader(
                   label: 'Albums',
                   count: state.result!.albums.length,
                   expanded: _albumsExpanded,
@@ -170,13 +146,13 @@ class _SearchViewState extends State<SearchView> {
                 ),
                 if (_albumsExpanded)
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
                     sliver: SliverGrid.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
                             childAspectRatio: 0.78,
                           ),
                       itemCount: state.result!.albums.length,
@@ -187,7 +163,7 @@ class _SearchViewState extends State<SearchView> {
               ],
 
               if (state.result!.artists.isNotEmpty) ...[
-                _SectionHeader(
+                SearchSectionHeader(
                   label: 'Artists',
                   count: state.result!.artists.length,
                   expanded: _artistsExpanded,
@@ -196,11 +172,11 @@ class _SearchViewState extends State<SearchView> {
                 ),
                 if (_artistsExpanded)
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
                     sliver: SliverToBoxAdapter(
                       child: Wrap(
-                        spacing: 16,
-                        runSpacing: 12,
+                        spacing: 8,
+                        runSpacing: 8,
                         children: state.result!.artists
                             .map((a) => ArtistChip(artistName: a))
                             .toList(),
@@ -212,63 +188,13 @@ class _SearchViewState extends State<SearchView> {
               ValueListenableBuilder<bool>(
                 valueListenable: miniPlayerVisible,
                 builder: (_, visible, _) => SliverToBoxAdapter(
-                  child: SizedBox(height: visible ? 100 : 24),
+                  child: SizedBox(height: visible ? 100 : 32),
                 ),
               ),
             ],
           ],
         );
       },
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.label,
-    required this.count,
-    required this.expanded,
-    required this.onToggle,
-  });
-
-  final String label;
-  final int count;
-  final bool expanded;
-  final VoidCallback onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SliverToBoxAdapter(
-      child: InkWell(
-        onTap: onToggle,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 20, 12, 8),
-          child: Row(
-            children: [
-              Text(
-                label,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '$count',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.45),
-                ),
-              ),
-              const Spacer(),
-              AnimatedRotation(
-                turns: expanded ? 0 : -0.25,
-                duration: const Duration(milliseconds: 200),
-                child: const Icon(Icons.keyboard_arrow_down),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

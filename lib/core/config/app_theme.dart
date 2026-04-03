@@ -36,7 +36,7 @@ abstract class AppTheme {
       unselectedItemColor: Colors.white,
     ),
 
-    sliderTheme: _sliderTheme(accent, white),
+    sliderTheme: _sliderTheme(accent, Colors.grey),
   );
 
   static ThemeData light({Color accent = defaultAccent}) => ThemeData(
@@ -59,14 +59,14 @@ abstract class AppTheme {
       selectedItemColor: accent,
       unselectedItemColor: Colors.black,
     ),
-    sliderTheme: _sliderTheme(accent, black),
+    sliderTheme: _sliderTheme(accent, Colors.grey),
   );
 
   static SliderThemeData _sliderTheme(Color accent, Color base) {
     return SliderThemeData(
       trackHeight: 4,
       activeTrackColor: accent,
-      inactiveTrackColor: base.withAlpha(3),
+      inactiveTrackColor: base,
 
       thumbColor: accent,
       overlayColor: accent.withAlpha(15),

@@ -17,7 +17,7 @@ class ControlButtons extends StatelessWidget {
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: isActive
-            ? Theme.of(context).primaryColor.withAlpha(15)
+            ? Theme.of(context).primaryColor.withAlpha(50)
             : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
       ),

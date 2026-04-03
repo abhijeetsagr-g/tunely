@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/shared/widgets/album_art.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/fur_duration.dart';
 import 'package:tunely/data/model/tune.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
+import 'package:tunely/shared/widgets/song_title_options.dart';
 
 class SongTile extends StatelessWidget {
   const SongTile({
@@ -77,22 +79,15 @@ class SongTile extends StatelessWidget {
               context,
             ).textTheme.labelLarge?.copyWith(color: Colors.grey),
           ),
-          IconButton(
-            icon: Icon(Icons.more_vert, color: Colors.grey),
-            onPressed: () {
-              // TODO: show bottom sheet / menu
-              if (!isCurrent) {
-                context.read<PlaybackBloc>().add(AddToQueue(tune));
-              }
-            },
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(),
-            visualDensity: VisualDensity.compact,
-          ),
+          SongTileOptions(isCurrent: isCurrent, tune: tune),
         ],
       ),
       onTap: () {
-        context.read<PlaybackBloc>().add(PlaySong(index: index, tune: tunes));
+        if (!isCurrent) {
+          context.read<PlaybackBloc>().add(PlaySong(index: index, tune: tunes));
+        } else {
+          Navigator.pushNamed(context, AppRoute.player);
+        }
       },
     );
   }

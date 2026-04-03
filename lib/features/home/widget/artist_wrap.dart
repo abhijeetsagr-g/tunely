@@ -14,21 +14,12 @@ class ArtistWrap extends StatelessWidget {
           previous.sortedTunes != current.sortedTunes,
       builder: (context, state) {
         final artistNames = context.read<LibraryCubit>().artistNames;
-        return SliverMainAxisGroup(
-          slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: SliverToBoxAdapter(
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: artistNames.map((name) {
-                    return ArtistChip(artistName: name);
-                  }).toList(),
-                ),
-              ),
-            ),
-          ],
+        return Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: artistNames
+              .map((name) => ArtistChip(artistName: name))
+              .toList(),
         );
       },
     );

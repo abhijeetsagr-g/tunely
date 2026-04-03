@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.zeenfic.tunely"
+        applicationId = "com.abhijeetsagr.tunely"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
