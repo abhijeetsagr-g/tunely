@@ -17,8 +17,7 @@ class QueueSheet extends StatelessWidget {
         final upNext = (currentIndex >= 0 && currentIndex + 1 < queue.length)
             ? queue[currentIndex + 1]
             : null;
-        final upNextIndex = currentIndex + 1;
-        // Songs after "up next"
+
         final remaining = (currentIndex >= 0 && currentIndex + 2 < queue.length)
             ? queue.sublist(currentIndex + 2)
             : <Tune>[];

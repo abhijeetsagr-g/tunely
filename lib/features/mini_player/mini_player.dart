@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
-import 'package:tunely/features/theme/theme_cubit.dart';
 import 'package:tunely/shared/widgets/album_art.dart';
 
 class MiniPlayer extends StatelessWidget {

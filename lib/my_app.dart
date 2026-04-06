@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/core/common/mini_player_state.dart';
+import 'package:tunely/features/mini_player/mini_player_state.dart';
 import 'package:tunely/core/config/app_router.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/core/const/app_route.dart';

@@ -20,13 +20,17 @@ class NextSongLabel extends StatelessWidget {
             ? state.nextSong
             : null;
 
-        return Text(
-          next != null ? next.title.toTitleCase() : "End Is Here",
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+        return SizedBox(
+          width: 200,
+          child: Text(
+            next != null ? next.title.toTitleCase() : "End Is Here",
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+          ),
         );
       },
     );

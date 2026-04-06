@@ -63,7 +63,6 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       await _service.skipToQueueItem(targetIndex);
     });
     on<AddToQueue>(
-      // TODO: NEED TO CHANGE IN FUTURE
       (event, emit) async =>
           await _service.addQueueItem(event.tune.toMediaItem()),
     );

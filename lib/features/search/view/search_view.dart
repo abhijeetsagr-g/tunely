@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/core/common/mini_player_state.dart';
+import 'package:tunely/features/mini_player/mini_player_state.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/search/cubit/search_state.dart';
 import 'package:tunely/features/search/view/widget/empty_hint.dart';
