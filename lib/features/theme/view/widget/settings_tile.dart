@@ -33,8 +33,8 @@ class SettingsTile extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
-          splashColor: Colors.white.withOpacity(0.04),
-          highlightColor: Colors.white.withOpacity(0.04),
+          splashColor: Colors.white.withAlpha(4),
+          highlightColor: Colors.white.withAlpha(4),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
@@ -59,16 +59,13 @@ class SettingsTile extends StatelessWidget {
                         subtitle,
                         style: TextStyle(
                           fontSize: 13,
-                          color: onSurface.withOpacity(0.5),
+                          color: onSurface.withAlpha(50),
                         ),
                       ),
                     ],
                   ),
                 ),
-                if (trailing != null) ...[
-                  const SizedBox(width: 12),
-                  trailing!,
-                ],
+                if (trailing != null) ...[const SizedBox(width: 12), trailing!],
               ],
             ),
           ),

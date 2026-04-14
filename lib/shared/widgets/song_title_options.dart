@@ -50,7 +50,6 @@ class _SongTileOptionsState extends State<SongTileOptions> {
                   visualDensity: VisualDensity.compact,
                   tooltip: 'Play after this',
                   onPressed: () {
-                    // TODO: SHOW CONTEXT
                     context.read<PlaybackBloc>().add(
                       PlayAfterThis(widget.tune),
                     );
