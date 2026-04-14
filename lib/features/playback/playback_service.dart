@@ -8,6 +8,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     _init();
   }
 
+  // initialize on creating instance
   void _init() {
     _player.processingStateStream.listen((state) {
       if (state == ProcessingState.completed) {
@@ -16,7 +17,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       }
     });
     _player.playbackEventStream.map(_transformEvent).pipe(playbackState);
-
     _player.sequenceStateStream.listen((state) {
       final index = state.currentIndex;
 
@@ -31,28 +31,28 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   PlaybackState _transformEvent(PlaybackEvent _) {
     return PlaybackState(
       controls: [
-        .skipToNext,
-        if (_player.playing) .play else .pause,
-        .skipToPrevious,
+        MediaControl.skipToPrevious,
+        if (_player.playing) MediaControl.pause else MediaControl.play,
+        MediaControl.skipToNext,
       ],
 
       // Which actions are supported (for Android media session)
       systemActions: {
-        .stop,
-        .playPause,
-        .seek,
-        .skipToNext,
-        .skipToPrevious,
-        .setShuffleMode,
-        .setRepeatMode,
+        MediaAction.stop,
+        MediaAction.playPause,
+        MediaAction.seek,
+        MediaAction.skipToNext,
+        MediaAction.skipToPrevious,
+        MediaAction.setShuffleMode,
+        MediaAction.setRepeatMode,
       },
       // Mapping just_audio ProcessingState → audio_service AudioProcessingState
       processingState: switch (_player.processingState) {
-        .idle => .idle,
-        .ready => .ready,
-        .loading => .loading,
-        .buffering => .buffering,
-        .completed => .completed,
+        ProcessingState.idle => AudioProcessingState.idle,
+        ProcessingState.ready => AudioProcessingState.ready,
+        ProcessingState.loading => AudioProcessingState.loading,
+        ProcessingState.buffering => AudioProcessingState.buffering,
+        ProcessingState.completed => AudioProcessingState.completed,
       },
 
       // maping other
@@ -66,8 +66,8 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
           ? AudioServiceShuffleMode.all
           : AudioServiceShuffleMode.none,
       repeatMode: switch (_player.loopMode) {
-        LoopMode.one => .one,
-        LoopMode.all => .all,
+        LoopMode.one => AudioServiceRepeatMode.one,
+        LoopMode.all => AudioServiceRepeatMode.all,
         _ => AudioServiceRepeatMode.none,
       },
     );
@@ -76,11 +76,15 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   // Playback Controls
   Future<void> playQueue(List<MediaItem> items, int startIndex) async {
     queue.add(items);
+    final playlist = items
+        .map((e) => AudioSource.uri(Uri.parse(e.id), tag: e))
+        .toList();
     await _player.setAudioSources(
+      playlist,
       preload: true,
       initialIndex: startIndex,
+      shuffleOrder: DefaultShuffleOrder(),
       initialPosition: Duration.zero,
-      items.map((e) => AudioSource.uri(Uri.parse(e.id), tag: e)).toList(),
     );
 
     play();
@@ -111,7 +115,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   @override
   Future<void> skipToPrevious() async {
     if (_player.position.inSeconds > 3) {
-      seek(.zero);
+      seek(Duration.zero);
     } else {
       _player.seekToPrevious();
     }
@@ -119,30 +123,53 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   // Queue Management
   @override
-  Future<void> skipToQueueItem(int index) async {
-    await _player.seek(Duration.zero, index: index);
-  }
-
-  @override
   Future<void> addQueueItem(MediaItem mediaItem) async {
-    final current = queue.value;
-    queue.add([...current, mediaItem]);
     await _player.addAudioSource(
       AudioSource.uri(Uri.parse(mediaItem.id), tag: mediaItem),
     );
+
+    final sequence = _player.sequenceState.sequence;
+    updateQueue(sequence.map((s) => s.tag as MediaItem).toList());
   }
 
-  Future<void> playNext(MediaItem item) async {
+  @override
+  Future<void> addQueueItems(List<MediaItem> mediaItems) async {
+    await _player.addAudioSources(
+      mediaItems
+          .map((item) => AudioSource.uri(Uri.parse(item.id), tag: item))
+          .toList(),
+    );
+    final sequence = _player.sequenceState.sequence;
+    updateQueue(sequence.map((s) => s.tag as MediaItem).toList());
+  }
+
+  @override
+  Future<void> removeQueueItemAt(int index) async {
+    await _player.removeAudioSourceAt(index);
+    final sequence = _player.sequenceState.sequence;
+    updateQueue(sequence.map((s) => s.tag as MediaItem).toList());
+  }
+
+  @override
+  Future<void> removeQueueItem(MediaItem mediaItem) async {
+    final index = queue.value.indexOf(mediaItem);
+    if (index != -1) await removeQueueItemAt(index);
+  }
+
+  Future<void> playAfterThis(MediaItem item) async {
     final insertIndex = (_player.currentIndex ?? 0) + 1;
     await _player.insertAudioSource(
       insertIndex,
       AudioSource.uri(Uri.parse(item.id), tag: item),
     );
-    // update queue manually
-    final current = queue.value;
-    final updated = [...current];
-    updated.insert(insertIndex, item);
-    queue.add(updated);
+
+    final sequence = _player.sequenceState.sequence;
+    updateQueue(sequence.map((s) => s.tag as MediaItem).toList());
+  }
+
+  @override
+  Future<void> skipToQueueItem(int index) async {
+    await _player.seek(Duration.zero, index: index);
   }
 
   // Repeat/ Loop

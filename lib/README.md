@@ -9,12 +9,11 @@
 ## Checklist
 
 - [ ] Playback services
-	- [ ] Notification Integration (Next, Prev, Play, seek)
-	- [ ] Show Queue (List of Tunes dynamically)
-	- [ ] Handles Shuffle, Repeat Modes, etc
-	- [ ] Basic controls
-	- [ ] Gapless playback
-	- [ ] Crossfade between tracks
+	- [x] Notification Integration (Next, Prev, Play, seek)
+	- [x] Show Queue (List of Tunes dynamically)
+	- [x] Handles Shuffle, Repeat Modes, etc
+	- [x] Basic controls
+	- [x] Gapless playback
 	- [ ] Queue presistence
 
 - [ ] Library lookup
@@ -37,11 +36,11 @@
 	- [ ] Liked Playlist
 	- [ ] Playlist export/import (M3U)
 
-- [ ] Queue Management
-	- [ ] Add To Queue
-	- [ ] Remove from Queue
-	- [ ] Add a list of tunes to queue
-	- [ ] Skip to that queue
+- [x] Queue Management
+	- [x] Add To Queue
+	- [x] Remove from Queue
+	- [x] Add a list of tunes to queue
+	- [x] Skip to that queue item
 
 - [ ] Lyrics
 	- [ ] Auto load lyrics once, save it locally (fallback to LRCLB)
