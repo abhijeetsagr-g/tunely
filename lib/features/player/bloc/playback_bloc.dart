@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:math';
 import 'package:audio_service/audio_service.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/data/repository/tune_repository.dart';
-import 'package:tunely/service/playback_service.dart';
+import 'package:tunely/features/playback/service/playback_service.dart';
 
 part 'playback_event.dart';
 part 'playback_state.dart';
@@ -68,7 +69,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     );
 
     on<PlayAfterThis>(
-      (event, emit) async => _service.playNext(event.tune.toMediaItem()),
+      (event, emit) async => _service.playAfterThis(event.tune.toMediaItem()),
     );
 
     on<PlaySong>((event, emit) async {
@@ -87,7 +88,6 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         event.tunes.map((e) => e.toMediaItem()).toList(),
         event.startIndex,
       );
-
       await _service.setShuffle(true);
     });
 
@@ -159,11 +159,16 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
 
       final currentItem =
           event.sequence.effectiveSequence[effectiveIndex].tag as MediaItem;
+
       final currentSong = _repo.findByPath(currentItem.id);
       final nextSong =
           (effectiveIndex + 1 < event.sequence.effectiveSequence.length)
           ? queue[effectiveIndex + 1]
           : null;
+
+      for (var e in queue) {
+        debugPrint("[QUEUE DEBUG] ${e.title} ");
+      }
 
       emit(
         state.copyWith(

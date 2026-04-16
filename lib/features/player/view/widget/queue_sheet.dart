@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
 import 'package:tunely/features/player/view/widget/queue_list_tile.dart';
 import 'package:tunely/features/player/view/widget/up_next_tile.dart';
-import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 class QueueSheet extends StatelessWidget {
   const QueueSheet({super.key});

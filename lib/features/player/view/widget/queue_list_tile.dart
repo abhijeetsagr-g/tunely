@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/core/extensions/title_case.dart';
-import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widgets/album_art.dart';
 
 class QueueListTile extends StatelessWidget {

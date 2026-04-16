@@ -4,19 +4,39 @@
 - [ ] Maintain Checklist
 
 ---
-- [ ] Playback services
-	- [ ] Notification Integration (Next, Prev, Play, seek)
-	- [ ] Show Queue (List of Tunes dynamically)
-	- [ ] Handles Shuffle, Repeat Modes, etc
-	- [ ] Basic controls
-	- [ ] Gapless playback
+- [x] Playback services
+	- [x] Notification Integration (Next, Prev, Play, seek)
+	- [x] Show Queue (List of Tunes dynamically)
+	- [x] Handles Shuffle, Repeat Modes, etc
+	- [x] Basic controls
+	- [x] Gapless playback
 
-- [ ] Queue persistence
-  - [ ] List of songs in queue
-  - [ ] Current playing index
-  - [ ] Playback position (timestamp)
-  - [ ] Shuffle state
-  - [ ] Repeat mode
+
+- [x] Queue Management
+	- [x] Add To Queue
+	- [x] Play after this 
+	- [x] Remove from Queue
+	- [x] Add a list of tunes to queue
+	- [x] Skip to that queue
+
+- [x] Queue persistence
+  - [x] List of songs in queue
+  - [x] Current playing index
+  - [x] Playback position (timestamp)
+  - [x] Shuffle state
+  - [x] Repeat mode
+
+- [ ] Stats Management
+	- [ ] Most Played Playlist (Unedittable) 
+	- [ ] Recently Played Playlist
+	- [ ] Liked Playlist
+
+- [ ] Music Management
+	- [ ] Exclude Directories
+	- [ ] Handle Multi-artist parsing
+		- [ ] Delimiters (/ , ; + &)
+		- [ ] User Can add more delimiters
+	- [ ] Minimum Song Duration: (Default 10s)
 
 - [ ] Library lookup
 	- [ ] Search Songs (Show Album, Playlist, Title, etc)
@@ -29,21 +49,6 @@
 	- [ ] Edit Song's Metadata
 	- [ ] Find a minimal way to manage it
 
-- [ ] Playlist Management
-	- [ ] Create, Edit Name, remove playlist
-	- [ ] Playlist cover :- 4 AlbumArt from first  
-	- [ ] Save, Remove, Hide, Sort Tune (custom + other sorts)
-	- [ ] Most Played Playlist (Unedittable) 
-	- [ ] Recently Played Playlist
-	- [ ] Liked Playlist
-	- [ ] Playlist export/import (M3U)
-
-- [ ] Queue Management
-	- [ ] Add To Queue
-	- [ ] Remove from Queue
-	- [ ] Add a list of tunes to queue
-	- [ ] Skip to that queue
-
 - [ ] Lyrics
 	- [ ] Auto load lyrics once, save it locally (fallback to LRCLB)
 	- [ ] Search Lyrics with Song title and artist
@@ -51,19 +56,18 @@
 	- [ ] Lyrics offset saved per song
 	- [ ] Write changes and update locally
 
+- [ ] Playlist Management
+	- [ ] Create, Edit Name, remove playlist
+	- [ ] Playlist cover :- 4 AlbumArt from first  
+	- [ ] Save, Remove, Hide, Sort Tune (custom + other sorts)
+	- [ ] Playlist export/import (M3U)
+
 - [ ] Customisation
 	- [ ] Extracting colour from album (Togglable)
 	- [ ] Choose accent colour or save current dynamic colour
 	- [ ] Clean dark/light/system mode
 	- [ ] Customise Home Screen (reorder/toggle sections)
 	- [ ] Library View options (change top column, etc)
-
-- [ ] Music Management
-	- [ ] Exclude Directories
-	- [ ] Handle Multi-artist parsing
-		- [ ] Delimiters (/ , ; + &)
-		- [ ] User Can add more delimiters
-	- [ ] Minimum Song Duration: (Default 10s)
 
 - [ ] Etc
 	- [ ] Sleep Timer (Notify when ends)

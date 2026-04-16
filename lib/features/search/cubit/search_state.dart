@@ -1,5 +1,5 @@
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 class SearchState {
   final SearchResult? result;

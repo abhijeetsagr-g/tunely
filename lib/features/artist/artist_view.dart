@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
-import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
 import 'package:tunely/shared/widgets/album_art.dart';

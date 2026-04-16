@@ -1,4 +1,4 @@
-import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 class AlbumViewParams {
   final int album;

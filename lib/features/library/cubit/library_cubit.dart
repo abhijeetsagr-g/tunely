@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/data/repository/tune_repository.dart';
 import 'package:tunely/service/audio_query_service.dart';
 import 'library_state.dart';

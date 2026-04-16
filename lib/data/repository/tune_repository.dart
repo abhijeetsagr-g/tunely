@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 enum TuneSortType { title, artist, recentlyAdded, album }
 

@@ -4,10 +4,11 @@ import 'package:tunely/features/mini_player/mini_player_state.dart';
 import 'package:tunely/core/config/app_router.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/features/history/history_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
 import 'package:tunely/features/player/cubit/now_playing_cubit.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
+import 'package:tunely/features/session/cubit/session_cubit.dart';
+import 'package:tunely/features/session/model/queue_session_model.dart';
 import 'package:tunely/features/theme/theme_cubit.dart';
 
 class MyApp extends StatefulWidget {
@@ -36,11 +37,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     if (lifecycle == AppLifecycleState.inactive) {
       final state = context.read<PlaybackBloc>().state;
       if (state.currentSong == null) return;
-      context.read<HistoryCubit>().saveSession(
-        currentPath: state.currentSong!.path,
-        positionMs: state.pos.inMilliseconds,
-        queuePaths: state.queue.map((t) => t.path).toList(),
-      );
     }
   }
 
@@ -55,8 +51,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           state.currentSong?.songId,
         );
         if (state.currentSong != null) {
-          context.read<HistoryCubit>().record(state.currentSong!);
           context.read<LyricCubit>().loadLyrics(state.currentSong!);
+
+          context.read<SessionCubit>().save(
+            QueueSessionModel(
+              tunePaths: state.queue.map((e) => e.path).toList(),
+              currentIndex: state.currentIndex,
+              shuffleEnabled: state.isShuffleMode,
+              repeatMode: .off,
+              position: state.pos,
+              speed: 0,
+            ),
+          );
         }
       },
 

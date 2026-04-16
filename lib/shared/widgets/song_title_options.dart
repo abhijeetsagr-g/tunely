@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/data/model/tune.dart';
+import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
 
 class SongTileOptions extends StatefulWidget {

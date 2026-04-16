@@ -7,6 +7,8 @@ import 'package:tunely/data/repository/lyrics_repository.dart';
 import 'package:tunely/features/history/history_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
+import 'package:tunely/features/session/cubit/session_cubit.dart';
+import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/service/audio_query_service.dart';
 import 'package:tunely/service/lyrics_service.dart';
 import 'package:tunely/features/player/cubit/now_playing_cubit.dart';
@@ -14,11 +16,12 @@ import 'package:tunely/features/player/bloc/playback_bloc.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/theme/theme_cubit.dart';
 import 'package:tunely/data/repository/tune_repository.dart';
-import 'package:tunely/service/playback_service.dart';
+import 'package:tunely/features/playback/service/playback_service.dart';
 import 'package:tunely/my_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final sessionRepo = SessionRepository();
 
   final repo = TuneRepository();
   final historyRepo = HistoryRepository();
@@ -53,7 +56,8 @@ void main() async {
             create: (_) => LibraryCubit(repo, audioQueryService),
           ),
           BlocProvider(create: (context) => SearchCubit(repo)),
-          BlocProvider(create: (context) => HistoryCubit(historyRepo, repo)),
+          // BlocProvider(create: (context) => HistoryCubit(historyRepo, repo)),
+          BlocProvider(create: (context) => SessionCubit(sessionRepo)),
           BlocProvider<NowPlayingCubit>(
             create: (ctx) =>
                 NowPlayingCubit(ctx.read<ThemeCubit>(), audioQueryService),
