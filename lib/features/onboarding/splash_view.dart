@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
+import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/data/repository/tune_repository.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
@@ -77,6 +78,7 @@ class _SplashViewState extends State<SplashView> {
               playback.add(Seek(session.position));
             }
           }
+          context.read<StatsCubit>().load(context.read<TuneRepository>().tunes);
 
           Navigator.pushReplacementNamed(context, AppRoute.root);
         },

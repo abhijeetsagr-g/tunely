@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:tunely/data/model/lyric_line.dart';
+import 'package:tunely/features/lyrics/model/lyric_line.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
 
 class SyncLyricWidget extends StatefulWidget {

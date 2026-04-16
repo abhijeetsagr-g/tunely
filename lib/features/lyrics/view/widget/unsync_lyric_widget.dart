@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/data/model/lyric_result.dart';
+import 'package:tunely/features/lyrics/model/lyric_result.dart';
 
 class UnsyncedLyricWidget extends StatelessWidget {
   final LyricResult result;

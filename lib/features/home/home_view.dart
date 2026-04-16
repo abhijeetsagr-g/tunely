@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/features/home/widget/history_section.dart';
+import 'package:tunely/features/home/widget/recent_list.dart';
 import 'package:tunely/features/home/widget/recommended_album.dart';
 import 'package:tunely/features/home/widget/recommended_list.dart';
 
@@ -43,7 +43,8 @@ class HomeView extends StatelessWidget {
 
         RecommendedList(),
         RecommendedAlbums(),
-        HistorySection(),
+        RecentList(),
+        // HistorySection(),
         SliverToBoxAdapter(child: const SizedBox(height: 150)),
       ],
     );

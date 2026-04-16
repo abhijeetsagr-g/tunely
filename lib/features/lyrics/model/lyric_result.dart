@@ -1,5 +1,5 @@
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tunely/data/model/lyric_line.dart';
+import 'package:hive_ce/hive_ce.dart';
+import 'package:tunely/features/lyrics/model/lyric_line.dart';
 
 part 'lyric_result.g.dart';
 

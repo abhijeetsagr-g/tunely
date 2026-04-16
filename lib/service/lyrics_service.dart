@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:tunely/data/model/lyric_line.dart';
-import 'package:tunely/data/model/lyric_result.dart';
+import 'package:tunely/features/lyrics/model/lyric_line.dart';
+import 'package:tunely/features/lyrics/model/lyric_result.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/data/repository/lyrics_repository.dart';
 import 'package:http/http.dart' as http;

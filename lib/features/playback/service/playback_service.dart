@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -30,7 +32,10 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       if (index == null) return;
       final q = queue.value;
       if (index < q.length) {
-        mediaItem.add(q[index]);
+        final item = q[index];
+
+        mediaItem.add(item);
+        _trackController.add(item);
       }
     });
   }
@@ -193,7 +198,12 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     return super.onTaskRemoved();
   }
 
+  // when new song is played
+  final _trackController = StreamController<MediaItem>.broadcast();
+  Stream<MediaItem> get onTrackChanged => _trackController.stream;
+
   // GETTERS
+
   Stream<bool> get isPlaying => _player.playingStream;
   Stream<ProcessingState> get playerStateStream =>
       _player.processingStateStream;

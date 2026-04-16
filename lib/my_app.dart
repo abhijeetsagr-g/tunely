@@ -4,7 +4,7 @@ import 'package:tunely/features/mini_player/mini_player_state.dart';
 import 'package:tunely/core/config/app_router.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
+// import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
 import 'package:tunely/features/player/cubit/now_playing_cubit.dart';
 import 'package:tunely/features/player/bloc/playback_bloc.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           state.currentSong?.songId,
         );
         if (state.currentSong != null) {
-          context.read<LyricCubit>().loadLyrics(state.currentSong!);
+          // context.read<LyricCubit>().loadLyrics(state.currentSong!);
 
           context.read<SessionCubit>().save(
             QueueSessionModel(

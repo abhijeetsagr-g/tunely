@@ -1,7 +1,8 @@
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce/hive_ce.dart';
+
 part 'lyric_line.g.dart';
 
-@HiveType(typeId: 2)
+@HiveType(typeId: 1)
 class LyricLine {
   @HiveField(0)
   int timestamp;

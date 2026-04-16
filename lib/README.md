@@ -11,7 +11,6 @@
 	- [x] Basic controls
 	- [x] Gapless playback
 
-
 - [x] Queue Management
 	- [x] Add To Queue
 	- [x] Play after this 
@@ -26,10 +25,10 @@
   - [x] Shuffle state
   - [x] Repeat mode
 
-- [ ] Stats Management
-	- [ ] Most Played Playlist (Unedittable) 
-	- [ ] Recently Played Playlist
-	- [ ] Liked Playlist
+- [x] Stats Management
+	- [x] Most Played Playlist (Unedittable) 
+	- [x] Recently Played Playlist
+	- [x] Liked Playlist
 
 - [ ] Music Management
 	- [ ] Exclude Directories

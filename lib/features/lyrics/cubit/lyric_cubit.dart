@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/data/model/lyric_result.dart';
+import 'package:tunely/features/lyrics/model/lyric_result.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/service/lyrics_service.dart';
 

@@ -1,6 +1,5 @@
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tunely/data/model/lyric_line.dart';
-import 'package:tunely/data/model/lyric_result.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:tunely/features/lyrics/model/lyric_result.dart';
 
 class LyricsRepository {
   static const String _boxName = 'lyricsBox';
@@ -8,13 +7,6 @@ class LyricsRepository {
   late Box<LyricResult> _box;
 
   Future<void> init() async {
-    if (!Hive.isAdapterRegistered(LyricLineAdapter().typeId)) {
-      Hive.registerAdapter(LyricLineAdapter());
-    }
-    if (!Hive.isAdapterRegistered(LyricResultAdapter().typeId)) {
-      Hive.registerAdapter(LyricResultAdapter());
-    }
-
     _box = await Hive.openBox<LyricResult>(_boxName);
   }
 
