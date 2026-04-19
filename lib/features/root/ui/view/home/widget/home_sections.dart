@@ -5,7 +5,7 @@ class HomeSections extends StatelessWidget {
     super.key,
     required this.headline,
     required this.onTap,
-    this.onTapTitle = "See all",
+    this.onTapTitle = "Reload",
     this.child,
   });
 
@@ -32,8 +32,8 @@ class HomeSections extends StatelessWidget {
               TextButton.icon(
                 style: TextButton.styleFrom(foregroundColor: Colors.grey),
                 onPressed: onTap,
-                icon: Text(onTapTitle),
-                label: Icon(Icons.keyboard_arrow_right),
+                label: Text(onTapTitle),
+                icon: Icon(Icons.replay_outlined),
               ),
             ],
           ),

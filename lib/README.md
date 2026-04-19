@@ -47,7 +47,7 @@ xxx - done with implementing UI for the logic
 	- [x] Write changes and update locally
 
 - [ ] Playlist Management
-	- [ ] Create, Edit Name, remove playlist
+	- [x] Create, Edit Name, remove playlist
 	- [ ] Playlist cover :- 4 AlbumArt from first  
 	- [ ] Save, Remove, Hide, Sort Tune (custom + other sorts)
 

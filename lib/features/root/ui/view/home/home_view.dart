@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/features/root/ui/view/home/widget/playlist_section.dart';
+import 'package:tunely/core/utlis/random_texts.dart';
+import 'package:tunely/features/root/ui/view/home/widget/continue_listening_card.dart';
 import 'package:tunely/features/root/ui/view/home/widget/recommeded_albums.dart';
 import 'package:tunely/features/root/ui/view/home/widget/recommended_songs.dart';
 
@@ -10,8 +11,31 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(child: PlaylistSection(onTap: () {})),
-        SliverToBoxAdapter(child: RecommendedAlbums()),
+        SliverAppBar(
+          floating: true,
+          centerTitle: true,
+          title: Text.rich(
+            TextSpan(
+              text: "Tunely\n",
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              children: [
+                TextSpan(
+                  text: randomMessages(),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(color: Colors.grey),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+
+        SliverToBoxAdapter(child: ContinueListeningCard()),
+        SliverToBoxAdapter(child: SizedBox(height: 20)),
+        RecommendedAlbums(),
         RecommendedSongs(),
       ],
     );

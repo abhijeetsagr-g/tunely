@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
+import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 class PlayerView extends StatelessWidget {
   const PlayerView({super.key});
@@ -189,6 +191,12 @@ class _Controls extends StatelessWidget {
         ),
 
         IconButton(
+          icon: const Icon(Icons.playlist_add),
+          onPressed: state.currentItem == null
+              ? null
+              : () => showAddToPlaylistSheet(context, state.currentItem!),
+        ),
+        IconButton(
           icon: Icon(
             context.read<StatsCubit>().isLiked(state.currentItem!.path)
                 ? Icons.favorite
@@ -346,6 +354,149 @@ class _QueueList extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+void showAddToPlaylistSheet(BuildContext context, Tune tune) {
+  showModalBottomSheet(
+    context: context,
+    builder: (_) => BlocProvider.value(
+      value: context.read<PlaylistCubit>(),
+      child: _AddToPlaylistSheet(tune: tune),
+    ),
+  );
+}
+
+class _AddToPlaylistSheet extends StatelessWidget {
+  final Tune tune;
+  const _AddToPlaylistSheet({required this.tune});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PlaylistCubit, PlaylistState>(
+      builder: (context, state) {
+        if (state is! PlaylistLoaded) {
+          return const SizedBox(
+            height: 120,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Add to playlist',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  // Create new playlist inline
+                  TextButton.icon(
+                    icon: const Icon(Icons.add, size: 18),
+                    label: const Text('New'),
+                    onPressed: () => _showCreateDialog(context, tune),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            if (state.playlists.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(24),
+                child: Text(
+                  'No playlists yet',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.playlists.length,
+                itemBuilder: (context, i) {
+                  final playlist = state.playlists[i];
+                  return ListTile(
+                    leading: const Icon(Icons.queue_music),
+                    title: Text(playlist.playlist ?? 'Unknown'),
+                    subtitle: Text('${playlist.numOfSongs} songs'),
+                    onTap: () {
+                      context.read<PlaylistCubit>().addToPlaylist(
+                        playlist.id,
+                        tune,
+                      );
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Added to ${playlist.playlist}'),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            const SizedBox(height: 16),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showCreateDialog(BuildContext context, Tune tune) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (_) => BlocProvider.value(
+        value: context.read<PlaylistCubit>(),
+        child: AlertDialog(
+          title: const Text('New Playlist'),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: const InputDecoration(hintText: 'Playlist name'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final name = controller.text.trim();
+                if (name.isNotEmpty) {
+                  await context.read<PlaylistCubit>().createPlaylist(name);
+                  // Fetch fresh playlists then add song to new one
+                  await context.read<PlaylistCubit>().fetchPlaylists();
+                  final s = context.read<PlaylistCubit>().state;
+                  if (s is PlaylistLoaded && s.playlists.isNotEmpty) {
+                    final newPlaylist = s.playlists.last;
+                    context.read<PlaylistCubit>().addToPlaylist(
+                      newPlaylist.id,
+                      tune,
+                    );
+                  }
+                  if (context.mounted) Navigator.pop(context);
+                }
+              },
+              child: const Text('Create & Add'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

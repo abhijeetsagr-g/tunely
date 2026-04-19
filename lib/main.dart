@@ -16,6 +16,8 @@ import 'package:tunely/features/music_management/model/management_settings.dart'
 import 'package:tunely/features/music_management/repository/management_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
+import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
+import 'package:tunely/features/playlist/service/playlist_service.dart';
 import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
@@ -73,6 +75,9 @@ void main() async {
   final lyricsRepo = LyricsRepository(box: lyricsBox);
   final lyricsService = LyricsService(repository: lyricsRepo);
 
+  // setup playlist
+  final playlistService = PlaylistService(audioQuery: audioQuery);
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -83,6 +88,9 @@ void main() async {
         BlocProvider(create: (context) => StatsCubit(stateService)),
         BlocProvider(create: (context) => SearchCubit()),
         BlocProvider(create: (context) => LyricsCubit(lyricsService)),
+        BlocProvider(
+          create: (context) => PlaylistCubit(playlistService, managementRepo),
+        ),
         BlocProvider(
           create: (context) => LibraryCubit(service: libraryService),
         ),
