@@ -1,41 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tune_stats.dart';
+part of 'lyrics_result.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TuneStatsAdapter extends TypeAdapter<TuneStats> {
+class LyricsResultAdapter extends TypeAdapter<LyricsResult> {
   @override
-  final typeId = 0;
+  final typeId = 2;
 
   @override
-  TuneStats read(BinaryReader reader) {
+  LyricsResult read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TuneStats(
-      tuneId: fields[0] as String,
-      playCount: fields[1] == null ? 0 : (fields[1] as num).toInt(),
-      lastPlayed: fields[2] as DateTime?,
-      isLiked: fields[3] == null ? false : fields[3] as bool,
+    return LyricsResult(
+      synced: (fields[0] as List).cast<LyricsLine>(),
+      plain: fields[1] as String?,
+      instrumental: fields[2] as bool,
+      offsetMs: fields[3] == null ? 0 : (fields[3] as num).toInt(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, TuneStats obj) {
+  void write(BinaryWriter writer, LyricsResult obj) {
     writer
       ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.tuneId)
+      ..write(obj.synced)
       ..writeByte(1)
-      ..write(obj.playCount)
+      ..write(obj.plain)
       ..writeByte(2)
-      ..write(obj.lastPlayed)
+      ..write(obj.instrumental)
       ..writeByte(3)
-      ..write(obj.isLiked);
+      ..write(obj.offsetMs);
   }
 
   @override
@@ -44,7 +44,7 @@ class TuneStatsAdapter extends TypeAdapter<TuneStats> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TuneStatsAdapter &&
+      other is LyricsResultAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

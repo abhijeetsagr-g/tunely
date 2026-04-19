@@ -22,19 +22,12 @@ class StatsTestView extends StatelessWidget {
                   title: '🔥 Most Played',
                   tunes: state.mostPlayed,
                   subtitle: (t) =>
-                      '${context.read<StatsCubit>().repo.get(t.path).playCount} plays',
+                      '${context.read<StatsCubit>().playCount(t.path)} plays',
                 ),
                 _Section(
                   title: '🕐 Recently Played',
                   tunes: state.recent,
-                  subtitle: (t) {
-                    final last = context
-                        .read<StatsCubit>()
-                        .repo
-                        .get(t.path)
-                        .lastPlayed;
-                    return last != null ? last.toString() : 'Never';
-                  },
+                  subtitle: (p0) => "",
                 ),
                 _Section(
                   title: '❤️ Liked',

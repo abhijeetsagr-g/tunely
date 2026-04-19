@@ -36,16 +36,15 @@ xxx - done with implementing UI for the logic
 		- [xx] User Can add more delimiters
 	- [xx] Minimum Song Duration: (Default 10s)
 
-- [ ] Library lookup
-	- [ ] Search Songs (Show Album, Playlist, Title, etc)
-	- [ ] Multi-select actions (bulk add to queue, add to playlist, etc)
+- [x] Search lookup
+	- [x] Search Songs (Show Album, Playlist, Title, etc)
 
-- [ ] Lyrics
+- [x] Lyrics
 	- [ ] Auto load lyrics once, save it locally (fallback to LRCLB)
-	- [ ] Search Lyrics with Song title and artist
-	- [ ] Delay/increase sync offset
-	- [ ] Lyrics offset saved per song
-	- [ ] Write changes and update locally
+	- [x] Search Lyrics with Song title and artist
+	- [x] Delay/increase sync offset
+	- [x] Lyrics offset saved per song
+	- [x] Write changes and update locally
 
 - [ ] Playlist Management
 	- [ ] Create, Edit Name, remove playlist
@@ -69,8 +68,8 @@ xxx - done with implementing UI for the logic
 	- [ ] Sleep Timer (Notify when ends)
 	- [ ] Get Artist Image by Artist Name (Dezeer API, fallback to ArtistImage by AudioQueryWidget)
 	- [ ] Backup & Restore (playlists, preferences, lyrics cache — JSON export)
+	- [ ] Multi-select actions (bulk add to queue, add to playlist, etc)
 	- [x] Sort everywhere: Artist, Album, Title, Genre, Playlist
-
 
 ---
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/fur_duration.dart';
+import 'package:tunely/features/lyrics/view/lyrics_test_view.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/view/player_view.dart';
 import 'package:tunely/shared/model/tune.dart';
@@ -25,7 +26,10 @@ class SongTile extends StatelessWidget {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PlayerView()),
+          MaterialPageRoute(
+            builder: (context) =>
+                LyricsTestView(tune: playback.state.currentItem!),
+          ),
         );
       },
       child: ListTile(

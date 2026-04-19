@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 
@@ -52,7 +51,7 @@ class _AlbumArt extends StatelessWidget {
       width: 280,
       height: 280,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
       ),
       // Swap for actual album art widget when available, e.g:
@@ -264,7 +263,7 @@ class _SpeedRow extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 3),
           child: ChoiceChip(
-            label: Text('${speed}×', style: const TextStyle(fontSize: 12)),
+            label: Text('$speed×', style: const TextStyle(fontSize: 12)),
             selected: active,
             visualDensity: VisualDensity.compact,
             onSelected: (_) =>

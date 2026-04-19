@@ -7,6 +7,8 @@ class ManagementCubit extends Cubit<ManagementSettings> {
 
   ManagementCubit(this._repo) : super(_repo.get());
 
+  ManagementSettings getSettings() => _repo.get();
+
   Future<void> updateDelimiters(List<String> delimiters) =>
       _update(state.copyWith(artistDelimiters: delimiters));
 

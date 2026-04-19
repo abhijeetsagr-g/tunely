@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/features/playback/view/player_view.dart';
 import 'package:tunely/features/root/ui/view/library/library_view.dart';
+import 'package:tunely/features/search/view/search_test_view.dart';
 
 class RootScreen extends StatelessWidget {
   const RootScreen({super.key});
@@ -12,7 +12,7 @@ class RootScreen extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PlayerView()),
+            MaterialPageRoute(builder: (context) => SearchTestView()),
           );
         },
       ),

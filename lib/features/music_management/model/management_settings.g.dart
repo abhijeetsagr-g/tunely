@@ -8,7 +8,7 @@ part of 'management_settings.dart';
 
 class ManagementSettingsAdapter extends TypeAdapter<ManagementSettings> {
   @override
-  final int typeId = 4;
+  final typeId = 4;
 
   @override
   ManagementSettings read(BinaryReader reader) {
@@ -17,9 +17,13 @@ class ManagementSettingsAdapter extends TypeAdapter<ManagementSettings> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ManagementSettings(
-      artistDelimiters: (fields[0] as List).cast<String>(),
-      minDurationMs: (fields[1] as num).toInt(),
-      excludedFolders: (fields[2] as List).cast<String>(),
+      artistDelimiters: fields[0] == null
+          ? const ['/', ',', ';', '&', '+']
+          : (fields[0] as List).cast<String>(),
+      minDurationMs: fields[1] == null ? 10000 : (fields[1] as num).toInt(),
+      excludedFolders: fields[2] == null
+          ? const []
+          : (fields[2] as List).cast<String>(),
     );
   }
 

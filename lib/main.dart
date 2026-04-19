@@ -7,11 +7,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/repository/library_repository.dart';
 import 'package:tunely/features/library/service/library_service.dart';
+import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
+import 'package:tunely/features/lyrics/model/lyrics_result.dart';
+import 'package:tunely/features/lyrics/repository/lyrics_repository.dart';
+import 'package:tunely/features/lyrics/service/lyrics_service.dart';
+import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
 import 'package:tunely/features/music_management/model/management_settings.dart';
 import 'package:tunely/features/music_management/repository/management_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
 import 'package:tunely/features/root/cubit/root_cubit.dart';
+import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
@@ -62,16 +68,24 @@ void main() async {
   // //  setup session
   final sessionRepo = SessionRepository();
 
+  // setup lyrics
+  final lyricsBox = await Hive.openBox<LyricsResult>('lyrics_box');
+  final lyricsRepo = LyricsRepository(box: lyricsBox);
+  final lyricsService = LyricsService(repository: lyricsRepo);
+
   runApp(
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => RootCubit()),
+        BlocProvider(create: (context) => ManagementCubit(managementRepo)),
         BlocProvider(create: (context) => PlaybackBloc(audioHandler)),
         BlocProvider(create: (context) => SessionCubit(sessionRepo)),
+        BlocProvider(create: (context) => StatsCubit(stateService)),
+        BlocProvider(create: (context) => SearchCubit()),
+        BlocProvider(create: (context) => LyricsCubit(lyricsService)),
         BlocProvider(
           create: (context) => LibraryCubit(service: libraryService),
         ),
-        BlocProvider(create: (context) => StatsCubit(stateService)),
       ],
       child: MyApp(),
     ),
