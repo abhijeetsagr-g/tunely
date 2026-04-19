@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   final _player = AudioPlayer();
@@ -85,11 +86,19 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   // Playback Controls
-  Future<void> playQueue(List<MediaItem> items, int startIndex) async {
+  Future<void> playQueue(
+    List<Tune> tunes,
+    int startIndex, {
+    bool autoPlay = true,
+  }) async {
+    final items = tunes.map((t) => t.toMediaItem()).toList();
     queue.add(items);
-    final playlist = items
-        .map((e) => AudioSource.uri(Uri.parse(e.id), tag: e))
+
+    // Save Tunes as "tag"
+    final playlist = tunes
+        .map((t) => AudioSource.uri(Uri.parse(t.path), tag: t))
         .toList();
+
     await _player.setAudioSources(
       playlist,
       preload: true,
@@ -98,7 +107,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       initialPosition: Duration.zero,
     );
 
-    play();
+    if (autoPlay) play();
   }
 
   // Basic Controls
@@ -182,8 +191,8 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   // Repeat/ Loop
   Future<void> setShuffle(bool enabled) async {
-    if (enabled) await _player.shuffle();
     await _player.setShuffleModeEnabled(enabled);
+    if (enabled) await _player.shuffle();
   }
 
   @override

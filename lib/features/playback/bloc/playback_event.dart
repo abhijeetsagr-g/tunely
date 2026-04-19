@@ -83,6 +83,25 @@ class SetSpeedEvent extends PlaybackEvent {
   const SetSpeedEvent(this.speed);
 }
 
+// To Restore Previous Session
+class RestoreSessionEvent extends PlaybackEvent {
+  final List<Tune> queue;
+  final int currentIndex;
+  final Duration position;
+  final bool shuffleEnabled;
+  final LoopMode repeatMode;
+  final double speed;
+
+  const RestoreSessionEvent({
+    required this.queue,
+    required this.currentIndex,
+    required this.position,
+    required this.shuffleEnabled,
+    required this.repeatMode,
+    required this.speed,
+  });
+}
+
 // Internal — emitted by stream listeners inside the bloc
 class _PlayerStateUpdatedEvent extends PlaybackEvent {
   final bool isPlaying;
@@ -113,9 +132,13 @@ class _SequenceStateUpdatedEvent extends PlaybackEvent {
   final Tune? currentItem;
   final List<Tune> queue;
   final int currentIndex;
+  final bool shuffleMode;
+  final LoopMode repeatMode;
   const _SequenceStateUpdatedEvent({
     required this.currentItem,
     required this.queue,
     required this.currentIndex,
+    required this.shuffleMode,
+    required this.repeatMode,
   });
 }

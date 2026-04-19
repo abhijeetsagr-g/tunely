@@ -1,7 +1,7 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/session/model/queue_session_model.dart';
-
-import '../repository/session_repository.dart';
+import 'package:tunely/features/session/repository/session_repository.dart';
 
 class SessionCubit extends Cubit<QueueSessionModel?> {
   final SessionRepository _repo;
@@ -13,8 +13,13 @@ class SessionCubit extends Cubit<QueueSessionModel?> {
   }
 
   Future<void> save(QueueSessionModel session) async {
-    await _repo.save(session);
-    emit(session);
+    try {
+      await _repo.save(session);
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      emit(session);
+    }
   }
 
   Future<void> clear() async {

@@ -1,96 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/features/mini_player/mini_player_state.dart';
-import 'package:tunely/core/config/app_router.dart';
-import 'package:tunely/core/config/app_theme.dart';
-import 'package:tunely/core/const/app_route.dart';
-// import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
-import 'package:tunely/features/player/cubit/now_playing_cubit.dart';
-import 'package:tunely/features/player/bloc/playback_bloc.dart';
+import 'package:tunely/features/playback/bloc/playback_bloc.dart';
+import 'package:tunely/features/root/ui/view/splash/splash_view.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/session/model/queue_session_model.dart';
-import 'package:tunely/features/theme/theme_cubit.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key, required this.showOnboarding});
-  final bool showOnboarding;
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState lifecycle) {
-    if (lifecycle == AppLifecycleState.inactive) {
-      final state = context.read<PlaybackBloc>().state;
-      if (state.currentSong == null) return;
-    }
-  }
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final themeState = context.watch<ThemeCubit>().state;
-    return BlocListener<PlaybackBloc, PlaybackState>(
-      listenWhen: (prev, curr) =>
-          prev.currentSong?.songId != curr.currentSong?.songId,
-      listener: (context, state) {
-        context.read<NowPlayingCubit>().extractColors(
-          state.currentSong?.songId,
-        );
-        if (state.currentSong != null) {
-          // context.read<LyricCubit>().loadLyrics(state.currentSong!);
+    return MultiBlocListener(
+      listeners: [
+        // Save queue/index/shuffle/repeat changes
+        BlocListener<PlaybackBloc, PlaybackState>(
+          listenWhen: (prev, curr) =>
+              prev.queue != curr.queue ||
+              prev.currentIndex != curr.currentIndex ||
+              prev.shuffleEnabled != curr.shuffleEnabled ||
+              prev.repeatMode != curr.repeatMode,
+          listener: (context, state) {
+            if (state.queue.isEmpty) return;
+            final session = QueueSessionModel(
+              tunePaths: state.queue.map((t) => t.path).toList(),
+              currentIndex: state.currentIndex ?? 0,
+              shuffleEnabled: state.shuffleEnabled,
+              repeatMode: state.repeatMode,
+              position: state.position, // last known
+              speed: state.speed,
+            );
+            context.read<SessionCubit>().save(session);
+          },
+        ),
 
-          context.read<SessionCubit>().save(
-            QueueSessionModel(
-              tunePaths: state.queue.map((e) => e.path).toList(),
-              currentIndex: state.currentIndex,
-              shuffleEnabled: state.isShuffleMode,
-              repeatMode: .off,
-              position: state.pos,
-              speed: 0,
-            ),
-          );
-        }
-      },
+        // Save position on pause for more accuracy
+        BlocListener<PlaybackBloc, PlaybackState>(
+          listenWhen: (prev, curr) =>
+              prev.isPlaying != curr.isPlaying && !curr.isPlaying,
+          listener: (context, state) {
+            final current = context.read<SessionCubit>().state;
+            if (current == null) return;
+            final session = QueueSessionModel(
+              tunePaths: current.tunePaths,
+              currentIndex: current.currentIndex,
+              shuffleEnabled: current.shuffleEnabled,
+              repeatMode: current.repeatMode,
+              position: state.position,
+              speed: current.speed,
+            );
+
+            context.read<SessionCubit>().save(session);
+          },
+        ),
+      ],
 
       child: MaterialApp(
-        navigatorObservers: [MiniPlayerObserver(), RouteLogger()],
-        initialRoute: widget.showOnboarding
-            ? AppRoute.onboard
-            : AppRoute.splash,
-        onGenerateRoute: AppRouter.onGenerateRoute,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light(accent: themeState.accent),
-        darkTheme: AppTheme.dark(accent: themeState.accent),
-        themeMode: themeState.mode,
+        themeMode: .dark,
+        darkTheme: ThemeData.dark(),
+        home: SplashView(),
       ),
-    );
-  }
-}
-
-class RouteLogger extends NavigatorObserver {
-  @override
-  void didPush(Route route, Route? previousRoute) {
-    debugPrint('PUSH: ${route.settings.name}');
-  }
-
-  @override
-  void didReplace({Route? newRoute, Route? oldRoute}) {
-    debugPrint(
-      'REPLACE: ${oldRoute?.settings.name} → ${newRoute?.settings.name}',
     );
   }
 }

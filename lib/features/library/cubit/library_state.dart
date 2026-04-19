@@ -1,32 +1,30 @@
-import 'package:tunely/shared/model/tune.dart';
+part of 'library_cubit.dart';
 
-class LibraryState {
-  final bool isLoading;
-  final String errorMessage;
-  final List<Tune> filteredTunes;
-  final List<Tune> sortedTunes;
-  List<Tune> recommendedTunes;
+sealed class LibraryState {}
 
-  LibraryState({
-    required this.isLoading,
-    required this.errorMessage,
-    required this.filteredTunes,
-    required this.sortedTunes,
-    required this.recommendedTunes,
+class LibraryInitial extends LibraryState {}
+
+class LibraryLoading extends LibraryState {}
+
+class LibraryLoaded extends LibraryState {
+  final List<Tune> tunes;
+  final List<Artist> artists;
+  final List<AlbumModel> albums;
+  final List<GenreModel> genres;
+  final List<PlaylistModel> playlists;
+
+  LibraryLoaded({
+    required this.tunes,
+    required this.artists,
+    required this.albums,
+    required this.genres,
+    required this.playlists,
   });
-
-  LibraryState copyWith({
-    bool? isLoading,
-    String? errorMessage,
-    List<Tune>? filteredTunes,
-    List<Tune>? sortedTunes,
-    List<Tune>? recommendedTunes,
-  }) => LibraryState(
-    isLoading: isLoading ?? this.isLoading,
-    errorMessage: errorMessage ?? this.errorMessage,
-    filteredTunes: filteredTunes ?? this.filteredTunes,
-    sortedTunes: sortedTunes ?? this.sortedTunes,
-
-    recommendedTunes: recommendedTunes ?? this.recommendedTunes,
-  );
 }
+
+class LibraryError extends LibraryState {
+  final String message;
+  LibraryError(this.message);
+}
+
+class LibraryPermissionDenied extends LibraryState {}

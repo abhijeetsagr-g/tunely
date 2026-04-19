@@ -1,44 +1,35 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_ce/hive_ce.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'package:tunely/data/repository/lyrics_repository.dart';
-import 'package:tunely/data/repository/tune_repository.dart';
-
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/features/lyrics/cubit/lyric_cubit.dart';
-import 'package:tunely/features/player/bloc/playback_bloc.dart';
-import 'package:tunely/features/player/cubit/now_playing_cubit.dart';
-import 'package:tunely/features/search/cubit/search_cubit.dart';
+import 'package:tunely/features/library/repository/library_repository.dart';
+import 'package:tunely/features/library/service/library_service.dart';
+import 'package:tunely/features/music_management/model/management_settings.dart';
+import 'package:tunely/features/music_management/repository/management_repository.dart';
+import 'package:tunely/features/playback/bloc/playback_bloc.dart';
+import 'package:tunely/features/playback/service/playback_service.dart';
+import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
+import 'package:tunely/features/stats/model/tune_stats.dart';
 import 'package:tunely/features/stats/repository/stats_repository.dart';
 import 'package:tunely/features/stats/service/stats_service.dart';
-import 'package:tunely/features/theme/theme_cubit.dart';
-
-import 'package:tunely/service/audio_query_service.dart';
-import 'package:tunely/service/lyrics_service.dart';
-
-import 'package:tunely/features/playback/service/playback_service.dart';
 import 'package:tunely/hive_registrar.g.dart';
 import 'package:tunely/my_app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 🔥 Hive init
+  // Initialize Hive
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
-
   Hive.registerAdapters();
 
-  final statsRepo = StatsRepository();
-  await statsRepo.init();
-
-  // 🔥 Audio Service
+  // Generate audio Services
   final audioHandler = await AudioService.init(
     builder: () => PlaybackService(),
     config: const AudioServiceConfig(
@@ -48,54 +39,41 @@ void main() async {
     ),
   );
 
-  // 🔥 Core repos/services
-  final tuneRepo = TuneRepository();
-  final lyricsRepo = LyricsRepository();
+  // setup management
+  final managementBox = await Hive.openBox<ManagementSettings>(
+    'management_settings',
+  );
+  final managementRepo = ManagementRepository(managementBox);
+
+  // setup library
+  final audioQuery = OnAudioQuery();
+  final LibraryRepository libraryRepository = LibraryRepository();
+  final LibraryService libraryService = LibraryService(
+    audioQuery,
+    managementRepo,
+    libraryRepository,
+  );
+
+  // // setup stats
+  final statsBox = await Hive.openBox<TuneStats>('stats_box');
+  final statsRepo = StatsRepository(statsBox);
+  final stateService = StatsService(audioHandler.onTrackChanged, statsRepo);
+
+  // //  setup session
   final sessionRepo = SessionRepository();
 
-  final audioQueryService = AudioQueryService();
-  final lyricsService = LyricsService(lyricsRepo);
-
-  // 🔥 Theme
-  final themeCubit = ThemeCubit();
-  await themeCubit.load();
-
-  // 🔥 Stats (IMPORTANT: keep reference alive)
-  final statsService = StatsService(audioHandler.onTrackChanged, statsRepo);
-
   runApp(
-    MultiRepositoryProvider(
+    MultiBlocProvider(
       providers: [
-        RepositoryProvider.value(value: tuneRepo),
-        RepositoryProvider.value(value: statsRepo),
-        RepositoryProvider.value(value: statsService),
-        RepositoryProvider.value(value: sessionRepo),
+        BlocProvider(create: (context) => RootCubit()),
+        BlocProvider(create: (context) => PlaybackBloc(audioHandler)),
+        BlocProvider(create: (context) => SessionCubit(sessionRepo)),
+        BlocProvider(
+          create: (context) => LibraryCubit(service: libraryService),
+        ),
+        BlocProvider(create: (context) => StatsCubit(stateService)),
       ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: themeCubit),
-
-          BlocProvider(
-            create: (_) => LibraryCubit(tuneRepo, audioQueryService),
-          ),
-
-          BlocProvider(create: (_) => SearchCubit(tuneRepo)),
-
-          BlocProvider(
-            create: (ctx) =>
-                NowPlayingCubit(ctx.read<ThemeCubit>(), audioQueryService),
-          ),
-
-          BlocProvider(create: (_) => PlaybackBloc(audioHandler, tuneRepo)),
-
-          BlocProvider(create: (_) => LyricCubit(lyricsService)),
-
-          BlocProvider(create: (_) => SessionCubit(sessionRepo)),
-
-          BlocProvider(create: (_) => StatsCubit(statsRepo)),
-        ],
-        child: MyApp(showOnboarding: !themeCubit.seenOnboarding),
-      ),
+      child: MyApp(),
     ),
   );
 }

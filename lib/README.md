@@ -3,50 +3,42 @@
 - [ ] Add New features
 - [ ] Maintain Checklist
 
+
 ---
-- [x] Playback services
-	- [x] Notification Integration (Next, Prev, Play, seek)
-	- [x] Show Queue (List of Tunes dynamically)
-	- [x] Handles Shuffle, Repeat Modes, etc
-	- [x] Basic controls
-	- [x] Gapless playback
+x - done with logic
+xx - done with testing the logic
+xxx - done with implementing UI for the logic 
+---
 
-- [x] Queue Management
-	- [x] Add To Queue
-	- [x] Play after this 
-	- [x] Remove from Queue
-	- [x] Add a list of tunes to queue
-	- [x] Skip to that queue
+- [xx] Playback services
+	- [xx] Notification Integration (Next, Prev, Play, seek)
+	- [xx] Show Queue (List of Tunes dynamically)
+	- [xx] Handles Shuffle, Repeat Modes, etc
+	- [xx] Basic controls
+	- [xx] Gapless playback
 
-- [x] Queue persistence
-  - [x] List of songs in queue
-  - [x] Current playing index
-  - [x] Playback position (timestamp)
-  - [x] Shuffle state
-  - [x] Repeat mode
+- [xx] Queue Management
+	- [xx] Add To Queue
+	- [xx] Play after this 
+	- [xx] Remove from Queue
+	- [xx] Add a list of tunes to queue
+	- [xx] Skip to that queue
 
-- [x] Stats Management
-	- [x] Most Played Playlist (Unedittable) 
-	- [x] Recently Played Playlist
-	- [x] Liked Playlist
+- [xx] Stats Management
+	- [xx] Most Played Playlist (Unedittable) 
+	- [xx] Recently Played Playlist
+	- [xx] Liked Playlist
 
-- [ ] Music Management
-	- [ ] Exclude Directories
-	- [ ] Handle Multi-artist parsing
-		- [ ] Delimiters (/ , ; + &)
-		- [ ] User Can add more delimiters
-	- [ ] Minimum Song Duration: (Default 10s)
+- [xx] Music Management
+	- [xx] Exclude Directories
+	- [xx] Handle Multi-artist parsing
+		- [xx] Delimiters (/ , ; + &)
+		- [xx] User Can add more delimiters
+	- [xx] Minimum Song Duration: (Default 10s)
 
 - [ ] Library lookup
 	- [ ] Search Songs (Show Album, Playlist, Title, etc)
-	- [ ] Sort everywhere: Artist, Album, Title, Genre, Playlist, Folder
-	- [ ] Sort persistence
-	- [ ] Folder-based playback
 	- [ ] Multi-select actions (bulk add to queue, add to playlist, etc)
-
-- [ ] Song Metadata
-	- [ ] Edit Song's Metadata
-	- [ ] Find a minimal way to manage it
 
 - [ ] Lyrics
 	- [ ] Auto load lyrics once, save it locally (fallback to LRCLB)
@@ -59,7 +51,8 @@
 	- [ ] Create, Edit Name, remove playlist
 	- [ ] Playlist cover :- 4 AlbumArt from first  
 	- [ ] Save, Remove, Hide, Sort Tune (custom + other sorts)
-	- [ ] Playlist export/import (M3U)
+
+--- 
 
 - [ ] Customisation
 	- [ ] Extracting colour from album (Togglable)
@@ -68,10 +61,25 @@
 	- [ ] Customise Home Screen (reorder/toggle sections)
 	- [ ] Library View options (change top column, etc)
 
+- [ ] Song Metadata
+	- [ ] Edit Song's Metadata
+	- [ ] Find a minimal way to manage it
+
 - [ ] Etc
 	- [ ] Sleep Timer (Notify when ends)
 	- [ ] Get Artist Image by Artist Name (Dezeer API, fallback to ArtistImage by AudioQueryWidget)
 	- [ ] Backup & Restore (playlists, preferences, lyrics cache — JSON export)
+	- [x] Sort everywhere: Artist, Album, Title, Genre, Playlist
 
 
 ---
+
+
+## Done Completely
+
+- [xxx] Queue persistence
+  - [xxx] List of songs in queue
+  - [xxx] Current playing index
+  - [xxx] Playback position (timestamp)
+  - [xxx] Shuffle state
+  - [xxx] Repeat mode

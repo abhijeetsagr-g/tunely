@@ -35,22 +35,26 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         add(_ProcessingStateUpdatedEvent(status));
       }),
       _service.sequenceStateStream.listen((sequenceState) {
-        final sequence = sequenceState.sequence;
+        final sequence = sequenceState.effectiveSequence;
         final index = sequenceState.currentIndex;
+        if (index == null) return;
 
-        // Tags are Tune instances set via toMediaItem() — cast back here
-        final queue = sequence
-            .map((s) => (s.tag as dynamic))
-            .whereType<Tune>()
-            .toList();
+        final effectiveIndex = sequenceState.shuffleModeEnabled
+            ? sequenceState.shuffleIndices.indexOf(index)
+            : index;
 
-        final currentItem = index! < queue.length ? queue[index] : null;
+        final queue = sequence.map((s) => s.tag as Tune).toList();
+        final currentItem = effectiveIndex < queue.length
+            ? queue[effectiveIndex]
+            : null;
 
         add(
           _SequenceStateUpdatedEvent(
             currentItem: currentItem,
             queue: queue,
-            currentIndex: index,
+            currentIndex: effectiveIndex,
+            shuffleMode: sequenceState.shuffleModeEnabled,
+            repeatMode: sequenceState.loopMode,
           ),
         );
       }),
@@ -75,21 +79,22 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           currentItem: event.currentItem,
           queue: event.queue,
           currentIndex: event.currentIndex,
+          shuffleEnabled: event.shuffleMode,
+          repeatMode: event.repeatMode,
         ),
       ),
     );
+
     on<_BufferedPositionUpdatedEvent>(
       (event, emit) =>
           emit(state.copyWith(bufferedPosition: event.bufferedPosition)),
     );
 
     // Playback control handlers
-    on<PlayQueueEvent>((event, emit) async {
-      await _service.playQueue(
-        event.items.map((t) => t.toMediaItem()).toList(),
-        event.startIndex,
-      );
-    });
+    on<PlayQueueEvent>(
+      (event, emit) async =>
+          await _service.playQueue(event.items, event.startIndex),
+    );
 
     on<PlayEvent>((event, emit) async => await _service.play());
     on<PauseEvent>((event, emit) async => await _service.pause());
@@ -129,15 +134,31 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     // Settings handlers
     on<SetShuffleEvent>((event, emit) async {
       await _service.setShuffle(event.enabled);
-      emit(state.copyWith(shuffleEnabled: event.enabled));
+      // emit(state.copyWith(shuffleEnabled: event.enabled));
     });
     on<SetRepeatEvent>((event, emit) async {
       await _service.setRepeat(event.mode);
-      emit(state.copyWith(repeatMode: event.mode));
+      // emit(state.copyWith(repeatMode: event.mode));
     });
     on<SetSpeedEvent>((event, emit) async {
       await _service.setSpeed(event.speed);
       emit(state.copyWith(speed: event.speed));
+    });
+
+    // restore previous session
+    on<RestoreSessionEvent>((event, emit) async {
+      if (event.queue.isEmpty) return;
+      await _service.playQueue(
+        event.queue,
+        event.currentIndex,
+        autoPlay: false,
+      );
+
+      await _service.pause(); // just in case lol
+      await _service.seek(event.position);
+      await _service.setShuffle(event.shuffleEnabled);
+      await _service.setRepeat(event.repeatMode);
+      await _service.setSpeed(event.speed);
     });
   }
 

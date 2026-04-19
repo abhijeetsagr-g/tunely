@@ -2,14 +2,11 @@ import 'package:hive_ce/hive.dart';
 import 'package:tunely/features/stats/model/tune_stats.dart';
 
 class StatsRepository {
-  final String _boxName = 'statsBox';
-  late Box<TuneStats> _box;
+  final Box<TuneStats> _box;
 
   Stream<BoxEvent> watch() => _box.watch();
 
-  Future<void> init() async {
-    _box = await Hive.openBox<TuneStats>(_boxName);
-  }
+  StatsRepository(this._box);
 
   TuneStats get(String id) {
     return _box.get(id) ?? TuneStats(tuneId: id);
