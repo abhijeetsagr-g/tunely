@@ -55,6 +55,7 @@ class MyApp extends StatelessWidget {
       ],
 
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         themeMode: .dark,
         darkTheme: ThemeData.dark(),
         home: SplashView(),

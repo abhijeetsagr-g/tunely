@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tunely/features/customization/cubit/customization_cubit.dart';
+import 'package:tunely/features/customization/service/color_customizer.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/repository/library_repository.dart';
 import 'package:tunely/features/library/service/library_service.dart';
@@ -78,6 +80,9 @@ void main() async {
   // setup playlist
   final playlistService = PlaylistService(audioQuery: audioQuery);
 
+  // setup customization
+  final colorCustomizer = ColorCustomizer(query: audioQuery);
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -94,6 +99,7 @@ void main() async {
         BlocProvider(
           create: (context) => LibraryCubit(service: libraryService),
         ),
+        BlocProvider(create: (context) => CustomizationCubit(colorCustomizer)),
       ],
       child: MyApp(),
     ),
