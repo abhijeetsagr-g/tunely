@@ -1,7 +1,7 @@
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/library/repository/library_repository.dart';
-import 'package:tunely/features/library/utils/tune_praser.dart';
+import 'package:tunely/core/utlis/tune_praser.dart';
 import 'package:tunely/features/music_management/repository/management_repository.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';

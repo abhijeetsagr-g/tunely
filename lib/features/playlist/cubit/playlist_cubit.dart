@@ -106,10 +106,7 @@ class PlaylistCubit extends Cubit<PlaylistState> {
       final updatedTunes = s.tunesCache[playlistId]
           ?.where((t) => t.songId != tune.songId)
           .toList();
-      final updatedCache = {
-        ...s.tunesCache,
-        if (updatedTunes != null) playlistId: updatedTunes,
-      };
+      final updatedCache = {...s.tunesCache, playlistId: ?updatedTunes};
       emit(s.copyWith(tunesCache: updatedCache));
     } catch (e) {
       emit(PlaylistError('Failed to remove song'));

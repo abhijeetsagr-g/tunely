@@ -1,5 +1,5 @@
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:tunely/features/library/utils/artist_praser.dart';
+import 'package:tunely/core/utlis/artist_praser.dart';
 import 'package:tunely/features/music_management/model/management_settings.dart';
 import 'package:tunely/shared/model/tune.dart';
 

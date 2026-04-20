@@ -1,82 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
-import 'package:palette_generator/palette_generator.dart';
+import 'package:flutter/services.dart';
 
 class AlbumArt extends StatefulWidget {
-  const AlbumArt({
-    super.key,
-    required this.id,
-    required this.size,
-    required this.type,
-  });
-  final int id;
+  const AlbumArt({super.key, this.artUri, required this.size});
+
+  final Uri? artUri;
   final Size size;
-  final ArtworkType type;
 
   @override
   State<AlbumArt> createState() => _AlbumArtState();
 }
 
 class _AlbumArtState extends State<AlbumArt> {
-  Color? _shadowColor;
+  Uint8List? _bytes;
+  late Uri? artUri;
+  static const _channel = MethodChannel('tunely/artwork');
 
   @override
   void initState() {
     super.initState();
-    _extractColor();
+    if (widget.artUri == null) {
+      artUri = Uri.parse('content://media/external/audio/albumart/0');
+    } else {
+      artUri = widget.artUri;
+    }
+
+    _load();
   }
 
-  Future<void> _extractColor() async {
-    final artwork = await OnAudioQuery().queryArtwork(
-      widget.id,
-      ArtworkType.AUDIO,
-      size: 50,
-    );
-    if (artwork == null || !mounted) return;
-    final palette = await PaletteGenerator.fromImageProvider(
-      MemoryImage(artwork),
-    );
-    if (!mounted) return;
-    setState(() {
-      _shadowColor = palette.dominantColor?.color;
-    });
+  @override
+  void didUpdateWidget(AlbumArt old) {
+    super.didUpdateWidget(old);
+    if (old.artUri != widget.artUri) _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final bytes = await _channel.invokeMethod<Uint8List>(
+        'getArtwork',
+        widget.artUri.toString(),
+      );
+      if (mounted) setState(() => _bytes = bytes);
+    } catch (_) {
+      if (mounted) setState(() => _bytes = null);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      width: widget.size.width,
-      height: widget.size.height,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: SizedBox(
+        width: widget.size.width,
+        height: widget.size.height,
+        child: _bytes != null
+            ? Image.memory(_bytes!, fit: BoxFit.cover, gaplessPlayback: true)
+            : _Placeholder(size: widget.size),
+      ),
+    );
+  }
+}
+
+class _Placeholder extends StatelessWidget {
+  const _Placeholder({required this.size});
+  final Size size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size.width,
+      height: size.height,
       decoration: BoxDecoration(
+        color: Colors.grey.shade900,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: Theme.of(context).brightness == Brightness.dark
-            ? []
-            : _shadowColor != null
-            ? [
-                BoxShadow(
-                  color: _shadowColor!.withAlpha(60),
-                  blurRadius: 12,
-                  spreadRadius: 2,
-                  offset: const Offset(0, 4),
-                ),
-              ]
-            : [],
       ),
-      child: QueryArtworkWidget(
-        id: widget.id,
-        type: widget.type,
-        artworkFit: BoxFit.cover,
-        keepOldArtwork: true,
-        artworkBorder: BorderRadius.circular(16),
-        nullArtworkWidget: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey.shade900,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: const Icon(Icons.music_note, color: Colors.white54),
-        ),
-      ),
+      child: const Icon(Icons.music_note, color: Colors.white54),
     );
   }
 }

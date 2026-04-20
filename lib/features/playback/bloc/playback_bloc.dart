@@ -133,12 +133,18 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
 
     // Settings handlers
     on<SetShuffleEvent>((event, emit) async {
-      await _service.setShuffle(event.enabled);
-      // emit(state.copyWith(shuffleEnabled: event.enabled));
+      final enabled = !state.shuffleEnabled;
+      await _service.setShuffle(enabled);
     });
+
     on<SetRepeatEvent>((event, emit) async {
-      await _service.setRepeat(event.mode);
-      // emit(state.copyWith(repeatMode: event.mode));
+      final mode = switch (state.repeatMode) {
+        LoopMode.off => LoopMode.one,
+        LoopMode.one => LoopMode.all,
+        LoopMode.all => LoopMode.off,
+      };
+
+      await _service.setRepeat(mode);
     });
     on<SetSpeedEvent>((event, emit) async {
       await _service.setSpeed(event.speed);

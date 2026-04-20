@@ -8,14 +8,8 @@
 x - done with logic
 xx - done with testing the logic
 xxx - done with implementing UI for the logic 
----
 
-- [xx] Playback services
-	- [xx] Notification Integration (Next, Prev, Play, seek)
-	- [xx] Show Queue (List of Tunes dynamically)
-	- [xx] Handles Shuffle, Repeat Modes, etc
-	- [xx] Basic controls
-	- [xx] Gapless playback
+---
 
 - [xx] Queue Management
 	- [xx] Add To Queue
@@ -25,8 +19,8 @@ xxx - done with implementing UI for the logic
 	- [xx] Skip to that queue
 
 - [xx] Stats Management
-	- [xx] Most Played Playlist (Unedittable) 
-	- [xx] Recently Played Playlist
+	- [xxx] Most Played Playlist (Unedittable) 
+	- [xxx] Recently Played Playlist
 	- [xx] Liked Playlist
 
 - [xx] Music Management
@@ -75,10 +69,16 @@ xxx - done with implementing UI for the logic
 
 
 ## Done Completely
-
 - [xxx] Queue persistence
   - [xxx] List of songs in queue
   - [xxx] Current playing index
   - [xxx] Playback position (timestamp)
   - [xxx] Shuffle state
   - [xxx] Repeat mode
+
+- [xxx] Playback services
+	- [xxx] Notification Integration (Next, Prev, Play, seek)
+	- [xxx] Show Queue (List of Tunes dynamically)
+	- [xxx] Handles Shuffle, Repeat Modes, etc
+	- [xxx] Basic controls
+	

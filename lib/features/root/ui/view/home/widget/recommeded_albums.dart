@@ -44,7 +44,7 @@ class _RecommendedAlbumsState extends State<RecommendedAlbums> {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: _picked.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 20),
+                    separatorBuilder: (_, _) => const SizedBox(width: 20),
                     itemBuilder: (context, i) => AlbumCard(album: _picked[i]),
                   ),
                 );

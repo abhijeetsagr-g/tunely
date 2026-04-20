@@ -50,7 +50,7 @@ class LyricsService {
 
   Future<LyricsResult?> reloadLyrics(Tune tune) async {
     final key = tune.songId?.toString() ?? tune.path;
-    ;
+
     await _repository.delete(key);
     return fetchLyrics(tune);
   }
@@ -61,7 +61,7 @@ class LyricsService {
     String artist,
   ) async {
     final key = tune.songId?.toString() ?? tune.path;
-    ;
+
     await _repository.delete(key);
     final result = await fetchSearch(title, artist);
     if (result != null) await _repository.save(key, result);

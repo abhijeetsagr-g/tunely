@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/fur_artist_name.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
@@ -54,9 +53,10 @@ class SongTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 leading: AlbumArt(
-                  id: tune.songId ?? 0,
+                  // id: tune.songId ?? 0,
+                  artUri: tune.artUri,
                   size: Size(46, 46),
-                  type: ArtworkType.AUDIO,
+                  // type: ArtworkType.AUDIO,
                 ),
                 title: Text(
                   tune.title.toTitleCase(),

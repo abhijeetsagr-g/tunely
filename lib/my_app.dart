@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/root/ui/view/splash/splash_view.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
@@ -50,6 +51,16 @@ class MyApp extends StatelessWidget {
             );
 
             context.read<SessionCubit>().save(session);
+          },
+        ),
+
+        BlocListener<PlaybackBloc, PlaybackState>(
+          listenWhen: (previous, current) =>
+              previous.currentItem != current.currentItem,
+          listener: (context, state) {
+            if (state.currentItem != null) {
+              context.read<LyricsCubit>().fetch(state.currentItem!);
+            }
           },
         ),
       ],

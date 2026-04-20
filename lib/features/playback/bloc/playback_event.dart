@@ -69,13 +69,11 @@ class PlayAfterThisEvent extends PlaybackEvent {
 
 // Settings
 class SetShuffleEvent extends PlaybackEvent {
-  final bool enabled;
-  const SetShuffleEvent(this.enabled);
+  const SetShuffleEvent();
 }
 
 class SetRepeatEvent extends PlaybackEvent {
-  final LoopMode mode;
-  const SetRepeatEvent(this.mode);
+  const SetRepeatEvent();
 }
 
 class SetSpeedEvent extends PlaybackEvent {

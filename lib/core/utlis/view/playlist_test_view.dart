@@ -56,7 +56,7 @@ class _PlaylistTestViewState extends State<PlaylistTestView> {
                 final playlist = state.playlists[i];
                 return ListTile(
                   leading: const Icon(Icons.queue_music),
-                  title: Text(playlist.playlist ?? 'Unknown'),
+                  title: Text(playlist.playlist),
                   subtitle: Text('${playlist.numOfSongs} songs'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -177,7 +177,7 @@ class _PlaylistDetailViewState extends State<_PlaylistDetailView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.playlist.playlist ?? 'Playlist')),
+      appBar: AppBar(title: Text(widget.playlist.playlist)),
       body: BlocBuilder<PlaylistCubit, PlaylistState>(
         builder: (context, state) {
           if (state is! PlaylistLoaded) return const SizedBox();

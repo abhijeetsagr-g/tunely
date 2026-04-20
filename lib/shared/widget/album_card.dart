@@ -6,8 +6,9 @@ import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart'
 import 'package:tunely/shared/widget/album_art.dart';
 
 class AlbumCard extends StatelessWidget {
-  const AlbumCard({super.key, required this.album});
+  const AlbumCard({super.key, required this.album, this.width = 120});
   final AlbumModel album;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,13 @@ class AlbumCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AlbumArt(id: album.id, size: Size(120, 120), type: ArtworkType.ALBUM),
+        // TODO: ALBUM ART
+        AlbumArt(
+          size: Size(width, width),
+          artUri: Uri.parse(
+            'content://media/external/audio/albumart/${album.id}',
+          ),
+        ),
         const SizedBox(height: 4),
         SizedBox(
           width: 90,
