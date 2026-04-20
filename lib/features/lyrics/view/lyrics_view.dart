@@ -37,6 +37,8 @@ class LyricsView extends StatelessWidget {
                             "Unknown Song",
                       ),
                     ),
+                    Spacer(),
+                    Icon(Icons.more_vert),
                   ],
                 ),
                 Expanded(child: SyncLyricsWidget()),

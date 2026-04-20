@@ -17,7 +17,10 @@ class LyricsLineTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = Theme.of(context).colorScheme.primary;
+    final colorScheme = Theme.of(context).colorScheme;
+    final accent = colorScheme.primary;
+    final onSurface = colorScheme.onSurface;
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedDefaultTextStyle(
@@ -27,10 +30,10 @@ class LyricsLineTile extends StatelessWidget {
           fontSize: isActive ? 22 : 17,
           fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
           color: isActive
-              ? Colors.white
+              ? onSurface
               : isPast
-              ? Colors.white38
-              : Colors.white60,
+              ? onSurface.withAlpha(80)
+              : onSurface.withAlpha(140),
           height: 1.4,
         ),
         child: AnimatedContainer(

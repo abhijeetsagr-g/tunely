@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/features/lyrics/view/lyrics_view.dart';
 import 'package:tunely/features/root/ui/view/home/home_view.dart';
 
 class RootScreen extends StatelessWidget {
@@ -6,6 +7,14 @@ class RootScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: HomeView());
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LyricsView()),
+        ),
+      ),
+      body: HomeView(),
+    );
   }
 }
