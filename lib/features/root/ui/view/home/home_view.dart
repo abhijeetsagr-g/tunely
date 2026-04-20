@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/utlis/random_texts.dart';
+import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/root/ui/view/home/widget/continue_listening_card.dart';
 import 'package:tunely/features/root/ui/view/home/widget/recent_list.dart';
 import 'package:tunely/features/root/ui/view/home/widget/recommeded_albums.dart';
 import 'package:tunely/features/root/ui/view/home/widget/recommended_songs.dart';
 import 'package:tunely/features/root/ui/view/home/widget/top_song_card.dart';
+import 'package:tunely/shared/widget/artist_card.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -35,10 +38,9 @@ class HomeView extends StatelessWidget {
           ),
         ),
 
-        SliverToBoxAdapter(child: RecentList()),
-        SliverToBoxAdapter(child: ContinueListeningCard()),
         RecommendedAlbums(),
-        // SliverToBoxAdapter(child: SizedBox(height: 20)),
+        SliverToBoxAdapter(child: ContinueListeningCard()),
+        SliverToBoxAdapter(child: RecentList()),
         SliverToBoxAdapter(child: TopSongsCard()),
         RecommendedSongs(),
       ],

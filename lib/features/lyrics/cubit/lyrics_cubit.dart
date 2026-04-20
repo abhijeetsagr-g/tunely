@@ -15,6 +15,7 @@ class LyricsCubit extends Cubit<LyricsState> {
   Future<void> fetch(Tune tune) async {
     emit(const LyricsLoading());
     final result = await _service.fetchLyrics(tune);
+    await Future.delayed(const Duration(milliseconds: 500));
     if (result == null) {
       emit(const LyricsNotFound());
       return;
@@ -22,7 +23,6 @@ class LyricsCubit extends Cubit<LyricsState> {
     emit(LyricsLoaded(result: result, tune: tune));
   }
 
-  // Temporary offset — not persisted, just shifts display
   void setOffset(int offsetMs) {
     final s = state;
     if (s is! LyricsLoaded) return;
@@ -86,6 +86,8 @@ class LyricsCubit extends Cubit<LyricsState> {
     final s = state;
     if (s is! LyricsLoaded) return;
     emit(const LyricsLoading());
+    await Future.delayed(const Duration(milliseconds: 500));
+
     final result = await _service.reloadLyricsManual(s.tune, title, artist);
     if (result == null) {
       emit(const LyricsNotFound());

@@ -16,21 +16,33 @@ class _PlayerGradientBackgroundState extends State<PlayerGradientBackground>
   late AnimationController _animController;
   late Animation<double> _animation;
 
+  // animates from prev to new
   Color _currentColor = Colors.transparent;
   Color _previousColor = Colors.transparent;
-  int? _lastSongId;
+  int? _lastSongId; // graud it up
 
   @override
   void initState() {
     super.initState();
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200), // longer fade
+      duration: const Duration(milliseconds: 1200),
     );
     _animation = CurvedAnimation(
       parent: _animController,
       curve: Curves.easeInOutCubic, // smoother curve
     );
+
+    // Seed with surface color so there's no transparent flash on first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final surface = Theme.of(context).colorScheme.surface;
+      _previousColor = surface;
+      _currentColor = surface;
+
+      // Trigger color extraction immediately if a song is already playing
+      final songId = context.read<PlaybackBloc>().state.currentItem?.songId;
+      _updateColor(songId);
+    });
   }
 
   @override
@@ -51,7 +63,6 @@ class _PlayerGradientBackgroundState extends State<PlayerGradientBackground>
 
     if (color == null || !mounted) return;
 
-    // Blend previous+current mid-animation so rapid skips don't snap
     _previousColor =
         Color.lerp(_previousColor, _currentColor, _animation.value) ??
         _currentColor;

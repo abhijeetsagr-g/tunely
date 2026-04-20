@@ -13,7 +13,7 @@ class LyricsService {
   LyricsService({required LyricsRepository repository})
     : _repository = repository;
 
-  // fetch songs automatically
+  // fetch songs automaticallyy
   Future<LyricsResult?> fetchLyrics(Tune tune) async {
     final key = tune.songId?.toString() ?? tune.path;
     if (_repository.exists(key)) {

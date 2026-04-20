@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
 import 'package:tunely/features/lyrics/model/lyrics_result.dart';
 import 'package:tunely/features/lyrics/view/widget/lyrics_line_tile.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';

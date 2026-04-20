@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:tunely/core/extensions/title_case.dart';
+import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
+import 'package:tunely/features/lyrics/view/widget/lyrics_option_sheet.dart';
 import 'package:tunely/features/lyrics/view/widget/sync_lyrics_widget.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/view/widget/control_button.dart';
@@ -27,18 +30,25 @@ class LyricsView extends StatelessWidget {
                       icon: Icon(Icons.keyboard_arrow_left),
                     ),
                     Center(
-                      child: Text(
-                        context
-                                .watch<PlaybackBloc>()
-                                .state
-                                .currentItem
-                                ?.title
-                                .toTitleCase() ??
-                            "Unknown Song",
+                      child: SizedBox(
+                        width: 300,
+                        child: Text(
+                          context
+                                  .watch<PlaybackBloc>()
+                                  .state
+                                  .currentItem
+                                  ?.title
+                                  .toTitleCase() ??
+                              "Unknown Song",
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                     Spacer(),
-                    Icon(Icons.more_vert),
+                    IconButton(
+                      onPressed: () => showLyricsOptionsSheet(context),
+                      icon: Icon(Icons.more_vert),
+                    ),
                   ],
                 ),
                 Expanded(child: SyncLyricsWidget()),

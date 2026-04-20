@@ -10,14 +10,6 @@ xx - done with testing the logic
 xxx - done with implementing UI for the logic 
 
 ---
-
-- [xx] Queue Management
-	- [xx] Add To Queue
-	- [xx] Play after this 
-	- [xx] Remove from Queue
-	- [xx] Add a list of tunes to queue
-	- [xx] Skip to that queue
-
 - [xx] Stats Management
 	- [xxx] Most Played Playlist (Unedittable) 
 	- [xxx] Recently Played Playlist
@@ -32,13 +24,6 @@ xxx - done with implementing UI for the logic
 
 - [x] Search lookup
 	- [x] Search Songs (Show Album, Playlist, Title, etc)
-
-- [x] Lyrics
-	- [ ] Auto load lyrics once, save it locally (fallback to LRCLB)
-	- [x] Search Lyrics with Song title and artist
-	- [x] Delay/increase sync offset
-	- [x] Lyrics offset saved per song
-	- [x] Write changes and update locally
 
 - [ ] Playlist Management
 	- [x] Create, Edit Name, remove playlist
@@ -82,3 +67,16 @@ xxx - done with implementing UI for the logic
 	- [xxx] Handles Shuffle, Repeat Modes, etc
 	- [xxx] Basic controls
 	
+- [xxx] Queue Management
+	- [xxx] Add To Queue
+	- [xxx] Play after this 
+	- [xxx] Remove from Queue
+	- [xxx] Add a list of tunes to queue
+	- [xxx] Skip to that queue
+
+- [xxx] Lyrics
+	- [xxx] Auto load lyrics once, save it locally (fallback to LRCLB)
+	- [xxx] Search Lyrics with Song title and artist
+	- [d] Delay/increase sync offset
+	- [d] Lyrics offset saved per song
+	- [d] Write changes and update locally

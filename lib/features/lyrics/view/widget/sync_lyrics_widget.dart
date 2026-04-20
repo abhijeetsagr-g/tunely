@@ -15,6 +15,13 @@ class SyncLyricsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LyricsCubit, LyricsState>(
+      buildWhen: (previous, current) {
+        if (previous is LyricsLoaded && current is LyricsLoaded) {
+          return previous.result != current.result ||
+              previous.temporaryOffset != current.temporaryOffset;
+        }
+        return previous.runtimeType != current.runtimeType;
+      },
       builder: (context, state) => switch (state) {
         LyricsLoading() => const LyricsLoadingState(),
         LyricsNotFound() => const LyricsNotFoundState(),

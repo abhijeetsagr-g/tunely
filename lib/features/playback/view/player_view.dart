@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
+import 'package:tunely/features/playback/view/queue/queue_view.dart';
 import 'package:tunely/features/playback/view/widget/control_button.dart';
 import 'package:tunely/features/playback/view/widget/next_song_label.dart';
 import 'package:tunely/features/playback/view/widget/player_album_art.dart';
@@ -14,7 +15,6 @@ class PlayerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           const PlayerGradientBackground(),
@@ -34,20 +34,22 @@ class PlayerView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed: () => showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (_) => BlocProvider.value(
-                            value: context.read<PlaybackBloc>(),
-                            // child: const QueueSheet(),
-                          ),
-                        ),
+                        onPressed: () {
+                          // TODO: GO TO QUEUE VIEW
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => QueueView(),
+                            ),
+                          );
+                        },
                         icon: const Icon(Icons.queue_music_outlined),
                       ),
                       SizedBox(width: 250, child: NextSongLabel()),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // TODO: GO TO Lyrics VIEW
+                        },
                         icon: const Icon(Icons.lyrics_outlined),
                       ),
                     ],
