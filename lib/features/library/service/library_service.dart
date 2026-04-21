@@ -39,20 +39,23 @@ class LibraryService {
   }
 
   List<Artist> _buildArtists(List<Tune> tunes) {
-    final Map<String, List<int>> artistMap = {};
-
+    final Map<String, List<Tune>> artistMap = {};
     for (final tune in tunes) {
       for (final name in tune.artists) {
-        if (tune.songId != null) {
-          artistMap.putIfAbsent(name, () => []).add(tune.songId!);
-        }
+        artistMap.putIfAbsent(name, () => []).add(tune);
       }
     }
     return artistMap.entries
         .map(
           (e) =>
-              Artist(artistId: e.key.hashCode, artist: e.key, tunesId: e.value),
+              Artist(artistId: e.key.hashCode, artist: e.key, tunes: e.value),
         )
         .toList();
   }
+
+  List<Tune> getTunesByAlbum(int albumId) =>
+      _libraryRepo.getTunesByAlbum(albumId);
+
+  List<Tune> getTunesByGenre(String genre) =>
+      _libraryRepo.getTunesByGenre(genre);
 }

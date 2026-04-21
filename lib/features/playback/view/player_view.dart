@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/playback/view/queue/queue_view.dart';
 import 'package:tunely/features/playback/view/widget/control_button.dart';
 import 'package:tunely/features/playback/view/widget/next_song_label.dart';
 import 'package:tunely/features/playback/view/widget/player_album_art.dart';
@@ -35,20 +35,14 @@ class PlayerView extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          // TODO: GO TO QUEUE VIEW
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => QueueView(),
-                            ),
-                          );
+                          Navigator.pushNamed(context, AppRoute.queue);
                         },
                         icon: const Icon(Icons.queue_music_outlined),
                       ),
                       SizedBox(width: 250, child: NextSongLabel()),
                       IconButton(
                         onPressed: () {
-                          // TODO: GO TO Lyrics VIEW
+                          Navigator.pushNamed(context, AppRoute.lyrics);
                         },
                         icon: const Icon(Icons.lyrics_outlined),
                       ),

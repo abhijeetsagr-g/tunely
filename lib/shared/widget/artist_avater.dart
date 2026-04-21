@@ -70,8 +70,8 @@ class ArtistAvatar extends StatelessWidget {
           width: size.width,
           height: size.height,
           fit: BoxFit.cover,
-          placeholder: (_, __) => fallback,
-          errorWidget: (_, __, ___) => fallback,
+          placeholder: (_, _) => fallback,
+          errorWidget: (_, _, _) => fallback,
         );
       },
     );

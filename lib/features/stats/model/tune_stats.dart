@@ -1,7 +1,7 @@
 import 'package:hive_ce/hive_ce.dart';
 part 'tune_stats.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 5)
 class TuneStats extends HiveObject {
   @HiveField(0)
   String tuneId;

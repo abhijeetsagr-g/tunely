@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/const/app_route.dart';
+import 'package:tunely/core/const/app_router.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/root/ui/view/splash/splash_view.dart';
+import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/session/model/queue_session_model.dart';
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +85,12 @@ class MyApp extends StatelessWidget {
       ],
 
       child: MaterialApp(
+        navigatorObservers: [MiniPlayerObserver()],
+        onGenerateRoute: AppRouter.onGenerateRoute,
+        initialRoute: AppRoute.splash,
         debugShowCheckedModeBanner: false,
-        themeMode: .dark,
+        themeMode: ThemeMode.dark,
         darkTheme: ThemeData.dark(),
-        home: SplashView(),
       ),
     );
   }

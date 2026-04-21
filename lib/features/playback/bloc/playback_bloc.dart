@@ -109,16 +109,21 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       (event, emit) async => await _service.skipToQueueItem(event.index),
     );
 
+    on<ShuffleAllEvent>((event, emit) async {
+      final shuffled = List<Tune>.from(event.tunes)..shuffle();
+      await _service.playQueue(shuffled, 0);
+      await _service.setShuffle(true);
+    });
+
     // Queue management handlers
     on<AddQueueItemEvent>(
-      (event, emit) async =>
-          await _service.addQueueItem(event.item.toMediaItem()),
+      (event, emit) async => await _service.addToQueue(event.item),
     );
     on<AddQueueItemsEvent>(
-      (event, emit) async => await _service.addQueueItems(
-        event.items.map((t) => t.toMediaItem()).toList(),
-      ),
+      (event, emit) async => await _service.addManyToQueue(event.items),
     );
+
+    // TODO: CHANGE
     on<RemoveQueueItemEvent>(
       (event, emit) async =>
           await _service.removeQueueItem(event.item.toMediaItem()),
@@ -127,8 +132,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       (event, emit) async => await _service.removeQueueItemAt(event.index),
     );
     on<PlayAfterThisEvent>(
-      (event, emit) async =>
-          await _service.playAfterThis(event.item.toMediaItem()),
+      (event, emit) async => await _service.playAfterThis(event.item),
     );
 
     // Settings handlers

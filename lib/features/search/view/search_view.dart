@@ -38,47 +38,44 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: BlocBuilder<SearchCubit, SearchState>(
-        builder: (context, state) {
-          final isLoaded = state is SearchLoaded;
-          final result = isLoaded ? state.result : null;
+    return BlocBuilder<SearchCubit, SearchState>(
+      builder: (context, state) {
+        final isLoaded = state is SearchLoaded;
+        final result = isLoaded ? state.result : null;
 
-          final isEmpty =
-              isLoaded &&
-              result!.tunes.isEmpty &&
-              result.albums.isEmpty &&
-              result.artists.isEmpty;
+        final isEmpty =
+            isLoaded &&
+            result!.tunes.isEmpty &&
+            result.albums.isEmpty &&
+            result.artists.isEmpty;
 
-          return CustomScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            slivers: [
-              _buildAppBar(theme),
+        return CustomScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          slivers: [
+            _buildAppBar(theme),
 
-              if (!isLoaded)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Center(child: Text("Find Your Tune")),
-                )
-              else if (isEmpty)
-                _buildEmptyState(
-                  icon: Icons.music_off_rounded,
-                  message: 'No results',
-                  sub: 'Nothing matched "${_controller.text}"',
-                )
-              else ...[
-                ..._buildSongs(result!),
-                ..._buildAlbums(result),
-                ..._buildArtists(result),
-              ],
+            if (!isLoaded)
+              _buildEmptyState(
+                icon: Icons.music_note,
+                message: "Find Your Tune",
+                sub: "What you looking for?",
+              )
+            else if (isEmpty)
+              _buildEmptyState(
+                icon: Icons.music_off_rounded,
+                message: 'No results',
+                sub: 'Nothing matched "${_controller.text}"',
+              )
+            else ...[
+              ..._buildSongs(result!),
+              ..._buildAlbums(result),
+              ..._buildArtists(result),
             ],
-          );
-        },
-      ),
+          ],
+        );
+      },
     );
   }
-
-  // ─────────────────────────────────────────────
 
   Widget _buildAppBar(ThemeData theme) {
     return SliverAppBar(

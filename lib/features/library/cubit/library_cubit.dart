@@ -34,4 +34,7 @@ class LibraryCubit extends Cubit<LibraryState> {
       emit(LibraryError(e.toString()));
     }
   }
+
+  List<Tune> getTunesByAlbum(int albumId) => _service.getTunesByAlbum(albumId);
+  List<Tune> getTunesByGenre(String genre) => _service.getTunesByGenre(genre);
 }

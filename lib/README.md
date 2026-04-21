@@ -22,9 +22,6 @@ xxx - done with implementing UI for the logic
 		- [xx] User Can add more delimiters
 	- [xx] Minimum Song Duration: (Default 10s)
 
-- [x] Search lookup
-	- [x] Search Songs (Show Album, Playlist, Title, etc)
-
 - [ ] Playlist Management
 	- [x] Create, Edit Name, remove playlist
 	- [ ] Playlist cover :- 4 AlbumArt from first  
@@ -45,9 +42,9 @@ xxx - done with implementing UI for the logic
 
 - [ ] Etc
 	- [ ] Sleep Timer (Notify when ends)
-	- [ ] Get Artist Image by Artist Name (Dezeer API, fallback to ArtistImage by AudioQueryWidget)
-	- [ ] Backup & Restore (playlists, preferences, lyrics cache — JSON export)
-	- [ ] Multi-select actions (bulk add to queue, add to playlist, etc)
+	- [x] Get Artist Image by Artist Name (Dezeer API, fallback to ArtistImage by AudioQueryWidget)
+	- [d] Backup & Restore (playlists, preferences, lyrics cache — JSON export)
+	- [d] Multi-select actions (bulk add to queue, add to playlist, etc)
 	- [x] Sort everywhere: Artist, Album, Title, Genre, Playlist
 
 ---
@@ -80,3 +77,6 @@ xxx - done with implementing UI for the logic
 	- [d] Delay/increase sync offset
 	- [d] Lyrics offset saved per song
 	- [d] Write changes and update locally
+
+- [x] Search lookup
+	- [x] Search Songs (Show Album, Playlist, Title, etc)

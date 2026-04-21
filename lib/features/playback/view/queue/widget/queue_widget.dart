@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/shared/widget/song_tile.dart';
+import 'package:tunely/features/playback/view/queue/widget/queue_song_tile.dart';
 
 class QueueWidget extends StatelessWidget {
   const QueueWidget({super.key});
@@ -30,13 +30,16 @@ class QueueWidget extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 24),
           children: [
             _SectionLabel(label: 'Next Song'),
-            SongTile(tunes: tunes, index: nextIndex),
+            QueueSongTile(index: nextIndex, tune: tunes[nextIndex]),
 
             if (upcoming.isNotEmpty) ...[
               const SizedBox(height: 8),
               _SectionLabel(label: 'Upcoming'),
               ...upcoming.mapIndexed(
-                (i, t) => SongTile(tunes: tunes, index: nextIndex + 1 + i),
+                (i, t) => QueueSongTile(
+                  tune: tunes[nextIndex + 1 + i],
+                  index: nextIndex + 1 + i,
+                ),
               ),
             ],
           ],
@@ -47,7 +50,7 @@ class QueueWidget extends StatelessWidget {
 }
 
 class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({super.key, required this.label});
+  const _SectionLabel({required this.label});
   final String label;
 
   @override

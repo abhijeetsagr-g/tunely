@@ -140,32 +140,21 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   // Queue Management
-  @override
-  Future<void> addQueueItem(MediaItem mediaItem) async {
+  Future<void> addToQueue(Tune tune) async {
     await _player.addAudioSource(
-      AudioSource.uri(Uri.parse(mediaItem.id), tag: mediaItem),
+      AudioSource.uri(Uri.parse(tune.path), tag: tune),
     );
-
-    final sequence = _player.sequenceState.sequence;
-    updateQueue(sequence.map((s) => s.tag as MediaItem).toList());
   }
 
-  @override
-  Future<void> addQueueItems(List<MediaItem> mediaItems) async {
+  Future<void> addManyToQueue(List<Tune> tunes) async {
     await _player.addAudioSources(
-      mediaItems
-          .map((item) => AudioSource.uri(Uri.parse(item.id), tag: item))
-          .toList(),
+      tunes.map((t) => AudioSource.uri(Uri.parse(t.path), tag: t)).toList(),
     );
-    final sequence = _player.sequenceState.sequence;
-    updateQueue(sequence.map((s) => s.tag as MediaItem).toList());
   }
 
   @override
   Future<void> removeQueueItemAt(int index) async {
     await _player.removeAudioSourceAt(index);
-    final sequence = _player.sequenceState.sequence;
-    updateQueue(sequence.map((s) => s.tag as MediaItem).toList());
   }
 
   @override
@@ -174,15 +163,12 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     if (index != -1) await removeQueueItemAt(index);
   }
 
-  Future<void> playAfterThis(MediaItem item) async {
+  Future<void> playAfterThis(Tune tune) async {
     final insertIndex = (_player.currentIndex ?? 0) + 1;
     await _player.insertAudioSource(
       insertIndex,
-      AudioSource.uri(Uri.parse(item.id), tag: item),
+      AudioSource.uri(Uri.parse(tune.path), tag: tune),
     );
-
-    final sequence = _player.sequenceState.sequence;
-    updateQueue(sequence.map((s) => s.tag as MediaItem).toList());
   }
 
   @override

@@ -67,7 +67,7 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
                     width: 36,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurface.withOpacity(0.2),
+                      color: theme.colorScheme.onSurface.withAlpha(20),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),

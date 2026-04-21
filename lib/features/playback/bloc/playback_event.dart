@@ -67,6 +67,11 @@ class PlayAfterThisEvent extends PlaybackEvent {
   const PlayAfterThisEvent(this.item);
 }
 
+class ShuffleAllEvent extends PlaybackEvent {
+  final List<Tune> tunes;
+  const ShuffleAllEvent(this.tunes);
+}
+
 // Settings
 class SetShuffleEvent extends PlaybackEvent {
   const SetShuffleEvent();

@@ -25,7 +25,6 @@ class _RecommendedAlbumsState extends State<RecommendedAlbums> {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: BlocBuilder<LibraryCubit, LibraryState>(
-        buildWhen: (prev, curr) => curr is LibraryLoaded,
         builder: (context, state) {
           if (state is! LibraryLoaded) return const SizedBox();
 
