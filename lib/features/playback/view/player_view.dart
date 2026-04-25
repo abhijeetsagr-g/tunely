@@ -11,6 +11,7 @@ import 'package:tunely/features/playback/view/widget/player_album_art.dart';
 import 'package:tunely/features/playback/view/widget/player_gradient_background.dart';
 import 'package:tunely/features/playback/view/widget/seek_bar.dart';
 import 'package:tunely/features/playback/view/widget/song_info.dart';
+import 'package:tunely/features/sleep_mode/view/sleep_sheet.dart';
 
 class PlayerView extends StatelessWidget {
   const PlayerView({super.key});
@@ -86,7 +87,7 @@ class _PlayerAppBar extends StatelessWidget {
                     (e) => e.id == state.currentItem?.albumId,
                   );
                   if (album == null) return;
-                  Navigator.pushNamed(
+                  Navigator.pushReplacementNamed(
                     context,
                     AppRoute.album,
                     arguments: AlbumSettingsArguments(album),
@@ -105,7 +106,11 @@ class _PlayerAppBar extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(width: 48),
+
+        IconButton(
+          onPressed: () => showSleepSheet(context),
+          icon: Icon(Icons.dark_mode_outlined),
+        ),
       ],
     );
   }

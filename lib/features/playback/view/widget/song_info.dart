@@ -42,7 +42,7 @@ class SongInfo extends StatelessWidget {
                           (element) => tune.artists[i] == element.artist,
                         );
 
-                        Navigator.pushNamed(
+                        Navigator.pushReplacementNamed(
                           context,
                           AppRoute.artist,
                           arguments: ArtistSettingsArguments(artist),

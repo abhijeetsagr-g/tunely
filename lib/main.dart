@@ -23,6 +23,7 @@ import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/session/repository/session_repository.dart';
+import 'package:tunely/features/sleep_mode/cubit/sleep_mode_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/features/stats/model/tune_stats.dart';
 import 'package:tunely/features/stats/repository/stats_repository.dart';
@@ -93,6 +94,9 @@ void main() async {
         BlocProvider(create: (context) => StatsCubit(stateService)),
         BlocProvider(create: (context) => SearchCubit()),
         BlocProvider(create: (context) => LyricsCubit(lyricsService)),
+        BlocProvider(
+          create: (context) => SleepModeCubit(playbackService: audioHandler),
+        ),
 
         BlocProvider(
           create: (context) => LibraryCubit(service: libraryService),

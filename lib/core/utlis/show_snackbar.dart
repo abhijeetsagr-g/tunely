@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 
-void showSnackbar(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      behavior: SnackBarBehavior.floating,
-      duration: const Duration(seconds: 1),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+import 'package:another_flushbar/flushbar.dart';
+
+void showFlushbar(BuildContext context, String message) {
+  Flushbar(
+    messageText: Row(
+      children: [
+        CircleAvatar(
+          backgroundImage: AssetImage('assets/icon/icon.png'),
+          radius: 14,
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(message, style: const TextStyle(color: Colors.white)),
+        ),
+      ],
     ),
-  );
+
+    duration: const Duration(seconds: 1),
+    flushbarPosition: FlushbarPosition.TOP,
+    backgroundColor: Colors.black87,
+    borderRadius: BorderRadius.circular(12),
+    margin: const EdgeInsets.all(12),
+  ).show(context);
 }
