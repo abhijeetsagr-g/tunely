@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/features/customization/service/color_customizer.dart';
+import 'package:tunely/features/customization/service/color_service.dart';
 
 class CustomizationCubit extends Cubit<CustomizationState> {
-  final ColorCustomizer _colorCustomizer;
+  final ColorService _colorCustomizer;
 
   CustomizationCubit(this._colorCustomizer) : super(CustomizationState());
 

@@ -13,12 +13,14 @@ class ContentView extends StatefulWidget {
     required this.tunes,
     required this.artWidget,
     this.subtitleWidgets = const [],
+    this.actions = const [],
   });
 
   final String title;
   final List<Tune> tunes;
   final Widget artWidget;
   final List<Widget> subtitleWidgets;
+  final List<Widget> actions;
 
   @override
   State<ContentView> createState() => _ContentViewState();
@@ -82,6 +84,7 @@ class _ContentViewState extends State<ContentView> {
               onPressed: () => Navigator.pop(context),
               icon: const Icon(Icons.keyboard_arrow_down),
             ),
+            actions: widget.actions,
             title: Text(
               widget.title.toTitleCase(),
               overflow: TextOverflow.ellipsis,

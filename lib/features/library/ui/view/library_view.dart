@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:tunely/core/const/app_route.dart';
+import 'package:tunely/core/utlis/settings_arguments.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/features/library/view/playlist/playlist_view.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_card.dart';
@@ -17,12 +18,12 @@ class LibraryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 4,
       child: CustomScrollView(
         slivers: [
           SliverAppBar(
             floating: true,
-            pinned: true, // keeps tabs visible on scroll
+            pinned: true,
             title: Text(
               "Library",
               style: Theme.of(context).textTheme.titleLarge,
@@ -72,7 +73,6 @@ class LibraryView extends StatelessWidget {
                         _AlbumsTab(albums: albums),
                         _ArtistsTab(artists: artists),
                         _GenresTab(genres: genres),
-                        _PlaylistsTab(),
                       ],
                     ),
                   ),

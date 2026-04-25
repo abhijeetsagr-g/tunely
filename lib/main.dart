@@ -5,7 +5,7 @@ import 'package:hive_ce/hive.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
-import 'package:tunely/features/customization/service/color_customizer.dart';
+import 'package:tunely/features/customization/service/color_service.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/repository/library_repository.dart';
 import 'package:tunely/features/library/service/library_service.dart';
@@ -18,8 +18,6 @@ import 'package:tunely/features/music_management/model/management_settings.dart'
 import 'package:tunely/features/music_management/repository/management_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
-import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
-import 'package:tunely/features/playlist/service/playlist_service.dart';
 import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
@@ -77,11 +75,8 @@ void main() async {
   final lyricsRepo = LyricsRepository(box: lyricsBox);
   final lyricsService = LyricsService(repository: lyricsRepo);
 
-  // setup playlist
-  final playlistService = PlaylistService(audioQuery: audioQuery);
-
   // setup customization
-  final colorCustomizer = ColorCustomizer(query: audioQuery);
+  final colorCustomizer = ColorService(query: audioQuery);
 
   runApp(
     MultiBlocProvider(
@@ -93,9 +88,7 @@ void main() async {
         BlocProvider(create: (context) => StatsCubit(stateService)),
         BlocProvider(create: (context) => SearchCubit()),
         BlocProvider(create: (context) => LyricsCubit(lyricsService)),
-        BlocProvider(
-          create: (context) => PlaylistCubit(playlistService, managementRepo),
-        ),
+
         BlocProvider(
           create: (context) => LibraryCubit(service: libraryService),
         ),

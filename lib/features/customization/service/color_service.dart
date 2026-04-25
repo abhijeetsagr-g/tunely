@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-class ColorCustomizer {
+class ColorService {
   final OnAudioQuery _query;
-  ColorCustomizer({required OnAudioQuery query}) : _query = query;
+  ColorService({required OnAudioQuery query}) : _query = query;
 
   Future<Color?> extractColors(
     int? songId, {

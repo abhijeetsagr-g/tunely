@@ -86,9 +86,6 @@ class _PlayerGradientBackgroundState extends State<PlayerGradientBackground>
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final surface = Theme.of(context).colorScheme.surface;
 
-          // Derive a softer mid-tone for smoother falloff
-          final midColor = Color.lerp(blended, surface, 0.45) ?? surface;
-
           return Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -96,11 +93,11 @@ class _PlayerGradientBackgroundState extends State<PlayerGradientBackground>
                 end: Alignment.bottomCenter,
                 stops: const [0.0, 0.22, 0.50, 0.78, 1.0],
                 colors: [
-                  blended.withAlpha(isDark ? 72 : 48), // top bloom
-                  blended.withAlpha(isDark ? 45 : 28), // upper fade
-                  midColor.withAlpha(isDark ? 20 : 12), // mid feather
-                  surface.withAlpha(isDark ? 6 : 4), // near-surface
-                  surface, // full surface
+                  blended.withAlpha(isDark ? 72 : 48),
+                  blended.withAlpha(isDark ? 38 : 22),
+                  blended.withAlpha(isDark ? 15 : 8),
+                  surface.withAlpha(isDark ? 4 : 2),
+                  surface,
                 ],
               ),
             ),

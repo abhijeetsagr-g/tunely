@@ -32,7 +32,9 @@ class _SplashViewState extends State<SplashView> {
     // Load stats
     if (library.state is LibraryLoaded) {
       final state = library.state as LibraryLoaded;
+
       context.read<StatsCubit>().load(state.tunes);
+
       context.read<SearchCubit>().setLibrary(
         LibraryScanResult(
           tunes: state.tunes,
@@ -43,8 +45,6 @@ class _SplashViewState extends State<SplashView> {
         ),
       );
     }
-
-    // setup search for later
 
     // Load saved session
     final sessionCubit = context.read<SessionCubit>();

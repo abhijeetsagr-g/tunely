@@ -80,30 +80,13 @@ class _GenresTab extends StatelessWidget {
             "${genre.numOfSongs} songs",
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          onTap: () {},
+          onTap: () => Navigator.pushNamed(
+            context,
+            AppRoute.genre,
+            arguments: GenreSettingsArguments(genre),
+          ),
         );
       },
-    );
-  }
-}
-
-class _PlaylistsTab extends StatelessWidget {
-  const _PlaylistsTab();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const PlaylistView(),
-        Positioned(
-          bottom: 16 + 80,
-          right: 16,
-          child: FloatingActionButton(
-            onPressed: () {},
-            child: const Icon(Icons.add),
-          ),
-        ),
-      ],
     );
   }
 }
