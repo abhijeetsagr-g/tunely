@@ -1,22 +1,5 @@
 part of 'library_view.dart';
 
-class _SongsTab extends StatelessWidget {
-  final List<Tune> tunes;
-  const _SongsTab({required this.tunes});
-
-  @override
-  Widget build(BuildContext context) {
-    if (tunes.isEmpty) return const Center(child: Text("No songs found."));
-    return ListView.builder(
-      itemCount: tunes.length,
-      padding: EdgeInsets.only(bottom: 100),
-      itemBuilder: (context, index) {
-        return SongTile(tunes: tunes, index: index);
-      },
-    );
-  }
-}
-
 class _AlbumsTab extends StatelessWidget {
   final List<AlbumModel> albums;
   const _AlbumsTab({required this.albums});

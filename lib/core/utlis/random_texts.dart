@@ -8,6 +8,7 @@ String randomMessages() {
     "Numbers Are Cool",
     "Simple Yet Smart",
     "Better then your ex",
+    "hey babygirl",
 
     // Song Lyrics
     "You Got That Yummy-yum",

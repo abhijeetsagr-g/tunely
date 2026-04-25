@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:tunely/features/customization/repository/customization_repository.dart';
 
-class ColorService {
+class CustomizationService {
   final OnAudioQuery _query;
-  ColorService({required OnAudioQuery query}) : _query = query;
+  final CustomizationRepository _repo;
+  CustomizationService({
+    required OnAudioQuery query,
+    required CustomizationRepository repo,
+  }) : _repo = repo,
+       _query = query;
 
   Future<Color?> extractColors(
     int? songId, {
@@ -42,4 +48,21 @@ class ColorService {
     if (hsl.lightness > 0.45) return hsl.withLightness(0.45).toColor();
     return color;
   }
+
+  // ThemeMode
+  ThemeMode getTheme() {
+    final mode = _repo.themeMode;
+
+    return switch (mode) {
+      "system" => ThemeMode.system,
+      "light" => ThemeMode.light,
+      _ => ThemeMode.dark,
+    };
+  }
+
+  Future<void> setTheme(ThemeMode mode) => _repo.setThemeMode(switch (mode) {
+    ThemeMode.system => "system",
+    ThemeMode.light => "light",
+    ThemeMode.dark => "dark",
+  });
 }

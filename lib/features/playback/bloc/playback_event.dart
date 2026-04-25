@@ -47,6 +47,12 @@ class AddQueueItemEvent extends PlaybackEvent {
   const AddQueueItemEvent(this.item);
 }
 
+class ChangeQueueOrder extends PlaybackEvent {
+  final int oldIndex;
+  final int newIndex;
+  ChangeQueueOrder({required this.oldIndex, required this.newIndex});
+}
+
 class AddQueueItemsEvent extends PlaybackEvent {
   final List<Tune> items;
   const AddQueueItemsEvent(this.items);

@@ -17,7 +17,11 @@ class LibraryService {
     final permission = await _audioQuery.checkAndRequest();
     if (!permission) return null;
 
-    final songs = await _audioQuery.querySongs();
+    final songs = await _audioQuery.querySongs(
+      sortType: SongSortType.DATE_ADDED,
+      orderType: OrderType.DESC_OR_GREATER,
+    );
+
     final settings = _managementRepo.get();
     final tunes = TuneParser.parse(songs, settings);
     final artists = _buildArtists(tunes);

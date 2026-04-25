@@ -23,7 +23,7 @@ xxx - done with implementing UI for the logic
 	- [xx] Minimum Song Duration: (Default 10s)
 
 - [ ] Playlist Management
-	- [x] Create, Edit Name, remove playlist
+	- [ ] Create, Edit Name, remove playlist
 	- [ ] Playlist cover :- 4 AlbumArt from first  
 	- [ ] Save, Remove, Hide, Sort Tune (custom + other sorts)
 

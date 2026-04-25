@@ -18,7 +18,13 @@ class LibraryRepository {
   }
 
   List<Tune> getTunesByAlbum(int albumId) {
-    return _tuneCache.where((tune) => tune.albumId == albumId).toList();
+    return _tuneCache.where((tune) => tune.albumId == albumId).toList()
+      ..sort((a, b) {
+        if (a.trackIndex == null && b.trackIndex == null) return 0;
+        if (a.trackIndex == null) return 1;
+        if (b.trackIndex == null) return -1;
+        return a.trackIndex!.compareTo(b.trackIndex!);
+      });
   }
 
   void clear() {

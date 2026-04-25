@@ -123,7 +123,6 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       (event, emit) async => await _service.addManyToQueue(event.items),
     );
 
-    // TODO: CHANGE
     on<RemoveQueueItemEvent>(
       (event, emit) async =>
           await _service.removeQueueItem(event.item.toMediaItem()),
@@ -134,6 +133,10 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     on<PlayAfterThisEvent>(
       (event, emit) async => await _service.playAfterThis(event.item),
     );
+
+    on<ChangeQueueOrder>((event, emit) async {
+      await _service.moveQueueItem(event.oldIndex, event.newIndex);
+    });
 
     // Settings handlers
     on<SetShuffleEvent>((event, emit) async {

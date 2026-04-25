@@ -4,11 +4,10 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utlis/settings_arguments.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
+import 'package:tunely/features/library/ui/view/songs/songs_tab.dart';
 import 'package:tunely/shared/model/artist.dart';
-import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_card.dart';
 import 'package:tunely/shared/widget/artist_card.dart';
-import 'package:tunely/shared/widget/song_tile.dart';
 
 part 'library_tabs.dart';
 
@@ -31,7 +30,7 @@ class LibraryView extends StatelessWidget {
             actions: [
               IconButton(
                 onPressed: () {
-                  // TODO: Navigate to Settings
+                  Navigator.pushNamed(context, AppRoute.settings);
                 },
                 icon: const Icon(Icons.settings),
               ),
@@ -44,7 +43,6 @@ class LibraryView extends StatelessWidget {
                 Tab(text: "Albums"),
                 Tab(text: "Artists"),
                 Tab(text: "Genres"),
-                Tab(text: "Playlists"),
               ],
             ),
           ),
@@ -69,7 +67,7 @@ class LibraryView extends StatelessWidget {
                   SliverFillRemaining(
                     child: TabBarView(
                       children: [
-                        _SongsTab(tunes: tunes),
+                        SongsTab(tunes: tunes),
                         _AlbumsTab(albums: albums),
                         _ArtistsTab(artists: artists),
                         _GenresTab(genres: genres),

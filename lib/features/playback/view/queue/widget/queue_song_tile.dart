@@ -16,12 +16,18 @@ class QueueSongTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final playback = context.read<PlaybackBloc>();
 
     return Dismissible(
       key: ValueKey(tune.path),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
-          context.read<PlaybackBloc>().add(PlayAfterThisEvent(tune));
+          playback.add(
+            ChangeQueueOrder(
+              oldIndex: index,
+              newIndex: playback.state.currentIndex! + 1,
+            ),
+          );
           return false;
         }
         return true;

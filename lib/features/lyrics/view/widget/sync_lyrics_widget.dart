@@ -20,8 +20,10 @@ class SyncLyricsWidget extends StatelessWidget {
           return previous.result != current.result ||
               previous.temporaryOffset != current.temporaryOffset;
         }
+        // This misses: LyricsLoaded -> LyricsLoaded (same type, different song)
         return previous.runtimeType != current.runtimeType;
       },
+
       builder: (context, state) => switch (state) {
         LyricsLoading() => const LyricsLoadingState(),
         LyricsNotFound() => const LyricsNotFoundState(),

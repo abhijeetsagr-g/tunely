@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:tunely/features/stats/repository/stats_repository.dart';
 
 class StatsService {
@@ -10,6 +11,8 @@ class StatsService {
   }
 
   void _handlePlay(MediaItem item) {
+    debugPrint("TUNELY: ${item.title}");
+
     if (item.id == _lastPlayedId) return;
     _lastPlayedId = item.id;
 

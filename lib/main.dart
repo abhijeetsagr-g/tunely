@@ -5,7 +5,8 @@ import 'package:hive_ce/hive.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
-import 'package:tunely/features/customization/service/color_service.dart';
+import 'package:tunely/features/customization/repository/customization_repository.dart';
+import 'package:tunely/features/customization/service/customization_service.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/repository/library_repository.dart';
 import 'package:tunely/features/library/service/library_service.dart';
@@ -76,7 +77,11 @@ void main() async {
   final lyricsService = LyricsService(repository: lyricsRepo);
 
   // setup customization
-  final colorCustomizer = ColorService(query: audioQuery);
+  final customizationRepo = await CustomizationRepository.create();
+  final customizationService = CustomizationService(
+    query: audioQuery,
+    repo: customizationRepo,
+  );
 
   runApp(
     MultiBlocProvider(
@@ -92,7 +97,9 @@ void main() async {
         BlocProvider(
           create: (context) => LibraryCubit(service: libraryService),
         ),
-        BlocProvider(create: (context) => CustomizationCubit(colorCustomizer)),
+        BlocProvider(
+          create: (context) => CustomizationCubit(customizationService),
+        ),
       ],
       child: MyApp(),
     ),

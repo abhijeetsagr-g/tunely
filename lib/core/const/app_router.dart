@@ -10,6 +10,7 @@ import 'package:tunely/features/playback/view/player_view.dart';
 import 'package:tunely/features/playback/view/queue/queue_view.dart';
 import 'package:tunely/features/root/ui/root_screen.dart';
 import 'package:tunely/features/root/ui/view/splash/splash_view.dart';
+import 'package:tunely/features/settings/settings_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -19,6 +20,12 @@ class AppRouter {
           settings: settings,
           transition: RouteTransition.fade,
           builder: (_) => const SplashView(),
+        );
+
+      case AppRoute.settings:
+        return AppPageRoute(
+          settings: settings,
+          builder: (context) => SettingsScreen(),
         );
 
       case AppRoute.root:

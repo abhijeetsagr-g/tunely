@@ -26,30 +26,29 @@ class LyricsView extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: Icon(Icons.keyboard_arrow_left),
+                      icon: const Icon(Icons.keyboard_arrow_left),
                     ),
-                    Center(
-                      child: SizedBox(
-                        width: 300,
-                        child: Text(
-                          context
-                                  .watch<PlaybackBloc>()
-                                  .state
-                                  .currentItem
-                                  ?.title
-                                  .toTitleCase() ??
-                              "Unknown Song",
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                    Expanded(
+                      child: BlocBuilder<PlaybackBloc, PlaybackState>(
+                        buildWhen: (prev, curr) =>
+                            prev.currentItem != curr.currentItem,
+                        builder: (context, state) {
+                          return Text(
+                            state.currentItem?.title.toTitleCase() ??
+                                "Unknown Song",
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          );
+                        },
                       ),
                     ),
-                    Spacer(),
                     IconButton(
                       onPressed: () => showLyricsOptionsSheet(context),
-                      icon: Icon(Icons.more_vert),
+                      icon: const Icon(Icons.more_vert),
                     ),
                   ],
                 ),
+
                 Expanded(child: SyncLyricsWidget()),
                 SeekBar(),
                 ControlButtons(),

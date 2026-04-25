@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utlis/random_texts.dart';
 import 'package:tunely/features/root/ui/view/home/widget/continue_listening_card.dart';
 import 'package:tunely/features/root/ui/view/home/widget/recent_list.dart';
@@ -54,7 +55,10 @@ class _HomeViewState extends State<HomeView>
             textAlign: TextAlign.center,
           ),
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
+            IconButton(
+              onPressed: () => Navigator.pushNamed(context, AppRoute.settings),
+              icon: const Icon(Icons.settings),
+            ),
           ],
         ),
 

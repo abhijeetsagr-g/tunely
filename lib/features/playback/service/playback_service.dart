@@ -28,15 +28,21 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
         .pipe(playbackState);
 
     _player.sequenceStateStream.listen((state) {
-      final index = state.currentIndex;
+      final sequence = state.effectiveSequence;
+      final physicalIndex = state.currentIndex;
 
-      if (index == null) return;
+      queue.add(sequence.map((s) => (s.tag as Tune).toMediaItem()).toList());
+
+      if (physicalIndex == null) return;
+
+      final effectiveIndex = state.shuffleModeEnabled
+          ? state.shuffleIndices.indexOf(physicalIndex)
+          : physicalIndex;
+
       final q = queue.value;
-      if (index < q.length) {
-        final item = q[index];
-
-        mediaItem.add(item);
-        _trackController.add(item);
+      if (effectiveIndex < q.length) {
+        mediaItem.add(q[effectiveIndex]);
+        _trackController.add(q[effectiveIndex]);
       }
     });
   }
@@ -169,6 +175,10 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       insertIndex,
       AudioSource.uri(Uri.parse(tune.path), tag: tune),
     );
+  }
+
+  Future<void> moveQueueItem(int oldIndex, int newIndex) async {
+    await _player.moveAudioSource(oldIndex, newIndex);
   }
 
   @override

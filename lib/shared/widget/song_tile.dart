@@ -70,10 +70,7 @@ class SongTile extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  formatArtistName(
-                    context.read<ManagementCubit>().state.artistDelimiters,
-                    tune.artist,
-                  ),
+                  tune.artists.join(" • "),
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(
                     context,
