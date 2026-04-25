@@ -78,7 +78,7 @@ class _TopSongsCardState extends State<TopSongsCard> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(3),
                       color: isActive
-                          ? Theme.of(context).colorScheme.primary
+                          ? Theme.of(context).primaryColor
                           : Theme.of(
                               context,
                             ).colorScheme.onSurface.withAlpha(50),

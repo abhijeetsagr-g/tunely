@@ -4,6 +4,7 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
+import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
@@ -80,6 +81,7 @@ class _SplashViewState extends State<SplashView> {
 
     if (!mounted) return;
     Navigator.pushReplacementNamed(context, AppRoute.root);
+    await context.read<PlaylistCubit>().loadPlaylist();
   }
 
   @override

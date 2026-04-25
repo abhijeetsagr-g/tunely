@@ -19,6 +19,8 @@ import 'package:tunely/features/music_management/model/management_settings.dart'
 import 'package:tunely/features/music_management/repository/management_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
+import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
+import 'package:tunely/features/playlist/service/playlist_service.dart';
 import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
@@ -84,6 +86,9 @@ void main() async {
     repo: customizationRepo,
   );
 
+  // setup playlist
+  final playlistService = PlaylistService(query: audioQuery);
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -103,6 +108,9 @@ void main() async {
         ),
         BlocProvider(
           create: (context) => CustomizationCubit(customizationService),
+        ),
+        BlocProvider(
+          create: (context) => PlaylistCubit(service: playlistService),
         ),
       ],
       child: MyApp(),

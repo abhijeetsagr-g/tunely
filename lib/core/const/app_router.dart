@@ -8,6 +8,7 @@ import 'package:tunely/features/library/ui/view/genre/genre_view.dart';
 import 'package:tunely/features/lyrics/view/lyrics_view.dart';
 import 'package:tunely/features/playback/view/player_view.dart';
 import 'package:tunely/features/playback/view/queue/queue_view.dart';
+import 'package:tunely/features/playlist/view/playlist_view.dart';
 import 'package:tunely/features/root/ui/root_screen.dart';
 import 'package:tunely/features/root/ui/view/splash/splash_view.dart';
 import 'package:tunely/features/settings/settings_screen.dart';
@@ -66,12 +67,12 @@ class AppRouter {
           builder: (_) => ArtistView(artist: artist.artist),
         );
 
-      // case AppRoute.playlist:
-      //   final playlist = settings.arguments as PlaylistSettingsArguments;
-      //   return AppPageRoute(
-      //     settings: settings,
-      //     builder: (context) => PlaylistView(playlist: playlist.playlist),
-      //   );
+      case AppRoute.playlist:
+        final playlist = settings.arguments as PlaylistSettingsArguments;
+        return AppPageRoute(
+          settings: settings,
+          builder: (context) => PlaylistView(playlist: playlist.playlist),
+        );
 
       case AppRoute.lyrics:
         return AppPageRoute(
