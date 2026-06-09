@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utlis/settings_arguments.dart';
 import 'package:tunely/core/utlis/fur_artist_name.dart';
@@ -26,9 +26,8 @@ class AlbumCard extends StatelessWidget {
         children: [
           AlbumArt(
             size: Size(width, width),
-            artUri: Uri.parse(
-              'content://media/external/audio/albumart/${album.id}',
-            ),
+            id: album.id,
+            type: ArtworkType.ALBUM,
           ),
           const SizedBox(height: 4),
           SizedBox(

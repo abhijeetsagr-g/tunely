@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
 import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/shared/model/tune.dart';
@@ -25,7 +25,7 @@ class PlaylistView extends StatelessWidget {
         return ContentView(
           title: playlist.playlist,
           tunes: tunes,
-          artWidget: AlbumArt(artUri: null, size: const Size(220, 220)),
+          artWidget: AlbumArt(size: const Size(220, 220)),
           actions: [
             IconButton(
               icon: const Icon(Icons.more_vert),

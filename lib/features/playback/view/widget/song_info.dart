@@ -36,9 +36,9 @@ class SongInfo extends StatelessWidget {
                   for (int i = 0; i < tune.artists.length; i++) ...[
                     GestureDetector(
                       onTap: () {
-                        final loaded =
-                            context.read<LibraryCubit>().state as LibraryLoaded;
-                        final artist = loaded.artists.firstWhere(
+                        final cubitState = context.read<LibraryCubit>().state;
+                        if (cubitState is! LibraryLoaded) return;
+                        final artist = cubitState.artists.firstWhere(
                           (element) => tune.artists[i] == element.artist,
                         );
 

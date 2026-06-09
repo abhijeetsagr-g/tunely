@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
@@ -13,7 +14,7 @@ class PlayerAlbumArt extends StatelessWidget {
           previous.currentItem != current.currentItem,
       builder: (context, state) {
         final tune = state.currentItem;
-        return AlbumArt(artUri: tune?.artUri, size: Size(320, 320));
+        return AlbumArt(id: tune?.songId, type: ArtworkType.AUDIO, size: Size(320, 320));
       },
     );
   }

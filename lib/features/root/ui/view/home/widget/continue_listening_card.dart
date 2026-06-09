@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/extracted_gradient_container.dart';
 import 'package:tunely/core/utlis/fur_artist_name.dart';
@@ -75,7 +76,8 @@ class ContinueListeningCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       child: AlbumArt(
                         size: const Size(56, 56),
-                        artUri: tune.artUri,
+                        id: tune.songId,
+                        type: ArtworkType.AUDIO,
                       ),
                     ),
                     const SizedBox(width: 14),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/fur_artist_name.dart';
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
@@ -80,10 +81,9 @@ class _TopSongPageState extends State<TopSongPage> {
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: AlbumArt(
-              // id: widget.tune.albumId ?? 0,
-              artUri: widget.tune.artUri,
+              id: widget.tune.songId,
+              type: ArtworkType.AUDIO,
               size: const Size(120, 120),
-              // type: ArtworkType.ALBUM,
             ),
           ),
           const SizedBox(width: 14),

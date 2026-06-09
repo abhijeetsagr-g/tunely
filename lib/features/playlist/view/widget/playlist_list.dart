@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/playlist/view/widget/playlist_card.dart';
 
 class PlaylistList extends StatelessWidget {

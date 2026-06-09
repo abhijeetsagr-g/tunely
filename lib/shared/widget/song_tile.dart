@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/shared/model/tune.dart';
@@ -17,44 +18,20 @@ class SongTile extends StatelessWidget {
 
     return BlocBuilder<PlaybackBloc, PlaybackState>(
       buildWhen: (prev, curr) =>
-          prev.currentItem?.path != curr.currentItem?.path ||
-          prev.position != curr.position ||
-          prev.duration != curr.duration,
+          prev.currentItem?.path != curr.currentItem?.path,
       builder: (context, state) {
         final isCurrent = state.currentItem?.path == tune.path;
-        final progress = isCurrent ? _calcProgress(state) : 0.0;
 
         return InkWell(
           onTap: () => playback.add(PlayQueueEvent(tunes, startIndex: index)),
-          child: Stack(
-            children: [
-              // Progress fill
-              if (isCurrent)
-                Positioned.fill(
-                  child: FractionallySizedBox(
-                    alignment: Alignment.centerLeft,
-                    widthFactor: progress,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withAlpha(12),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ),
-
-              // Tile content
-              ListTile(
+          child: ListTile(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 leading: AlbumArt(
-                  // id: tune.songId ?? 0,
-                  artUri: tune.artUri,
+                  id: tune.songId,
+                  type: ArtworkType.AUDIO,
                   size: Size(46, 46),
-                  // type: ArtworkType.AUDIO,
                 ),
                 title: Text(
                   tune.title.toTitleCase(),
@@ -76,19 +53,8 @@ class SongTile extends StatelessWidget {
                 ),
                 trailing: const Icon(Icons.more_horiz, color: Colors.grey),
               ),
-            ],
-          ),
         );
       },
-    );
-  }
-
-  double _calcProgress(PlaybackState state) {
-    final duration = state.duration;
-    if (duration == null || duration.inMilliseconds == 0) return 0.0;
-    return (state.position.inMilliseconds / duration.inMilliseconds).clamp(
-      0.0,
-      1.0,
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/music_management/model/management_settings.dart';
 import 'package:tunely/features/playlist/service/playlist_service.dart';
 import 'package:tunely/shared/model/tune.dart';

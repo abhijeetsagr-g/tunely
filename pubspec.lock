@@ -580,10 +580,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: "23f08335362185a5ea2ad3a4e597f1375e78bce8a040df5c600c8d3552ef2394"
+      sha256: "1741988757a65eb6b36abe716829688cf01910bbf91c34354ff7ec1c3de2b349"
       url: "https://pub.dev"
     source: hosted
-    version: "1.17.0"
+    version: "1.18.0"
   mime:
     dependency: transitive
     description:
@@ -640,22 +640,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-  on_audio_query:
-    dependency: "direct main"
-    description:
-      name: on_audio_query
-      sha256: "28d7a247f8a0580b5d1befba15c8d8fd7e1cf3cd8e0449d54a66fc2ef27adf10"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.9.0"
-  on_audio_query_android:
-    dependency: transitive
-    description:
-      name: on_audio_query_android
-      sha256: c0b946011ee7aa8ec76b21837f0cb0007120ac291202ed6c6fb4c498ba2ff6fe
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   on_audio_query_ios:
     dependency: transitive
     description:
@@ -672,6 +656,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.7.0"
+  on_audio_query_plus_android:
+    dependency: transitive
+    description:
+      name: on_audio_query_plus_android
+      sha256: "30ff80db9d8cbd5c3b4869bc36ff2e60ce2724d4ee19a90fa7e47ade2ab34224"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
+  on_audio_query_pluse:
+    dependency: "direct main"
+    description:
+      name: on_audio_query_pluse
+      sha256: d09428040e9028d1add221bfc3e53e66872c0a00117161c90f182ed6aacf731c
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.6"
   on_audio_query_web:
     dependency: transitive
     description:
@@ -1105,26 +1105,26 @@ packages:
     dependency: transitive
     description:
       name: test
-      sha256: "280d6d890011ca966ad08df7e8a4ddfab0fb3aa49f96ed6de56e3521347a9ae7"
+      sha256: "8d9ceddbab833f180fbefed08afa76d7c03513dfdba87ffcec2718b02bbcbf20"
       url: "https://pub.dev"
     source: hosted
-    version: "1.30.0"
+    version: "1.31.0"
   test_api:
     dependency: transitive
     description:
       name: test_api
-      sha256: "8161c84903fd860b26bfdefb7963b3f0b68fee7adea0f59ef805ecca346f0c7a"
+      sha256: "949a932224383300f01be9221c39180316445ecb8e7547f70a41a35bf421fb9e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.10"
+    version: "0.7.11"
   test_core:
     dependency: transitive
     description:
       name: test_core
-      sha256: "0381bd1585d1a924763c308100f2138205252fb90c9d4eeaf28489ee65ccde51"
+      sha256: "1991d4cfe85d5043241acac92962c3977c8d2f2add1ee73130c7b286417d1d34"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.16"
+    version: "0.6.17"
   typed_data:
     dependency: transitive
     description:

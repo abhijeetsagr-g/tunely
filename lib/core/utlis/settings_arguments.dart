@@ -1,4 +1,4 @@
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/shared/model/artist.dart';
 
 class AlbumSettingsArguments {

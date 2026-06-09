@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:tunely/features/customization/repository/customization_repository.dart';
 

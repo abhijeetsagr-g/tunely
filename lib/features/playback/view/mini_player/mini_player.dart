@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/fur_artist_name.dart';
@@ -37,7 +38,7 @@ class MiniPlayer extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               child: Row(
                 children: [
-                  AlbumArt(artUri: tune?.artUri, size: Size(48, 48)),
+                  AlbumArt(id: tune?.songId, type: ArtworkType.AUDIO, size: Size(48, 48)),
 
                   const SizedBox(width: 12),
 

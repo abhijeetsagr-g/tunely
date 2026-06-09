@@ -78,21 +78,21 @@ class _PlayerAppBar extends StatelessWidget {
           buildWhen: (prev, curr) => prev.currentItem != curr.currentItem,
           builder: (context, state) {
             if (state.currentItem == null) return const SizedBox();
-            return Expanded(
-              child: InkWell(
-                onTap: () {
-                  final loaded =
-                      context.read<LibraryCubit>().state as LibraryLoaded;
-                  final album = loaded.albums.firstWhereOrNull(
-                    (e) => e.id == state.currentItem?.albumId,
-                  );
-                  if (album == null) return;
-                  Navigator.pushReplacementNamed(
-                    context,
-                    AppRoute.album,
-                    arguments: AlbumSettingsArguments(album),
-                  );
-                },
+              return Expanded(
+                child: InkWell(
+                  onTap: () {
+                    final cubitState = context.read<LibraryCubit>().state;
+                    if (cubitState is! LibraryLoaded) return;
+                    final album = cubitState.albums.firstWhereOrNull(
+                      (e) => e.id == state.currentItem?.albumId,
+                    );
+                    if (album == null) return;
+                    Navigator.pushReplacementNamed(
+                      context,
+                      AppRoute.album,
+                      arguments: AlbumSettingsArguments(album),
+                    );
+                  },
                 child: Center(
                   child: Text(
                     state.currentItem?.album ?? "Album Name",

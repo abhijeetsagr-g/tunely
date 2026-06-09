@@ -1,5 +1,5 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 
 class Tune {
   final int? songId;
@@ -16,7 +16,7 @@ class Tune {
   final Duration duration;
 
   final int dateAdded;
-  late Uri artUri;
+  final Uri artUri;
 
   Tune({
     this.songId,
@@ -31,11 +31,9 @@ class Tune {
     required this.genre,
     required this.duration,
     required this.dateAdded,
-  }) {
-    artUri = Uri.parse("content://media/external/audio/albumart/$albumId");
-  }
+  }) : artUri = Uri.parse("content://media/external/audio/media/$songId/albumart");
 
-  Tune copyWith({List<String>? artists}) => Tune(
+  Tune copyWith({List<String>? artists, Uri? artUri}) => Tune(
     songId: songId,
     artistId: artistId,
     trackIndex: trackIndex,

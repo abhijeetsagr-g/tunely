@@ -17,7 +17,8 @@ class SongSortBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -34,7 +35,7 @@ class SongSortBar extends StatelessWidget {
                     label: Text(_sortTypeLabel(type)),
                     selected: selected,
                     onSelected: (_) => onSortTypeChanged(type),
-                    selectedColor: colorScheme.primaryColor,
+                    selectedColor: colorScheme.primary,
                   );
                 }).toList(),
               ),
@@ -49,7 +50,7 @@ class SongSortBar extends StatelessWidget {
               sortOrder == SortOrder.ascending
                   ? Icons.arrow_upward_rounded
                   : Icons.arrow_downward_rounded,
-              color: colorScheme.primaryColor,
+              color: colorScheme.primary,
             ),
           ),
         ],

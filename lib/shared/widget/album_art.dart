@@ -1,10 +1,12 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 
 class AlbumArt extends StatefulWidget {
-  const AlbumArt({super.key, this.artUri, required this.size});
+  const AlbumArt({super.key, this.id, this.type, required this.size});
 
-  final Uri? artUri;
+  final int? id;
+  final ArtworkType? type;
   final Size size;
 
   @override
@@ -13,33 +15,29 @@ class AlbumArt extends StatefulWidget {
 
 class _AlbumArtState extends State<AlbumArt> {
   Uint8List? _bytes;
-  late Uri? artUri;
-  static const _channel = MethodChannel('tunely/artwork');
+  final _audioQuery = OnAudioQuery();
 
   @override
   void initState() {
     super.initState();
-    if (widget.artUri == null) {
-      artUri = Uri.parse('content://media/external/audio/albumart/0');
-    } else {
-      artUri = widget.artUri;
-    }
-
     _load();
   }
 
   @override
   void didUpdateWidget(AlbumArt old) {
     super.didUpdateWidget(old);
-    if (old.artUri != widget.artUri) _load();
+    if (old.id != widget.id) _load();
   }
 
   Future<void> _load() async {
+    final id = widget.id;
+    final type = widget.type;
+    if (id == null || type == null) {
+      if (mounted) setState(() => _bytes = null);
+      return;
+    }
     try {
-      final bytes = await _channel.invokeMethod<Uint8List>(
-        'getArtwork',
-        widget.artUri.toString(),
-      );
+      final bytes = await _audioQuery.queryArtwork(id, type, size: 320);
       if (mounted) setState(() => _bytes = bytes);
     } catch (_) {
       if (mounted) setState(() => _bytes = null);
