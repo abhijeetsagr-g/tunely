@@ -21,6 +21,13 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       }
     });
 
+    _player.sequenceStateStream.listen((state) {
+      debugPrint(
+        'currentIndex=${state.currentIndex} '
+        'sequenceLength=${state.sequence.length}',
+      );
+    });
+
     // converts events
     _player.playbackEventStream
         .map(_transformEvent)
@@ -28,6 +35,11 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
         .pipe(playbackState);
 
     _player.sequenceStateStream.listen((state) {
+      // Fixed Bug 01 With this..
+      // Added check to let the player replace the currentIndex properly
+      if (state.currentIndex == null) return;
+      if (state.currentIndex! >= queue.value.length) return;
+
       final sequence = state.effectiveSequence;
       final physicalIndex = state.currentIndex;
 
@@ -98,7 +110,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     bool autoPlay = true,
   }) async {
     final items = tunes.map((t) => t.toMediaItem()).toList();
-    queue.add(items);
 
     // Save Tunes as "tag"
     final playlist = tunes
@@ -113,7 +124,11 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       initialPosition: Duration.zero,
     );
 
-    if (autoPlay) play();
+    queue.add(items);
+
+    if (autoPlay) {
+      await _player.play();
+    }
   }
 
   // Basic Controls

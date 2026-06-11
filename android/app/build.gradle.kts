@@ -28,6 +28,14 @@ android {
     }
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
+    compilerOptions {
+        if (this is org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions) {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+        }
+    }
+}
+
 flutter {
     source = "../.."
 }

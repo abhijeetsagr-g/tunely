@@ -34,6 +34,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         };
         add(_ProcessingStateUpdatedEvent(status));
       }),
+
       _service.sequenceStateStream.listen((sequenceState) {
         final sequence = sequenceState.effectiveSequence;
         final index = sequenceState.currentIndex;
