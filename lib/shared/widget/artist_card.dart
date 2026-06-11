@@ -6,13 +6,15 @@ import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/widget/artist_avater.dart';
 
 class ArtistCard extends StatelessWidget {
-  const ArtistCard({super.key, required this.artist});
+  const ArtistCard({super.key, required this.artist, this.onTap});
   final Artist artist;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        onTap?.call();
         Navigator.pushNamed(
           context,
           AppRoute.artist,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 abstract class AppTheme {
-  static const String font = "Manrope";
+  static const String font = "NunitoSans";
   static const Color black = Color(0xFF0A0A0A);
   static const Color white = Color(0xFFFFFFFF);
   static const Color defaultAccent = Color(0xffB3E0F2);

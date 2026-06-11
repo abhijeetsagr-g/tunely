@@ -8,18 +8,27 @@ import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart'
 import 'package:tunely/shared/widget/album_art.dart';
 
 class AlbumCard extends StatelessWidget {
-  const AlbumCard({super.key, required this.album, this.width = 120});
+  const AlbumCard({
+    super.key,
+    required this.album,
+    this.width = 120,
+    this.onTap,
+  });
   final AlbumModel album;
   final double width;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(
-        context,
-        AppRoute.album,
-        arguments: AlbumSettingsArguments(album),
-      ),
+      onTap: () {
+        onTap?.call();
+        Navigator.pushNamed(
+          context,
+          AppRoute.album,
+          arguments: AlbumSettingsArguments(album),
+        );
+      },
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

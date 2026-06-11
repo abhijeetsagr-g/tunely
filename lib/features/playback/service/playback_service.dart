@@ -7,6 +7,8 @@ import 'package:tunely/shared/model/tune.dart';
 
 class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   final _player = AudioPlayer();
+  bool _isReplacingQueue = false;
+  int? _lastEmittedIndex;
 
   PlaybackService() {
     _init();
@@ -35,26 +37,31 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
         .pipe(playbackState);
 
     _player.sequenceStateStream.listen((state) {
-      // Fixed Bug 01 With this..
-      // Added check to let the player replace the currentIndex properly
+      if (_isReplacingQueue) return;
       if (state.currentIndex == null) return;
-      if (state.currentIndex! >= queue.value.length) return;
 
       final sequence = state.effectiveSequence;
-      final physicalIndex = state.currentIndex;
+      final physicalIndex = state.currentIndex!;
 
-      queue.add(sequence.map((s) => (s.tag as Tune).toMediaItem()).toList());
+      if (physicalIndex >= sequence.length) return;
 
-      if (physicalIndex == null) return;
+      final newQueue = sequence
+          .map((s) => (s.tag as Tune).toMediaItem())
+          .toList();
+      queue.add(newQueue);
 
       final effectiveIndex = state.shuffleModeEnabled
           ? state.shuffleIndices.indexOf(physicalIndex)
           : physicalIndex;
 
-      final q = queue.value;
-      if (effectiveIndex < q.length) {
-        mediaItem.add(q[effectiveIndex]);
-        _trackController.add(q[effectiveIndex]);
+      if (effectiveIndex < 0 || effectiveIndex >= newQueue.length) return;
+
+      mediaItem.add(newQueue[effectiveIndex]);
+
+      // Only emit to onTrackChanged (recently played) when index actually changes
+      if (effectiveIndex != _lastEmittedIndex) {
+        _lastEmittedIndex = effectiveIndex;
+        _trackController.add(newQueue[effectiveIndex]);
       }
     });
   }
@@ -109,7 +116,8 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     int startIndex, {
     bool autoPlay = true,
   }) async {
-    final items = tunes.map((t) => t.toMediaItem()).toList();
+    _isReplacingQueue = true;
+    _lastEmittedIndex = null;
 
     // Save Tunes as "tag"
     final playlist = tunes
@@ -124,11 +132,10 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       initialPosition: Duration.zero,
     );
 
-    queue.add(items);
-
     if (autoPlay) {
       await _player.play();
     }
+    _isReplacingQueue = false;
   }
 
   // Basic Controls

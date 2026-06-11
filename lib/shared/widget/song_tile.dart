@@ -7,9 +7,10 @@ import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
 class SongTile extends StatelessWidget {
-  const SongTile({super.key, required this.tunes, required this.index});
+  const SongTile({super.key, required this.tunes, required this.index, this.onTap});
   final List<Tune> tunes;
   final int index;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,10 @@ class SongTile extends StatelessWidget {
         final isCurrent = state.currentItem?.path == tune.path;
 
         return InkWell(
-          onTap: () => playback.add(PlayQueueEvent(tunes, startIndex: index)),
+          onTap: () {
+            onTap?.call();
+            playback.add(PlayQueueEvent(tunes, startIndex: index));
+          },
           child: ListTile(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),

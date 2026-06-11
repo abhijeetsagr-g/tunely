@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/library/model/library_scan_result.dart';
+import 'package:tunely/features/search/model/recent_item.dart';
 import 'package:tunely/features/search/model/search_result.dart';
 
 part 'search_state.dart';
@@ -8,6 +9,7 @@ part 'search_state.dart';
 class SearchCubit extends Cubit<SearchState> {
   Timer? _debounce;
   LibraryScanResult? _library;
+  final List<RecentItem> _recentItems = [];
 
   SearchCubit() : super(const SearchIdle());
 
@@ -19,7 +21,7 @@ class SearchCubit extends Cubit<SearchState> {
     _debounce?.cancel();
 
     if (query.trim().isEmpty) {
-      emit(const SearchIdle());
+      emit(SearchIdle(recentItems: List.of(_recentItems)));
       return;
     }
 
@@ -30,7 +32,31 @@ class SearchCubit extends Cubit<SearchState> {
 
   void clear() {
     _debounce?.cancel();
-    emit(const SearchIdle());
+    emit(SearchIdle(recentItems: List.of(_recentItems)));
+  }
+
+  void setFilter(FilterMode mode) {
+    final current = state;
+    if (current is SearchLoaded) {
+      emit(SearchLoaded(
+        query: current.query,
+        result: current.result,
+        filterMode: mode,
+      ));
+    }
+  }
+
+  void addRecentItem(RecentItem item) {
+    _recentItems.removeWhere((existing) => existing.title == item.title);
+    _recentItems.insert(0, item);
+    if (_recentItems.length > 10) {
+      _recentItems.removeLast();
+    }
+  }
+
+  void clearRecentItems() {
+    _recentItems.clear();
+    emit(SearchIdle(recentItems: const []));
   }
 
   void _runSearch(String q) {

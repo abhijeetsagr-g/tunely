@@ -93,26 +93,6 @@ Albums               → see all
 
 ---
 
-### UI-03 · Search
-
-**Why:**
-- Empty state (before typing) showed nothing, feeling broken.
-- Filter chips could be clearer about which category is active.
-
-**How it should look:**
-
-_Before typing (empty state):_
-- Show a **Recent Searches** list (tappable to re-run).
-- Clear-all affordance at the top right of the list.
-
-_While typing (results state):_
-- Filter chips: **All · Songs · Artists · Albums**
-- When a filter chip is tapped, its section expands to show full results;
-  all other sections collapse entirely.
-- Tapping the active chip again resets to "All" (all sections visible in
-  summary form).
-
----
 
 ### UI-04 · Player
 
