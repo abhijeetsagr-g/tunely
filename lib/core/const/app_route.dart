@@ -10,4 +10,5 @@ class AppRoute {
   static const welcome = 'welcome';
   static const settings = 'settings';
   static const queue = 'queue';
+  static const about = 'about';
 }

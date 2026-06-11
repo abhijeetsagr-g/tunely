@@ -4,33 +4,6 @@
 
 ## 🐛 Bugs
 
-### B-01 · Wrong song plays briefly when starting a new queue
-When the user taps a song from a new queue, a random song from that queue
-plays for a split second before switching to the intended song.
-
-- **Likely cause:** Queue is being set before the start index is applied,
-  causing the player to briefly resolve to index 0 (or the previous index)
-  before jumping to the correct position.
-- **Fix:** Ensure the target song index is passed atomically with the queue
-  assignment. Do not trigger playback until both queue and index are committed.
-
----
-
-### B-02 · Artist cover art only loads when scrolling
-Artist cover art is invisible on first render and only appears as the user
-scrolls through the list (triggering a rebuild).
-
-- **Likely cause:** Either (a) `artistCover` is being re-fetched from disk on
-  every launch without caching, causing a visible delay, or (b) the image
-  widget isn't being rebuilt after the async fetch resolves because the
-  state update isn't reaching the list item.
-- **Fix:** Cache resolved cover art in memory after first fetch. Ensure the
-  `FutureBuilder` or `StreamBuilder` driving each list item properly triggers
-  a rebuild when the image is ready. Consider a placeholder/shimmer while
-  loading so the transition is seamless.
-
----
-
 ### B-03 · Queue does not show songs before the current song
 Songs played before the current position are missing from the queue screen entirely.
 
@@ -298,37 +271,6 @@ _Reset All Lyrics:_
 _App Theme (ThemeMode extension):_
 - Opens a theme picker — could be a bottom sheet or a dedicated sub-screen.
 - Exact theme options TBD based on available named theme packs.
-
----
-
-### UI-09 · About Screen
-
-**Why:**
-- No attribution, license, or identity information exists in the app.
-
-**How it should look:**
-
-```
-About
-─────────────────────
-  [ App Icon ]
-  Tunely
-  Version x.x.x
-
-─────────────────────
-  Developer        Zeen
-  Source Code      → opens GitHub repo  (external link)
-  Open Source Licenses → Flutter's built-in LicenseRegistry page
-  Funded By        → [spec TBD]
-
-─────────────────────
-```
-
-**Implementation notes:**
-- Use Flutter's built-in `showLicensePage()` / `LicensePage` for the
-  Open Source Licenses entry — no manual maintenance needed.
-- Version string pulled from `package_info_plus` at runtime.
-- "Funded By" copy is TBD — leave as a placeholder constant until decided.
 
 ---
 

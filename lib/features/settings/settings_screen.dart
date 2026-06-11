@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -42,6 +43,26 @@ class SettingsScreen extends StatelessWidget {
                   )
                   .toList(),
             ),
+          ),
+
+          const Divider(),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+            child: Text(
+              'About',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.colorScheme.primary,
+                letterSpacing: 1.1,
+              ),
+            ),
+          ),
+
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('About Tunely'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.pushNamed(context, AppRoute.about),
           ),
         ],
       ),
