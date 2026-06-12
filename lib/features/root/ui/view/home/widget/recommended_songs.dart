@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
-import 'package:tunely/features/root/ui/view/home/widget/home_sections.dart';
 
 class RecommendedSongs extends StatefulWidget {
   const RecommendedSongs({super.key});
@@ -13,14 +11,6 @@ class RecommendedSongs extends StatefulWidget {
 }
 
 class _RecommendedSongsState extends State<RecommendedSongs> {
-  List<Tune> _picked = [];
-
-  void _reshuffle(List<Tune> tunes) {
-    setState(() {
-      _picked = ([...tunes]..shuffle()).take(5).toList();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LibraryCubit, LibraryState>(
@@ -28,32 +18,46 @@ class _RecommendedSongsState extends State<RecommendedSongs> {
       builder: (context, state) {
         if (state is! LibraryLoaded) return const SliverToBoxAdapter();
 
-        if (_picked.isEmpty) {
-          _picked = ([...state.tunes]..shuffle()).take(5).toList();
-        }
-
-        if (_picked.isEmpty) {
-          return const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 120,
-              child: Center(child: Text('No songs found')),
-            ),
-          );
-        }
+        final dailyMix = state.dailyMix;
 
         return SliverMainAxisGroup(
           slivers: [
             SliverToBoxAdapter(
-              child: HomeSections(
-                headline: 'Recommended Songs',
-                onTap: () => _reshuffle(state.tunes),
-                child: const SizedBox.shrink(),
+              child: Padding(
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                child: Text(
+                  "Daily Mix",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                ),
               ),
             ),
-            SliverList.builder(
-              itemCount: _picked.length,
-              itemBuilder: (context, i) => SongTile(tunes: _picked, index: i),
-            ),
+            if (dailyMix.isEmpty)
+              const SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 120,
+                  child: Center(child: Text('No songs available')),
+                ),
+              )
+            else
+              SliverList.builder(
+                itemCount: (dailyMix.length < 5 ? dailyMix.length : 5) + 1,
+                itemBuilder: (context, i) {
+                  final lastIndex = dailyMix.length < 5 ? dailyMix.length : 5;
+                  if (i == lastIndex) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: ListTile(
+                        title: Text("Don't think twice, just play"),
+                        trailing: const Icon(Icons.arrow_circle_right_outlined),
+                        onTap: () {},
+                      ),
+                    );
+                  }
+                  return SongTile(tunes: dailyMix, index: i);
+                },
+              ),
           ],
         );
       },

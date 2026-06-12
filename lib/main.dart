@@ -23,6 +23,7 @@ import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/features/playlist/service/playlist_service.dart';
 import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
+import 'package:tunely/features/search/repository/search_repository.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/features/sleep_mode/cubit/sleep_mode_cubit.dart';
@@ -86,6 +87,9 @@ void main() async {
     repo: customizationRepo,
   );
 
+  // setup search
+  final searchRepo = SearchRepository();
+
   // setup playlist
   final playlistService = PlaylistService(query: audioQuery);
 
@@ -97,7 +101,7 @@ void main() async {
         BlocProvider(create: (context) => PlaybackBloc(audioHandler)),
         BlocProvider(create: (context) => SessionCubit(sessionRepo)),
         BlocProvider(create: (context) => StatsCubit(stateService)),
-        BlocProvider(create: (context) => SearchCubit()),
+        BlocProvider(create: (context) => SearchCubit(searchRepo)),
         BlocProvider(create: (context) => LyricsCubit(lyricsService)),
         BlocProvider(
           create: (context) => SleepModeCubit(playbackService: audioHandler),

@@ -21,6 +21,8 @@ class LibraryCubit extends Cubit<LibraryState> {
         emit(LibraryPermissionDenied());
         return;
       }
+      final dailyMix = [...result.tunes..shuffle()].take(10).toList();
+
       emit(
         LibraryLoaded(
           tunes: result.tunes,
@@ -28,11 +30,21 @@ class LibraryCubit extends Cubit<LibraryState> {
           albums: result.albums,
           genres: result.genres,
           playlists: result.playlists,
+          dailyMix: dailyMix,
         ),
       );
     } catch (e) {
       emit(LibraryError(e.toString()));
     }
+  }
+
+  Future<void> rescan() => initialLoad();
+
+  void reloadDailyMix() {
+    final s = state;
+    if (s is! LibraryLoaded) return;
+    final reshuffled = [...s.tunes]..shuffle();
+    emit(s.copyWith(dailyMix: reshuffled.take(10).toList()));
   }
 
   List<Tune> getTunesByAlbum(int albumId) => _service.getTunesByAlbum(albumId);

@@ -36,7 +36,7 @@ class _SplashViewState extends State<SplashView> {
 
       context.read<StatsCubit>().load(state.tunes);
 
-      context.read<SearchCubit>().setLibrary(
+      await context.read<SearchCubit>().setLibrary(
         LibraryScanResult(
           tunes: state.tunes,
           artists: state.artists,

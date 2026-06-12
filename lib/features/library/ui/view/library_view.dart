@@ -21,6 +21,7 @@ class LibraryView extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           SliverAppBar(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             floating: true,
             pinned: true,
             title: Text(

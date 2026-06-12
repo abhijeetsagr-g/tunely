@@ -86,6 +86,8 @@ class LyricsService {
     }
   }
 
+  Future<void> clearCache() => _repository.clear();
+
   // Save offset for a song
   Future<LyricsResult?> saveOffset(Tune tune, int offsetMs) async {
     final key = tune.songId?.toString() ?? tune.path;

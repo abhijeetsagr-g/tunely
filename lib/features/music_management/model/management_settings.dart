@@ -15,7 +15,7 @@ class ManagementSettings extends HiveObject {
 
   ManagementSettings({
     this.artistDelimiters = const ['/', ',', ';', '&', '+'],
-    this.minDurationMs = 10000,
+    this.minDurationMs = 5000,
     this.excludedFolders = const [],
   });
 

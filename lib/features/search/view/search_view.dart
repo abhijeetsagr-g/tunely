@@ -40,7 +40,10 @@ class _SearchViewState extends State<SearchView> {
 
             if (state is SearchIdle)
               ..._buildRecentItems(state)
-            else if (state is SearchLoaded && state.result.tunes.isEmpty && state.result.albums.isEmpty && state.result.artists.isEmpty)
+            else if (state is SearchLoaded &&
+                state.result.tunes.isEmpty &&
+                state.result.albums.isEmpty &&
+                state.result.artists.isEmpty)
               _buildEmptyState(
                 icon: Icons.music_off_rounded,
                 message: 'No results',
@@ -58,6 +61,7 @@ class _SearchViewState extends State<SearchView> {
 
   Widget _buildAppBar(ThemeData theme) {
     return SliverAppBar(
+      backgroundColor: theme.scaffoldBackgroundColor,
       floating: true,
       snap: true,
       expandedHeight: 120,
@@ -221,7 +225,6 @@ class _SearchViewState extends State<SearchView> {
   }
 
   List<Widget> _buildSections(SearchResult result, FilterMode filter) {
-
     return [
       if (filter == FilterMode.all || filter == FilterMode.songs)
         ..._buildSongs(result),
@@ -290,10 +293,12 @@ class _SearchViewState extends State<SearchView> {
             spacing: 8,
             runSpacing: 8,
             children: result.artists
-                .map((a) => ArtistCard(
-                  artist: a,
-                  onTap: () => cubit.addRecentItem(RecentArtistItem(a)),
-                ))
+                .map(
+                  (a) => ArtistCard(
+                    artist: a,
+                    onTap: () => cubit.addRecentItem(RecentArtistItem(a)),
+                  ),
+                )
                 .toList(),
           ),
         ),

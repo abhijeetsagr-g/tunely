@@ -11,7 +11,6 @@ import 'package:tunely/features/playback/view/queue/queue_view.dart';
 import 'package:tunely/features/playlist/view/playlist_view.dart';
 import 'package:tunely/features/root/ui/root_screen.dart';
 import 'package:tunely/features/root/ui/view/splash/splash_view.dart';
-import 'package:tunely/features/settings/about_view.dart';
 import 'package:tunely/features/settings/settings_screen.dart';
 
 class AppRouter {
@@ -87,12 +86,6 @@ class AppRouter {
           settings: settings,
           transition: RouteTransition.fade,
           builder: (context) => QueueView(),
-        );
-
-      case AppRoute.about:
-        return AppPageRoute(
-          settings: settings,
-          builder: (context) => const AboutView(),
         );
 
       default:

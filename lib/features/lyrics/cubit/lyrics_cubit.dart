@@ -81,6 +81,11 @@ class LyricsCubit extends Cubit<LyricsState> {
     await fetch(s.tune);
   }
 
+  Future<void> clearCache() async {
+    await _service.clearCache();
+    emit(const LyricsIdle());
+  }
+
   // Manual search with custom title/artist
   Future<void> reloadManual(String title, String artist) async {
     final s = state;

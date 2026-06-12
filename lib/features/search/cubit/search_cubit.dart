@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/search/model/recent_item.dart';
 import 'package:tunely/features/search/model/search_result.dart';
+import 'package:tunely/features/search/repository/search_repository.dart';
 
 part 'search_state.dart';
 
@@ -10,11 +11,60 @@ class SearchCubit extends Cubit<SearchState> {
   Timer? _debounce;
   LibraryScanResult? _library;
   final List<RecentItem> _recentItems = [];
+  final SearchRepository _repository;
 
-  SearchCubit() : super(const SearchIdle());
+  SearchCubit(this._repository) : super(const SearchIdle());
 
-  void setLibrary(LibraryScanResult library) {
+  Future<void> setLibrary(LibraryScanResult library) async {
     _library = library;
+    await _loadRecentItems();
+    emit(SearchIdle(recentItems: List.of(_recentItems)));
+  }
+
+  Future<void> _loadRecentItems() async {
+    final data = await _repository.loadRecentItems();
+    final library = _library;
+    if (library == null) return;
+
+    for (final item in data) {
+      final resolved = _resolveItem(item, library);
+      if (resolved != null) {
+        _recentItems.add(resolved);
+      }
+    }
+  }
+
+  RecentItem? _resolveItem(RecentItemData data, LibraryScanResult library) {
+    return switch (data.type) {
+      'song' => _resolveSong(data, library),
+      'album' => _resolveAlbum(data, library),
+      'artist' => _resolveArtist(data, library),
+      _ => null,
+    };
+  }
+
+  RecentSongItem? _resolveSong(RecentItemData data, LibraryScanResult library) {
+    final tune = data.songId != null
+        ? library.tunes.where((t) => t.songId == data.songId).firstOrNull
+        : null;
+    if (tune != null) return RecentSongItem(tune);
+    return null;
+  }
+
+  RecentAlbumItem? _resolveAlbum(RecentItemData data, LibraryScanResult library) {
+    final album = data.albumId != null
+        ? library.albums.where((a) => a.id == data.albumId).firstOrNull
+        : null;
+    if (album != null) return RecentAlbumItem(album);
+    return null;
+  }
+
+  RecentArtistItem? _resolveArtist(RecentItemData data, LibraryScanResult library) {
+    final artist = data.artistId != null
+        ? library.artists.where((a) => a.artistId == data.artistId).firstOrNull
+        : null;
+    if (artist != null) return RecentArtistItem(artist);
+    return null;
   }
 
   void search(String query) {
@@ -52,10 +102,12 @@ class SearchCubit extends Cubit<SearchState> {
     if (_recentItems.length > 10) {
       _recentItems.removeLast();
     }
+    _repository.saveRecentItems(_recentItems);
   }
 
   void clearRecentItems() {
     _recentItems.clear();
+    _repository.clearRecentItems();
     emit(SearchIdle(recentItems: const []));
   }
 
