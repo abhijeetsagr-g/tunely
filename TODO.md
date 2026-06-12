@@ -63,6 +63,12 @@
 - [x] Reset All Lyrics button (with confirmation)
 
 
+### UI-04 · Player
+- [x] Song change: album art slides in/out (respects swipe direction)
+- [x] Play/Pause: subtle scale animation on album art (~1.05×)
+- [ ] Replace hardcoded pixel gaps with `Spacer`/`Expanded`
+
+
 ## Deferred
 
 | ID | Item | Blocker |
@@ -73,8 +79,3 @@
 --- 
 
 ## Working on Right now
-
-### UI-04 · Player
-- [ ] Song change: album art slides in/out (respects swipe direction)
-- [ ] Play/Pause: subtle scale animation on album art (~1.05×)
-- [ ] Replace hardcoded pixel gaps with `Spacer`/`Expanded`

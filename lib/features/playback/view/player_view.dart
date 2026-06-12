@@ -18,41 +18,59 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final isWide = size.width > 600;
+
     return Scaffold(
       body: Stack(
         children: [
           const PlayerGradientBackground(),
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 30,
-                children: [
-                  _PlayerAppBar(),
-                  PlayerAlbumArt(),
-                  SongInfo(),
-                  SeekBar(),
-                  ControlButtons(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: isWide ? 500 : double.infinity,
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isWide ? 32.0 : 20.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoute.queue);
-                        },
-                        icon: const Icon(Icons.queue_music_outlined),
+                      _PlayerAppBar(),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: PlayerAlbumArt(),
+                        ),
                       ),
-                      SizedBox(width: 250, child: NextSongLabel()),
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoute.lyrics);
-                        },
-                        icon: const Icon(Icons.lyrics_outlined),
+                      SongInfo(),
+                      SizedBox(height: size.height * 0.025),
+                      SeekBar(),
+                      SizedBox(height: size.height * 0.025),
+                      ControlButtons(),
+                      SizedBox(height: size.height * 0.06),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, AppRoute.queue);
+                            },
+                            icon: const Icon(Icons.queue_music_outlined),
+                          ),
+                          Expanded(child: NextSongLabel()),
+                          IconButton(
+                            onPressed: () =>
+                                Navigator.pushNamed(context, AppRoute.lyrics),
+                            icon: const Icon(Icons.lyrics_outlined),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             ),
           ),
@@ -78,21 +96,21 @@ class _PlayerAppBar extends StatelessWidget {
           buildWhen: (prev, curr) => prev.currentItem != curr.currentItem,
           builder: (context, state) {
             if (state.currentItem == null) return const SizedBox();
-              return Expanded(
-                child: InkWell(
-                  onTap: () {
-                    final cubitState = context.read<LibraryCubit>().state;
-                    if (cubitState is! LibraryLoaded) return;
-                    final album = cubitState.albums.firstWhereOrNull(
-                      (e) => e.id == state.currentItem?.albumId,
-                    );
-                    if (album == null) return;
-                    Navigator.pushReplacementNamed(
-                      context,
-                      AppRoute.album,
-                      arguments: AlbumSettingsArguments(album),
-                    );
-                  },
+            return Expanded(
+              child: InkWell(
+                onTap: () {
+                  final cubitState = context.read<LibraryCubit>().state;
+                  if (cubitState is! LibraryLoaded) return;
+                  final album = cubitState.albums.firstWhereOrNull(
+                    (e) => e.id == state.currentItem?.albumId,
+                  );
+                  if (album == null) return;
+                  Navigator.pushReplacementNamed(
+                    context,
+                    AppRoute.album,
+                    arguments: AlbumSettingsArguments(album),
+                  );
+                },
                 child: Center(
                   child: Text(
                     state.currentItem?.album ?? "Album Name",

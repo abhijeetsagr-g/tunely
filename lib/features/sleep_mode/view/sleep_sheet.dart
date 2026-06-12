@@ -23,7 +23,7 @@ class _SleepSheetContent extends StatelessWidget {
     final cubit = context.read<SleepModeCubit>();
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      padding: const EdgeInsets.only(top: 16, bottom: 24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -42,7 +42,9 @@ class _SleepSheetContent extends StatelessWidget {
               _timeButton(context, "10 min", 10 * 60),
               _timeButton(context, "15 min", 15 * 60),
               _timeButton(context, "30 min", 30 * 60),
-              _timeButton(context, "60 min", 60 * 60),
+              _timeButton(context, "1 hour", 60 * 60),
+              _timeButton(context, "1 hr 30 mins", 90 * 60),
+              _timeButton(context, "2 hr.. just sleep", 120 * 60),
             ],
           ),
 
@@ -65,7 +67,6 @@ class _SleepSheetContent extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         cubit.cancel();
-                        Navigator.pop(context);
                       },
                       child: const Text("Cancel Timer"),
                     ),
@@ -84,7 +85,6 @@ class _SleepSheetContent extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         context.read<SleepModeCubit>().start(seconds);
-        Navigator.pop(context);
       },
       child: Text(label),
     );
