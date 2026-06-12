@@ -48,13 +48,6 @@
 - [ ] Step 4 — Scan (progress + result summary)
 - [ ] Gate app behind `onboardingComplete` in prefs
 
-### UI-12 · Queue Screen
-- [ ] Non-reorderable grayed-out history section (< currentIndex)
-- [ ] Reorderable upcoming section
-- [ ] Accent highlight on current song
-- [ ] Swipe-to-remove kept, animate as `Dismissible`
-
-
 ### UI-08 · Settings
 - [x] App Theme picker
 - [x] Artist / Album Artist delimiter text fields
@@ -67,6 +60,12 @@
 - [x] Song change: album art slides in/out (respects swipe direction)
 - [x] Play/Pause: subtle scale animation on album art (~1.05×)
 - [ ] Replace hardcoded pixel gaps with `Spacer`/`Expanded`
+
+
+### UI-12 · Queue Screen
+- [x] Reorderable upcoming section
+- [x] Swipe-to-remove kept, animate as `Dismissible`
+
 
 
 ## Deferred

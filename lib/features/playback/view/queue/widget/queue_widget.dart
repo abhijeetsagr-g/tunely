@@ -26,22 +26,51 @@ class QueueWidget extends StatelessWidget {
           );
         }
 
-        return ListView(
-          padding: const EdgeInsets.only(bottom: 24),
+        final nextTile = QueueSongTile(
+          index: nextIndex,
+          tune: tunes[nextIndex],
+        );
+
+        if (upcoming.isEmpty) {
+          return ListView(
+            padding: const EdgeInsets.only(bottom: 24),
+            children: [
+              _SectionLabel(label: 'Next Song'),
+              nextTile,
+            ],
+          );
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _SectionLabel(label: 'Next Song'),
-            QueueSongTile(index: nextIndex, tune: tunes[nextIndex]),
-
-            if (upcoming.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              _SectionLabel(label: 'Upcoming'),
-              ...upcoming.mapIndexed(
-                (i, t) => QueueSongTile(
-                  tune: tunes[nextIndex + 1 + i],
-                  index: nextIndex + 1 + i,
-                ),
+            nextTile,
+            const SizedBox(height: 8),
+            _SectionLabel(label: 'Upcoming'),
+            Expanded(
+              child: ReorderableListView(
+                padding: const EdgeInsets.only(bottom: 24),
+                onReorderItem: (oldIndex, newIndex) {
+                  final offset = nextIndex + 1;
+                  context.read<PlaybackBloc>().add(
+                    ChangeQueueOrder(
+                      oldIndex: offset + oldIndex,
+                      newIndex: offset + newIndex,
+                    ),
+                  );
+                },
+                children: upcoming
+                    .mapIndexed(
+                      (i, t) => QueueSongTile(
+                        key: ValueKey(t.path),
+                        tune: tunes[nextIndex + 1 + i],
+                        index: nextIndex + 1 + i,
+                      ),
+                    )
+                    .toList(),
               ),
-            ],
+            ),
           ],
         );
       },
