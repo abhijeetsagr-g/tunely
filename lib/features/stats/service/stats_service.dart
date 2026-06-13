@@ -20,5 +20,13 @@ class StatsService {
     stats.playCount++;
     stats.lastPlayed = DateTime.now();
     repo.save(stats);
+
+    final recent = repo.getRecentOrder();
+    recent.remove(item.id);
+    recent.insert(0, item.id);
+    if (recent.length > 10) {
+      recent.removeLast();
+    }
+    repo.saveRecentOrder(recent);
   }
 }

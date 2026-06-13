@@ -56,7 +56,7 @@ class _TopSongPageState extends State<TopSongPage> {
         Theme.of(context).colorScheme.secondaryContainer,
       ];
     }
-    return [base.withAlpha(200), base.withAlpha(100)];
+    return [base, Color.lerp(base, Colors.black, 0.25)!];
   }
 
   @override

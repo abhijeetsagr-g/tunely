@@ -69,7 +69,8 @@ void main() async {
 
   // // setup stats
   final statsBox = await Hive.openBox<TuneStats>('stats_box');
-  final statsRepo = StatsRepository(statsBox);
+  final statsMetaBox = await Hive.openBox('stats_meta');
+  final statsRepo = StatsRepository(statsBox, statsMetaBox);
   final stateService = StatsService(audioHandler.onTrackChanged, statsRepo);
 
   // //  setup session
@@ -103,10 +104,8 @@ void main() async {
         BlocProvider(create: (context) => StatsCubit(stateService)),
         BlocProvider(create: (context) => SearchCubit(searchRepo)),
         BlocProvider(
-          create: (context) => LyricsCubit(
-            lyricsService,
-            context.read<PlaybackBloc>(),
-          ),
+          create: (context) =>
+              LyricsCubit(lyricsService, context.read<PlaybackBloc>()),
         ),
         BlocProvider(
           create: (context) => SleepModeCubit(playbackService: audioHandler),

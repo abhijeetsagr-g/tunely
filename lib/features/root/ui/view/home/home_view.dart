@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utlis/random_texts.dart';
+import 'package:tunely/features/root/ui/view/home/widget/continue_listening_card.dart';
 import 'package:tunely/features/root/ui/view/home/widget/daily_mix.dart';
-import 'package:tunely/features/root/ui/view/home/widget/top_song_card.dart';
+import 'package:tunely/features/root/ui/view/home/widget/recommeded_albums.dart';
+import 'package:tunely/features/root/ui/view/home/widget/top_songs_section.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -62,11 +64,11 @@ class _HomeViewState extends State<HomeView>
       key: const PageStorageKey('home_view'),
       slivers: [
         _appBar(),
-
-        // TODO: Recently Played Column, With A title, a grid of song tiles and album art, create a new widget
-        // TODO: DailyMix, already exist, elevate it wiith a card
-        // TODO: Top Songs Carosal that slides to show more songs, (TOTAL of 5 songs to be gone through, then one big carousal to ask OPEN ALL TOP SONGS! Write the number )
-        // TODO: Top Albums Card, Use AlbumCard Widget
+        SliverToBoxAdapter(child: const ContinueListeningCard()),
+        SliverToBoxAdapter(child: const TopSongsSection()),
+        const DailyMixWidget(),
+        const RecommendedAlbums(),
+        SliverToBoxAdapter(child: const SizedBox(height: 100)),
       ],
     );
   }

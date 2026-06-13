@@ -2,18 +2,6 @@
 
 ## UI Rebuilds
 
-### UI-01 · Library
-- [ ] Filter row collapses on scroll (use `SliverAppBar`)
-- [ ] Albums grid bottom padding accounts for mini-player height
-- [ ] Scroll position resets correctly so first item clears the filter bar
-
-### UI-02 · Home
-- [x] Remove Recently Played horizontal list
-- [x] Remove "Show More Albums / Songs"
-- [x] Remove `CurrentPlayingCard`
-- [ ] Show Daily Mix (15 songs, first 5 as vertical list)
-- [ ] Pre-extract palette colors on mix build, cache alongside song data
-
 ### UI-06 · Artist Detail
 - [ ] Group songs by album with sticky headers
 - [ ] Extract & apply color scheme from artist cover art
@@ -22,7 +10,6 @@
 ### UI-07 · Album Detail
 - [ ] Extract & apply color scheme from album art
 - [ ] Artist tabs widget at bottom (one tab per featured artist)
-
 
 ### UI-10 · Playlist UI
 - [ ] Add songs (multi-select from library)
@@ -50,7 +37,7 @@
 ### UI-04 · Player
 - [x] Song change: album art slides in/out (respects swipe direction)
 - [x] Play/Pause: subtle scale animation on album art (~1.05×)
-- [ ] Replace hardcoded pixel gaps with `Spacer`/`Expanded`
+- [x] Replace hardcoded pixel gaps with `Spacer`/`Expanded`
 
 
 ### UI-12 · Queue Screen
@@ -64,6 +51,12 @@
 - [x] Debounce rapid song changes (400ms)
 - [x] Per-song in-session cache
 
+### UI-02 · Home
+- [x] Remove Recently Played horizontal list
+- [x] Remove "Show More Albums / Songs"
+- [x] Remove `CurrentPlayingCard`
+- [ ] Show Daily Mix (15 songs, first 5 as vertical list)
+
 
 ## Deferred
 
@@ -75,3 +68,9 @@
 --- 
 
 ## Working on Right now
+
+### UI-01 · Library
+- [ ] Filter row collapses on scroll (use `SliverAppBar`)
+- [ ] Albums grid bottom padding accounts for mini-player height
+- [ ] Scroll position resets correctly so first item clears the filter bar
+

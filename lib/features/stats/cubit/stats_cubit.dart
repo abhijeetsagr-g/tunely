@@ -39,19 +39,13 @@ class StatsCubit extends Cubit<StatsState> {
     played.sort(
       (a, b) => stats[b.path]!.playCount.compareTo(stats[a.path]!.playCount),
     );
-    return played;
+    return played.take(50).toList();
   }
 
   List<Tune> _recent(List<Tune> tunes) {
-    final stats = {for (final t in tunes) t.path: _repo.get(t.path)};
-    final played = tunes
-        .where((t) => stats[t.path]!.lastPlayed != null)
-        .toList();
-    played.sort(
-      (a, b) =>
-          stats[b.path]!.lastPlayed!.compareTo(stats[a.path]!.lastPlayed!),
-    );
-    return played;
+    final tuneMap = {for (final t in tunes) t.path: t};
+    final order = _repo.getRecentOrder();
+    return order.map((path) => tuneMap[path]).whereType<Tune>().toList();
   }
 
   List<Tune> _liked(List<Tune> tunes) {
