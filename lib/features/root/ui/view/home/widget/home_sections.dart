@@ -4,14 +4,14 @@ class HomeSections extends StatelessWidget {
   const HomeSections({
     super.key,
     required this.headline,
-    required this.onTap,
+    this.onTap,
     this.onTapTitle = "Reload",
     this.child,
   });
 
   final String headline;
   final String onTapTitle;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final Widget? child;
 
   @override
@@ -29,12 +29,13 @@ class HomeSections extends StatelessWidget {
                   context,
                 ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
-              TextButton.icon(
-                style: TextButton.styleFrom(foregroundColor: Colors.grey),
-                onPressed: onTap,
-                label: Text(onTapTitle),
-                icon: Icon(Icons.keyboard_arrow_right),
-              ),
+              if (onTap != null)
+                TextButton.icon(
+                  style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                  onPressed: onTap,
+                  label: Text(onTapTitle),
+                  icon: const Icon(Icons.keyboard_arrow_right),
+                ),
             ],
           ),
 
