@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:tunely/core/extensions/title_case.dart';
+import 'package:tunely/features/lyrics/view/widget/lrclib_search_sheet.dart';
 import 'package:tunely/features/lyrics/view/widget/lyrics_option_sheet.dart';
 import 'package:tunely/features/lyrics/view/widget/sync_lyrics_widget.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
@@ -41,6 +42,10 @@ class LyricsView extends StatelessWidget {
                           );
                         },
                       ),
+                    ),
+                    IconButton(
+                      onPressed: () => showLrcLibSearchSheet(context),
+                      icon: const Icon(Icons.search_rounded),
                     ),
                     IconButton(
                       onPressed: () => showLyricsOptionsSheet(context),

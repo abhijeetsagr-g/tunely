@@ -33,7 +33,7 @@ class HomeSections extends StatelessWidget {
                 style: TextButton.styleFrom(foregroundColor: Colors.grey),
                 onPressed: onTap,
                 label: Text(onTapTitle),
-                icon: Icon(Icons.replay_outlined),
+                icon: Icon(Icons.keyboard_arrow_right),
               ),
             ],
           ),

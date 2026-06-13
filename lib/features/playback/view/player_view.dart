@@ -41,10 +41,11 @@ class PlayerView extends StatelessWidget {
                       _PlayerAppBar(),
                       Expanded(
                         child: Align(
-                          alignment: Alignment.center,
+                          alignment: Alignment.bottomCenter,
                           child: PlayerAlbumArt(),
                         ),
                       ),
+                      SizedBox(height: size.height * 0.025),
                       SongInfo(),
                       SizedBox(height: size.height * 0.025),
                       SeekBar(),
@@ -68,6 +69,7 @@ class PlayerView extends StatelessWidget {
                           ),
                         ],
                       ),
+                      SizedBox(height: size.height * 0.06),
                     ],
                   ),
                 ),

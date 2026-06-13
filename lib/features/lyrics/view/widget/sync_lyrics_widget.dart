@@ -18,9 +18,9 @@ class SyncLyricsWidget extends StatelessWidget {
       buildWhen: (previous, current) {
         if (previous is LyricsLoaded && current is LyricsLoaded) {
           return previous.result != current.result ||
-              previous.temporaryOffset != current.temporaryOffset;
+              previous.temporaryOffset != current.temporaryOffset ||
+              previous.tune != current.tune;
         }
-        // This misses: LyricsLoaded -> LyricsLoaded (same type, different song)
         return previous.runtimeType != current.runtimeType;
       },
 

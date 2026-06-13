@@ -1,9 +1,5 @@
 # Tunely — TODO
 
-## Bugs
-
-- [ ] **B-03 — Queue hides songs before current position** — queue list slices from `currentIndex` onward. Pass full queue & gray out history.
-
 ## UI Rebuilds
 
 ### UI-01 · Library
@@ -12,18 +8,11 @@
 - [ ] Scroll position resets correctly so first item clears the filter bar
 
 ### UI-02 · Home
-- [ ] Remove Recently Played horizontal list
-- [ ] Remove "Show More Albums / Songs"
-- [ ] Remove `CurrentPlayingCard`
+- [x] Remove Recently Played horizontal list
+- [x] Remove "Show More Albums / Songs"
+- [x] Remove `CurrentPlayingCard`
 - [ ] Show Daily Mix (15 songs, first 5 as vertical list)
 - [ ] Pre-extract palette colors on mix build, cache alongside song data
-
-### UI-05 · Lyrics
-- [ ] Search icon opens song picker to fetch lyrics without affecting playback
-- [ ] Overflow menu → "Import .lrc file"
-- [ ] Move fetch trigger into dedicated cubit listening to playback stream
-- [ ] Debounce rapid song changes (400ms)
-- [ ] Per-song in-session cache
 
 ### UI-06 · Artist Detail
 - [ ] Group songs by album with sticky headers
@@ -48,6 +37,8 @@
 - [ ] Step 4 — Scan (progress + result summary)
 - [ ] Gate app behind `onboardingComplete` in prefs
 
+---
+
 ### UI-08 · Settings
 - [x] App Theme picker
 - [x] Artist / Album Artist delimiter text fields
@@ -66,6 +57,12 @@
 - [x] Reorderable upcoming section
 - [x] Swipe-to-remove kept, animate as `Dismissible`
 
+### UI-05 · Lyrics
+- [x] Search icon opens song picker to fetch lyrics without affecting playback
+- [x] Overflow menu → "Import .lrc file"
+- [x] Move fetch trigger into dedicated cubit listening to playback stream
+- [x] Debounce rapid song changes (400ms)
+- [x] Per-song in-session cache
 
 
 ## Deferred

@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
 
-class RecommendedSongs extends StatefulWidget {
-  const RecommendedSongs({super.key});
+class DailyMixWidget extends StatefulWidget {
+  const DailyMixWidget({super.key});
 
   @override
-  State<RecommendedSongs> createState() => _RecommendedSongsState();
+  State<DailyMixWidget> createState() => _DailyMixWidgetState();
 }
 
-class _RecommendedSongsState extends State<RecommendedSongs> {
+class _DailyMixWidgetState extends State<DailyMixWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LibraryCubit, LibraryState>(

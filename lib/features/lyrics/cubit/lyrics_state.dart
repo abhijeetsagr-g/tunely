@@ -9,7 +9,9 @@ class LyricsIdle extends LyricsState {
 }
 
 class LyricsLoading extends LyricsState {
-  const LyricsLoading();
+  final Tune tune;
+
+  const LyricsLoading(this.tune);
 }
 
 class LyricsNotFound extends LyricsState {

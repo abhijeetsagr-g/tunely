@@ -102,7 +102,12 @@ void main() async {
         BlocProvider(create: (context) => SessionCubit(sessionRepo)),
         BlocProvider(create: (context) => StatsCubit(stateService)),
         BlocProvider(create: (context) => SearchCubit(searchRepo)),
-        BlocProvider(create: (context) => LyricsCubit(lyricsService)),
+        BlocProvider(
+          create: (context) => LyricsCubit(
+            lyricsService,
+            context.read<PlaybackBloc>(),
+          ),
+        ),
         BlocProvider(
           create: (context) => SleepModeCubit(playbackService: audioHandler),
         ),

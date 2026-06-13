@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
+import 'package:tunely/features/lyrics/view/widget/song_picker_sheet.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 void showLyricsOptionsSheet(BuildContext context) {
   showModalBottomSheet(
@@ -27,10 +32,38 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
   late TextEditingController _artistCtrl;
 
   @override
+  void initState() {
+    super.initState();
+    _titleCtrl = TextEditingController();
+    _artistCtrl = TextEditingController();
+  }
+
+  @override
   void dispose() {
     _titleCtrl.dispose();
     _artistCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickLrcFile(LyricsCubit cubit) async {
+    final result = await FilePicker.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['lrc'],
+    );
+    if (result == null || result.files.isEmpty) return;
+
+    final file = result.files.single;
+    String content;
+    if (file.path != null) {
+      content = await File(file.path!).readAsString();
+    } else {
+      final bytes = await file.readAsBytes();
+      content = String.fromCharCodes(bytes);
+    }
+
+    if (!mounted) return;
+    cubit.importLrc(content);
+    Navigator.pop(context);
   }
 
   @override
@@ -40,11 +73,10 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
     final playback = context.read<PlaybackBloc>();
     final state = cubit.state;
     final isLoaded = state is LyricsLoaded;
+    final currentItem = playback.state.currentItem;
 
-    _titleCtrl = TextEditingController(text: playback.state.currentItem?.title);
-    _artistCtrl = TextEditingController(
-      text: playback.state.currentItem?.artist,
-    );
+    _titleCtrl.text = currentItem?.title ?? '';
+    _artistCtrl.text = currentItem?.artist ?? '';
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -59,7 +91,6 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Handle
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -84,7 +115,21 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
                 ),
               ),
 
-              // search manually
+              // Song picker from library
+              ListTile(
+                leading: const Icon(Icons.library_music_rounded),
+                title: const Text('Pick song from library'),
+                subtitle: const Text('Browse lyrics for any song'),
+                onTap: () {
+                  Navigator.pop(context);
+                  showSongPickerSheet(
+                    context,
+                    onSelected: (Tune tune) => cubit.fetchForTune(tune),
+                  );
+                },
+              ),
+
+              // search manually on LRCLIB
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
@@ -127,7 +172,7 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
                 ),
               ),
 
-              // reload
+              // reload from LRCLIB
               ListTile(
                 enabled: isLoaded,
                 leading: const Icon(Icons.refresh_rounded),
@@ -139,6 +184,14 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
                         Navigator.pop(context);
                       }
                     : null,
+              ),
+
+              // import .lrc file
+              ListTile(
+                leading: const Icon(Icons.upload_file_rounded),
+                title: const Text('Import .lrc file'),
+                subtitle: const Text('Load from device storage'),
+                onTap: () => _pickLrcFile(cubit),
               ),
 
               const SizedBox(height: 8),

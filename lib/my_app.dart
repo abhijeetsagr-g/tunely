@@ -4,7 +4,6 @@ import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/const/app_router.dart';
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
-import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
@@ -76,15 +75,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           },
         ),
 
-        BlocListener<PlaybackBloc, PlaybackState>(
-          listenWhen: (previous, current) =>
-              previous.currentItem != current.currentItem,
-          listener: (context, state) {
-            if (state.currentItem != null) {
-              context.read<LyricsCubit>().fetch(state.currentItem!);
-            }
-          },
-        ),
       ],
 
       child: MaterialApp(

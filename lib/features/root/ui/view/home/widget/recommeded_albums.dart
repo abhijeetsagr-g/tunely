@@ -17,7 +17,7 @@ class _RecommendedAlbumsState extends State<RecommendedAlbums> {
 
   void _reshuffle(List<AlbumModel> albums) {
     setState(() {
-      _picked = ([...albums]..shuffle()).take(5).toList();
+      _picked = ([...albums]..shuffle()).take(8).toList();
     });
   }
 
@@ -49,8 +49,9 @@ class _RecommendedAlbumsState extends State<RecommendedAlbums> {
                 );
 
           return HomeSections(
-            headline: 'Recommended Albums',
+            headline: 'Your Albums',
             onTap: () => _reshuffle(state.albums),
+            onTapTitle: "Show All",
             child: child,
           );
         },

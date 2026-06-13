@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:tunely/features/lyrics/model/lrclib_search_result.dart';
 import 'package:tunely/features/lyrics/model/lyrics_line.dart';
 import 'package:tunely/features/lyrics/model/lyrics_result.dart';
 import 'package:tunely/features/lyrics/repository/lyrics_repository.dart';
@@ -46,6 +47,37 @@ class LyricsService {
     } catch (_) {
       return null;
     }
+  }
+
+  Future<List<LrcLibSearchResult>> searchLrclib(String title, String artist) async {
+    final uri = Uri.parse(
+      '$_base/search'
+      '?track_name=${Uri.encodeComponent(_parseTitle(title))}'
+      '&artist_name=${Uri.encodeComponent(artist)}',
+    );
+
+    try {
+      final res = await http.get(uri);
+      if (res.statusCode == 200) {
+        final list = jsonDecode(res.body) as List;
+        return list
+            .map((e) => LrcLibSearchResult.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+      return [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<LyricsResult?> saveSearchResult(
+    Tune tune,
+    LrcLibSearchResult searchResult,
+  ) async {
+    final key = tune.songId?.toString() ?? tune.path;
+    final result = _parseSearchResult(searchResult);
+    await _repository.save(key, result);
+    return result;
   }
 
   Future<LyricsResult?> reloadLyrics(Tune tune) async {
@@ -146,6 +178,14 @@ class LyricsService {
     return updated;
   }
 
+  LyricsResult _parseSearchResult(LrcLibSearchResult result) {
+    return LyricsResult(
+      synced: result.syncedLyrics != null ? _parseLrc(result.syncedLyrics!) : [],
+      plain: result.plainLyrics,
+      instrumental: result.instrumental,
+    );
+  }
+
   LyricsResult _parseResponse(Map<String, dynamic> json) {
     final syncedRaw = json['syncedLyrics'] as String?;
     final plain = json['plainLyrics'] as String?;
@@ -190,6 +230,19 @@ class LyricsService {
 
     lines.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     return lines;
+  }
+
+  Future<LyricsResult?> importLrc(Tune tune, String lrcContent) async {
+    final key = tune.songId?.toString() ?? tune.path;
+    final synced = _parseLrc(lrcContent);
+    final result = LyricsResult(
+      synced: synced,
+      plain: null,
+      instrumental: false,
+      offsetMs: 0,
+    );
+    await _repository.save(key, result);
+    return result;
   }
 
   String _parseTitle(String raw) {
