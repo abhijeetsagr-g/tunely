@@ -12,33 +12,61 @@ class ArtistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        onTap?.call();
-        Navigator.pushNamed(
-          context,
-          AppRoute.artist,
-          arguments: ArtistSettingsArguments(artist),
-        );
-      },
-      child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        leading: ArtistAvatar(artist: artist, size: Size(50, 50)),
-        title: Text(
-          artist.artist.toTitleCase(),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          style: Theme.of(
-            context,
-          ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
+    final cs = Theme.of(context).colorScheme;
 
-        subtitle: Text(
-          "${artist.tunes.length} songs",
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      child: InkWell(
+        onTap: () {
+          onTap?.call();
+          Navigator.pushNamed(
             context,
-          ).textTheme.labelLarge?.copyWith(color: Colors.grey),
+            AppRoute.artist,
+            arguments: ArtistSettingsArguments(artist),
+          );
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          decoration: BoxDecoration(
+            color: cs.surface.withAlpha(180),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                ArtistAvatar(artist: artist, size: const Size(56, 56)),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        artist.artist.toTitleCase(),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${artist.tunes.length} ${artist.tunes.length == 1 ? 'song' : 'songs'}",
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: cs.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: cs.onSurfaceVariant.withAlpha(100),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -7,7 +7,10 @@ import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
-void showSongPickerSheet(BuildContext context, {required void Function(Tune tune) onSelected}) {
+void showSongPickerSheet(
+  BuildContext context, {
+  required void Function(Tune tune) onSelected,
+}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -51,11 +54,14 @@ class _SongPickerSheetState extends State<SongPickerSheet> {
       if (q.isEmpty) {
         _filtered = _allTunes;
       } else {
-        _filtered = _allTunes.where((t) =>
-          t.title.toLowerCase().contains(q) ||
-          t.artist.toLowerCase().contains(q) ||
-          t.album.toLowerCase().contains(q),
-        ).toList();
+        _filtered = _allTunes
+            .where(
+              (t) =>
+                  t.title.toLowerCase().contains(q) ||
+                  t.artist.toLowerCase().contains(q) ||
+                  t.album.toLowerCase().contains(q),
+            )
+            .toList();
       }
     });
   }
@@ -164,12 +170,17 @@ class _SongPickerSheetState extends State<SongPickerSheet> {
                               tune.artists.join(' • '),
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: theme.colorScheme.onSurface.withAlpha(150),
+                                color: theme.colorScheme.onSurface.withAlpha(
+                                  150,
+                                ),
                               ),
                             ),
                             trailing: isCurrent
-                                ? Icon(Icons.play_arrow_rounded,
-                                    size: 20, color: theme.colorScheme.primary)
+                                ? Icon(
+                                    Icons.play_arrow_rounded,
+                                    size: 20,
+                                    color: theme.colorScheme.primary,
+                                  )
                                 : null,
                             onTap: () {
                               widget.onSelected(tune);

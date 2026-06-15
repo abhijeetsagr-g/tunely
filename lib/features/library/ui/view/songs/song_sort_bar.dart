@@ -6,6 +6,7 @@ class SongSortBar extends StatelessWidget {
   final SortOrder sortOrder;
   final ValueChanged<SortType> onSortTypeChanged;
   final VoidCallback onSortOrderToggled;
+  final List<SortType> types;
 
   const SongSortBar({
     super.key,
@@ -13,6 +14,7 @@ class SongSortBar extends StatelessWidget {
     required this.sortOrder,
     required this.onSortTypeChanged,
     required this.onSortOrderToggled,
+    this.types = SortType.values,
   });
 
   @override
@@ -29,7 +31,7 @@ class SongSortBar extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 spacing: 8,
-                children: SortType.values.map((type) {
+                children: types.map((type) {
                   final selected = type == sortType;
                   return ChoiceChip(
                     label: Text(_sortTypeLabel(type)),
@@ -64,5 +66,6 @@ class SongSortBar extends StatelessWidget {
     SortType.album => 'Album',
     SortType.artist => 'Artist',
     SortType.dateAdded => 'Date Added',
+    SortType.songCount => 'Songs',
   };
 }

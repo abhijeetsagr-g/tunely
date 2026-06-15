@@ -1,6 +1,6 @@
 import 'package:tunely/shared/model/tune.dart';
 
-enum SortType { name, duration, album, artist, dateAdded }
+enum SortType { name, duration, album, artist, dateAdded, songCount }
 
 enum SortOrder { ascending, descending }
 
@@ -23,6 +23,8 @@ List<Tune> sortTunes(List<Tune> tunes, SortType sort, SortOrder order) {
       );
     case SortType.dateAdded:
       sorted.sort((a, b) => a.dateAdded.compareTo(b.dateAdded));
+    case SortType.songCount:
+      break;
   }
 
   return order == SortOrder.descending ? sorted.reversed.toList() : sorted;

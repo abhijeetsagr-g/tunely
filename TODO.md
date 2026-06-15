@@ -55,7 +55,13 @@
 - [x] Remove Recently Played horizontal list
 - [x] Remove "Show More Albums / Songs"
 - [x] Remove `CurrentPlayingCard`
-- [ ] Show Daily Mix (15 songs, first 5 as vertical list)
+- [x] Show Daily Mix (15 songs, first 5 as vertical list)
+
+### UI-01 · Library
+- [x] Filter row collapses on scroll (use `SliverAppBar`)
+- [x] Albums grid bottom padding accounts for mini-player height
+- [x] Scroll position resets correctly so first item clears the filter bar
+
 
 
 ## Deferred
@@ -68,9 +74,4 @@
 --- 
 
 ## Working on Right now
-
-### UI-01 · Library
-- [ ] Filter row collapses on scroll (use `SliverAppBar`)
-- [ ] Albums grid bottom padding accounts for mini-player height
-- [ ] Scroll position resets correctly so first item clears the filter bar
 
