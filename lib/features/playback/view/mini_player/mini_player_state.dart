@@ -39,7 +39,7 @@ class MiniPlayerObserver extends NavigatorObserver {
 
       case AppRoute.root:
         miniPlayerVisible.value = true;
-        miniPlayerBottom.value = 100;
+        miniPlayerBottom.value = 110;
         break;
 
       default:

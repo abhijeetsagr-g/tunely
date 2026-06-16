@@ -1,22 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
-import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/shared/widget/album_art.dart';
-import 'package:tunely/shared/widget/content_view.dart';
 
 class AlbumView extends StatelessWidget {
   const AlbumView({super.key, required this.album});
   final AlbumModel album;
   @override
   Widget build(BuildContext context) {
-    return ContentView(
-      title: album.album,
-      tunes: context.read<LibraryCubit>().getTunesByAlbum(album.id),
-      artWidget: AlbumArt(
-        id: album.id,
-        type: ArtworkType.ALBUM,
-        size: const Size(300, 300),
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 420,
+            pinned: true,
+            stretch: true,
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                final size = Size(constraints.maxWidth, constraints.maxHeight);
+                return FlexibleSpaceBar(
+                  collapseMode: CollapseMode.parallax,
+                  background: AlbumArt(
+                    id: album.id,
+                    type: ArtworkType.ALBUM,
+                    size: size,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

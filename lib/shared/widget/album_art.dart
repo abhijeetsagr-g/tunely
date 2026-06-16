@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 
 class AlbumArt extends StatefulWidget {
-  const AlbumArt({super.key, this.id, this.type, required this.size});
+  const AlbumArt({
+    super.key,
+    this.id,
+    this.type,
+    required this.size,
+    this.fallbackSongId,
+  });
 
   final int? id;
   final ArtworkType? type;
+  final int? fallbackSongId;
   final Size size;
 
   @override
@@ -36,8 +43,15 @@ class _AlbumArtState extends State<AlbumArt> {
       if (mounted) setState(() => _bytes = null);
       return;
     }
+
     try {
-      final bytes = await _audioQuery.queryArtwork(id, type, size: 320);
+      final bytes = await _audioQuery.queryArtwork(
+        id,
+        type,
+        size: 320,
+        format: ArtworkFormat.PNG,
+      );
+
       if (mounted) setState(() => _bytes = bytes);
     } catch (_) {
       if (mounted) setState(() => _bytes = null);

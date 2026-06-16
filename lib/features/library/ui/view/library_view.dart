@@ -41,9 +41,8 @@ class _LibraryViewState extends State<LibraryView> {
             :final albums,
             :final artists,
             :final genres,
-            :final playlists,
           ) =>
-            _buildContent(tunes, albums, artists, genres, playlists),
+            _buildContent(tunes, albums, artists, genres),
           _ => const SizedBox.shrink(),
         };
       },
@@ -55,7 +54,6 @@ class _LibraryViewState extends State<LibraryView> {
     List<AlbumModel> albums,
     List<Artist> artists,
     List<GenreModel> genres,
-    List<PlaylistModel> playlists,
   ) {
     return DefaultTabController(
       length: 5,
@@ -66,7 +64,7 @@ class _LibraryViewState extends State<LibraryView> {
             builder: (context, _) {
               final tabIndex = DefaultTabController.of(context).index;
               final sortTypes = switch (tabIndex) {
-                0 => SortType.values,
+                 0 => SortType.values,
                 1 => [SortType.name, SortType.songCount, SortType.duration],
                 2 => [SortType.name, SortType.songCount, SortType.duration],
                 _ => [SortType.name],
@@ -147,7 +145,7 @@ class _LibraryViewState extends State<LibraryView> {
                       sortOrder: _sortOrder,
                     ),
                     GenresTab(genres: genres),
-                    PlaylistsTab(playlists: playlists),
+                    const PlaylistsTab(),
                   ],
                 ),
               );

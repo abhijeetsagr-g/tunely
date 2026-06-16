@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
-import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
-import 'package:tunely/shared/model/tune.dart';
-import 'package:tunely/shared/widget/album_art.dart';
-import 'package:tunely/shared/widget/content_view.dart';
+import 'package:tunely/features/playlist/cubit/playlist_detail_cubit.dart';
+import 'package:tunely/features/playlist/service/playlist_service.dart';
+import 'widget/playlist_states.dart';
 
 class PlaylistView extends StatelessWidget {
   const PlaylistView({super.key, required this.playlist});
@@ -14,120 +13,65 @@ class PlaylistView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<PlaylistCubit>();
-    final settings = context.read<ManagementCubit>().state;
-
-    return FutureBuilder<List<Tune>>(
-      future: cubit.getSongs(playlist.id, settings),
-      builder: (context, snapshot) {
-        final tunes = snapshot.data ?? [];
-
-        return ContentView(
-          title: playlist.playlist,
-          tunes: tunes,
-          artWidget: AlbumArt(size: const Size(220, 220)),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.more_vert),
-              onPressed: () => _showOptionsSheet(context, cubit),
-            ),
-          ],
-        );
+    return BlocProvider(
+      create: (context) {
+        final service = context.read<PlaylistService>();
+        return PlaylistDetailCubit(playlistId: playlist.id, service: service);
       },
+      child: _PlaylistBody(playlist: playlist),
     );
   }
+}
 
-  void _showOptionsSheet(BuildContext context, PlaylistCubit cubit) {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.drive_file_rename_outline),
-              title: const Text('Rename'),
-              onTap: () {
-                Navigator.pop(context);
-                _showRenameDialog(context, cubit);
-              },
+class _PlaylistBody extends StatefulWidget {
+  const _PlaylistBody({required this.playlist});
+  final PlaylistModel playlist;
+
+  @override
+  State<_PlaylistBody> createState() => _PlaylistBodyState();
+}
+
+class _PlaylistBodyState extends State<_PlaylistBody> {
+  @override
+  void initState() {
+    super.initState();
+    final settings = context.read<ManagementCubit>().state;
+    context.read<PlaylistDetailCubit>().loadSongs(settings);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: BlocBuilder<PlaylistDetailCubit, PlaylistDetailState>(
+        builder: (context, state) {
+          return switch (state) {
+            PlaylistDetailInitial() => const SizedBox.shrink(),
+            PlaylistDetailLoading() => const Center(
+              child: CircularProgressIndicator(),
             ),
-            ListTile(
-              leading: Icon(
-                Icons.delete_outline,
-                color: Theme.of(context).colorScheme.error,
+            PlaylistDetailError(:final error) => PlaylistErrorView(
+              error: error,
+            ),
+            PlaylistDetailLoaded(
+              :final tunes,
+              :final sortType,
+              :final sortOrder,
+            ) =>
+              PlaylistLoadedView(
+                playlist: widget.playlist,
+                tunes: tunes,
+                sortType: sortType,
+                sortOrder: sortOrder,
+                onSortTypeChanged: context
+                    .read<PlaylistDetailCubit>()
+                    .setSortType,
+                onSortOrderToggled: context
+                    .read<PlaylistDetailCubit>()
+                    .toggleSortOrder,
+                onRemove: context.read<PlaylistDetailCubit>().removeSong,
               ),
-              title: Text(
-                'Delete',
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                _showDeleteDialog(context, cubit);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showRenameDialog(BuildContext context, PlaylistCubit cubit) {
-    final controller = TextEditingController(text: playlist.playlist);
-
-    showDialog<void>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Rename playlist'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          textCapitalization: TextCapitalization.sentences,
-          decoration: const InputDecoration(labelText: 'Name'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              final name = controller.text.trim();
-              if (name.isEmpty) return;
-              cubit.renamePlaylist(playlist.id, name);
-              Navigator.pop(context); // pop dialog
-              Navigator.pop(context); // pop PlaylistView
-            },
-            child: const Text('Rename'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showDeleteDialog(BuildContext context, PlaylistCubit cubit) {
-    showDialog<void>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Delete playlist'),
-        content: Text('Delete "${playlist.playlist}"? This cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              cubit.deletePlaylist(playlist.id);
-              Navigator.pop(context); // pop dialog
-              Navigator.pop(context); // pop PlaylistView
-            },
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
+          };
+        },
       ),
     );
   }

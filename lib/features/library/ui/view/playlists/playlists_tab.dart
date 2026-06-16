@@ -1,90 +1,155 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
+import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/features/playlist/view/widget/playlist_card.dart';
+import 'package:tunely/shared/model/tune.dart';
+import 'package:tunely/shared/widget/song_picker.dart';
 
 class PlaylistsTab extends StatelessWidget {
-  final List<PlaylistModel> playlists;
-
-  const PlaylistsTab({super.key, required this.playlists});
+  const PlaylistsTab({super.key});
 
   void _showCreateSheet(BuildContext context) {
     final cubit = context.read<PlaylistCubit>();
+    final library = context.read<LibraryCubit>().state;
+    final tunes = library is LibraryLoaded ? library.tunes : <Tune>[];
     final nameController = TextEditingController();
+    final searchController = TextEditingController();
+    var selectedSongIds = <int>{};
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 36,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurface.withAlpha(20),
-                        borderRadius: BorderRadius.circular(2),
+      builder: (_) => StatefulBuilder(
+        builder: (context, setSheetState) {
+          final query = searchController.text.toLowerCase();
+          final filtered = query.isEmpty
+              ? tunes
+              : tunes.where((t) =>
+                  t.title.toLowerCase().contains(query) ||
+                  t.artist.toLowerCase().contains(query),
+                ).toList();
+
+          return Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+            child: Container(
+              height: MediaQuery.sizeOf(context).height * 0.85,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 36,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.onSurface.withAlpha(20),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'New Playlist',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: nameController,
-                    autofocus: true,
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      hintText: 'My playlist',
-                      labelText: 'Name',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                      const SizedBox(height: 16),
+                      Text(
+                        'New Playlist',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: nameController,
+                        autofocus: true,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: InputDecoration(
+                          hintText: 'My playlist',
+                          labelText: 'Name',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      const Divider(),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Choose Your Songs!',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: searchController,
+                        onChanged: (_) => setSheetState(() {}),
+                        decoration: InputDecoration(
+                          hintText: 'Search songs...',
+                          prefixIcon: const Icon(Icons.search, size: 20),
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Expanded(
+                        child: SongPicker(
+                          tunes: filtered,
+                          onSelectionChanged: (ids) => selectedSongIds = ids,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: () {
+                            final name = nameController.text.trim();
+                            if (name.isEmpty) return;
+                            cubit.createPlaylist(
+                              name: name,
+                              songIds: selectedSongIds.toList(),
+                            );
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Create'),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: () {
-                        final name = nameController.text.trim();
-                        if (name.isEmpty) return;
-                        cubit.createPlaylist(name: name);
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Create'),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<PlaylistCubit, PlaylistState>(
+      builder: (context, state) {
+        return switch (state) {
+          PlaylistLoading() => const Center(child: CircularProgressIndicator()),
+          PlaylistError(:final error) => Center(child: Text(error)),
+          LoadedPlaylist(:final playlists) => _buildList(context, playlists),
+        };
+      },
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<PlaylistModel> playlists) {
     if (playlists.isEmpty) {
       return Center(
         child: Column(

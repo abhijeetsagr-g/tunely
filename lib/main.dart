@@ -121,6 +121,7 @@ void main() async {
         BlocProvider(
           create: (context) => PlaylistCubit(service: playlistService),
         ),
+        RepositoryProvider.value(value: playlistService),
       ],
       child: MyApp(),
     ),

@@ -7,6 +7,8 @@ enum SortOrder { ascending, descending }
 List<Tune> sortTunes(List<Tune> tunes, SortType sort, SortOrder order) {
   final sorted = [...tunes];
   switch (sort) {
+    case SortType.songCount:
+      break;
     case SortType.name:
       sorted.sort(
         (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
@@ -23,8 +25,6 @@ List<Tune> sortTunes(List<Tune> tunes, SortType sort, SortOrder order) {
       );
     case SortType.dateAdded:
       sorted.sort((a, b) => a.dateAdded.compareTo(b.dateAdded));
-    case SortType.songCount:
-      break;
   }
 
   return order == SortOrder.descending ? sorted.reversed.toList() : sorted;

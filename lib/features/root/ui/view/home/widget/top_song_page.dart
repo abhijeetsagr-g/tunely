@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/fur_artist_name.dart';
-import 'package:tunely/features/customization/cubit/customization_cubit.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
@@ -27,38 +26,6 @@ class TopSongPage extends StatefulWidget {
 }
 
 class _TopSongPageState extends State<TopSongPage> {
-  Color? _extractedColor;
-
-  @override
-  void initState() {
-    super.initState();
-    _extract();
-  }
-
-  @override
-  void didUpdateWidget(TopSongPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.tune.path != widget.tune.path) _extract();
-  }
-
-  Future<void> _extract() async {
-    final color = await context.read<CustomizationCubit>().extractColors(
-      widget.tune.songId,
-    );
-    if (mounted) setState(() => _extractedColor = color);
-  }
-
-  List<Color> get _gradientColors {
-    final base = _extractedColor;
-    if (base == null) {
-      return [
-        Theme.of(context).colorScheme.primaryContainer,
-        Theme.of(context).colorScheme.secondaryContainer,
-      ];
-    }
-    return [base, Color.lerp(base, Colors.black, 0.25)!];
-  }
-
   @override
   Widget build(BuildContext context) {
     final playCount = context.read<StatsCubit>().playCount(widget.tune.path);
@@ -67,12 +34,8 @@ class _TopSongPageState extends State<TopSongPage> {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
       decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: _gradientColors,
-        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Row(
@@ -110,9 +73,7 @@ class _TopSongPageState extends State<TopSongPage> {
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 2),
                 Row(
@@ -120,18 +81,12 @@ class _TopSongPageState extends State<TopSongPage> {
                     Icon(
                       Icons.play_arrow_rounded,
                       size: 13,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onPrimaryContainer.withAlpha(50),
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                     ),
                     const SizedBox(width: 2),
                     Text(
                       '$playCount plays',
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onPrimaryContainer.withAlpha(50),
-                      ),
+                      style: Theme.of(context).textTheme.labelSmall,
                     ),
                   ],
                 ),
@@ -148,9 +103,7 @@ class _TopSongPageState extends State<TopSongPage> {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color:
-                              _extractedColor ??
-                              Theme.of(context).colorScheme.primary,
+                          color: Theme.of(context).colorScheme.primary,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -180,7 +133,11 @@ class _TopSongPageState extends State<TopSongPage> {
                     Tooltip(
                       message: 'Add to playlist',
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.read<PlaybackBloc>().add(
+                            PlayAfterThisEvent(widget.tune),
+                          );
+                        },
                         icon: Icon(
                           Icons.playlist_add,
                           color: Theme.of(

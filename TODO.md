@@ -11,12 +11,6 @@
 - [ ] Extract & apply color scheme from album art
 - [ ] Artist tabs widget at bottom (one tab per featured artist)
 
-### UI-10 · Playlist UI
-- [ ] Add songs (multi-select from library)
-- [ ] Remove songs (per-row trash icon)
-- [ ] Reorder via drag handle (use `ReorderableListView`)
-- [ ] Auto-sort buttons (title, artist, date added, duration, shuffle)
-
 ### UI-11 · Onboarding
 - [ ] Step 1 — Welcome (app icon + name + "Get Started")
 - [ ] Step 2 — Appearance (Light/Dark/Auto picker)
@@ -74,4 +68,9 @@
 --- 
 
 ## Working on Right now
+### UI-10 · Playlist UI
+- [x] Add songs (multi-select from library)
+- [x] Remove songs (per-row trash icon)
+- [ ] Reorder via drag handle (use `ReorderableListView`)
+- [x] Auto-sort buttons (title, artist, date added, duration, shuffle)
 

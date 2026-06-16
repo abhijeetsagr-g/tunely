@@ -15,12 +15,20 @@ class ArtistAvatar extends StatefulWidget {
 
 class _ArtistAvatarState extends State<ArtistAvatar> {
   final _service = ArtistService();
-  late final Future<String?> _imageFuture;
+  late Future<String?> _imageFuture;
 
   @override
   void initState() {
     super.initState();
     _imageFuture = _service.getImageUrl(widget.artist.artist);
+  }
+
+  @override
+  void didUpdateWidget(ArtistAvatar old) {
+    super.didUpdateWidget(old);
+    if (old.artist.artist != widget.artist.artist) {
+      _imageFuture = _service.getImageUrl(widget.artist.artist);
+    }
   }
 
   @override

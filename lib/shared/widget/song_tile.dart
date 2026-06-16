@@ -7,10 +7,17 @@ import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
 class SongTile extends StatelessWidget {
-  const SongTile({super.key, required this.tunes, required this.index, this.onTap});
+  const SongTile({
+    super.key,
+    required this.tunes,
+    required this.index,
+    this.onTap,
+    this.trailing,
+  });
   final List<Tune> tunes;
   final int index;
   final VoidCallback? onTap;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -29,34 +36,32 @@ class SongTile extends StatelessWidget {
             playback.add(PlayQueueEvent(tunes, startIndex: index));
           },
           child: ListTile(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                leading: AlbumArt(
-                  id: tune.songId,
-                  type: ArtworkType.AUDIO,
-                  size: Size(46, 46),
-                ),
-                title: Text(
-                  tune.title.toTitleCase(),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isCurrent
-                        ? Theme.of(context).colorScheme.primary
-                        : null,
-                  ),
-                ),
-                subtitle: Text(
-                  tune.artists.join(" • "),
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.labelLarge?.copyWith(color: Colors.grey),
-                ),
-                trailing: const Icon(Icons.more_horiz, color: Colors.grey),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            leading: AlbumArt(
+              id: tune.songId,
+              type: ArtworkType.AUDIO,
+              size: Size(46, 46),
+            ),
+            title: Text(
+              tune.title.toTitleCase(),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isCurrent ? Theme.of(context).colorScheme.primary : null,
               ),
+            ),
+            subtitle: Text(
+              tune.artists.join(" • "),
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(color: Colors.grey),
+            ),
+            trailing: trailing ?? const Icon(Icons.more_horiz, color: Colors.grey),
+          ),
         );
       },
     );

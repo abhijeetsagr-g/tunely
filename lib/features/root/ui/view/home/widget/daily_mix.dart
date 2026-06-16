@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
+import 'package:tunely/features/root/ui/view/home/widget/daily_mix_view.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
 
 class DailyMixWidget extends StatefulWidget {
@@ -51,7 +52,11 @@ class _DailyMixWidgetState extends State<DailyMixWidget> {
                       child: ListTile(
                         title: Text("Don't think twice, just play"),
                         trailing: const Icon(Icons.arrow_circle_right_outlined),
-                        onTap: () {},
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => DailyMixView(tunes: dailyMix),
+                          ),
+                        ),
                       ),
                     );
                   }

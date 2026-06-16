@@ -10,12 +10,17 @@ class PlaylistCubit extends Cubit<PlaylistState> {
   final PlaylistService _service;
   PlaylistCubit({required PlaylistService service})
     : _service = service,
-      super(PlaylistState());
+      super(PlaylistLoading());
 
   // load playlists
   Future<void> loadPlaylist() async {
-    final playlists = await _service.getPlaylists();
-    emit(LoadedPlaylist(playlists: playlists));
+    emit(PlaylistLoading());
+    try {
+      final playlists = await _service.getPlaylists();
+      emit(LoadedPlaylist(playlists: playlists));
+    } catch (e) {
+      emit(PlaylistError(error: e.toString()));
+    }
   }
 
   // fetch songs from playlist
@@ -25,9 +30,20 @@ class PlaylistCubit extends Cubit<PlaylistState> {
   ) async => await _service.getSongsFromPlaylist(playlistId, settings);
 
   // CRUD FOR Playlist
-  Future<void> createPlaylist({required String name, String? desc}) async {
+  Future<void> createPlaylist({
+    required String name,
+    String? desc,
+    List<int>? songIds,
+  }) async {
     await _service.createPlaylist(name, desc: desc);
     await loadPlaylist();
+
+    if (songIds != null && songIds.isNotEmpty && state is LoadedPlaylist) {
+      final playlists = (state as LoadedPlaylist).playlists;
+      final created = playlists.lastWhere((p) => p.playlist == name);
+      await _service.addTunes(created.id, songIds);
+      await loadPlaylist();
+    }
   }
 
   Future<void> renamePlaylist(int playlistId, String newName) async {

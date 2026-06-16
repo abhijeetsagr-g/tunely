@@ -1,15 +1,15 @@
 part of 'playlist_cubit.dart';
 
-class PlaylistState {}
+sealed class PlaylistState {}
+
+class PlaylistLoading extends PlaylistState {}
 
 class LoadedPlaylist extends PlaylistState {
   final List<PlaylistModel> playlists;
   LoadedPlaylist({required this.playlists});
 }
 
-class ErrorPlaylist extends PlaylistState {
-  final List<PlaylistModel> playlists;
+class PlaylistError extends PlaylistState {
   final String error;
-
-  ErrorPlaylist({required this.playlists, required this.error});
+  PlaylistError({required this.error});
 }

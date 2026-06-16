@@ -79,9 +79,9 @@ class _SplashViewState extends State<SplashView> {
       }
     }
 
+    await context.read<PlaylistCubit>().loadPlaylist();
     if (!mounted) return;
     Navigator.pushReplacementNamed(context, AppRoute.root);
-    await context.read<PlaylistCubit>().loadPlaylist();
   }
 
   @override
