@@ -14,6 +14,7 @@ class SongTile extends StatelessWidget {
     this.onTap,
     this.trailing,
   });
+
   final List<Tune> tunes;
   final int index;
   final VoidCallback? onTap;
@@ -26,41 +27,78 @@ class SongTile extends StatelessWidget {
 
     return BlocBuilder<PlaybackBloc, PlaybackState>(
       buildWhen: (prev, curr) =>
-          prev.currentItem?.path != curr.currentItem?.path,
+          prev.currentItem?.path != curr.currentItem?.path ||
+          prev.position != curr.position ||
+          prev.duration != curr.duration,
       builder: (context, state) {
         final isCurrent = state.currentItem?.path == tune.path;
+
+        final progress =
+            isCurrent &&
+                state.duration != null &&
+                state.duration!.inMilliseconds > 0
+            ? (state.position.inMilliseconds / state.duration!.inMilliseconds)
+                  .clamp(0.0, 1.0)
+            : 0.0;
 
         return InkWell(
           onTap: () {
             onTap?.call();
             playback.add(PlayQueueEvent(tunes, startIndex: index));
           },
-          child: ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Stack(
+              children: [
+                // Progress fill
+                if (isCurrent)
+                  Positioned.fill(
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: progress,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withOpacity(0.12),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                ListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  leading: AlbumArt(
+                    id: tune.songId,
+                    type: ArtworkType.AUDIO,
+                    size: Size(46, 46),
+                  ),
+                  title: Text(
+                    tune.title.toTitleCase(),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: isCurrent
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                    ),
+                  ),
+                  subtitle: Text(
+                    tune.artists.join(" • "),
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.labelLarge?.copyWith(color: Colors.grey),
+                  ),
+                  trailing:
+                      trailing ??
+                      const Icon(Icons.more_horiz, color: Colors.grey),
+                ),
+              ],
             ),
-            leading: AlbumArt(
-              id: tune.songId,
-              type: ArtworkType.AUDIO,
-              size: Size(46, 46),
-            ),
-            title: Text(
-              tune.title.toTitleCase(),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: isCurrent ? Theme.of(context).colorScheme.primary : null,
-              ),
-            ),
-            subtitle: Text(
-              tune.artists.join(" • "),
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(
-                context,
-              ).textTheme.labelLarge?.copyWith(color: Colors.grey),
-            ),
-            trailing: trailing ?? const Icon(Icons.more_horiz, color: Colors.grey),
           ),
         );
       },

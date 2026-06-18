@@ -47,20 +47,7 @@ class LibraryService {
     );
   }
 
-  List<Artist> _buildArtists(List<Tune> tunes) {
-    final Map<String, List<Tune>> artistMap = {};
-    for (final tune in tunes) {
-      for (final name in tune.artists) {
-        artistMap.putIfAbsent(name, () => []).add(tune);
-      }
-    }
-    return artistMap.entries
-        .map(
-          (e) =>
-              Artist(artistId: e.key.hashCode, artist: e.key, tunes: e.value),
-        )
-        .toList();
-  }
+  List<Artist> _buildArtists(List<Tune> tunes) => Artist.fromTunes(tunes);
 
   List<Tune> getTunesByAlbum(int albumId) =>
       _libraryRepo.getTunesByAlbum(albumId);

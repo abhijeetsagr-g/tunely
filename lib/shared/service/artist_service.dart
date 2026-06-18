@@ -1,12 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ArtistService {
   static const _prefsKey = 'artist_image_cache';
   static const _placeholderHash = 'd41d8cd98f00b204e9800998ecf8427e';
-  static Map<String, String?> _cache = {};
+  static const _maxCacheSize = 500;
+
+  static final Map<String, String?> _cache = {};
   static Future<void>? _loadFuture;
 
   final http.Client _client;
@@ -20,6 +22,7 @@ class ArtistService {
 
   Future<String?> getImageUrl(String artistName) async {
     final key = _normalize(artistName);
+
     _loadFuture ??= _load();
     await _loadFuture;
 
@@ -32,27 +35,40 @@ class ArtistService {
       final res = await _client.get(uri);
 
       String? url;
+
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body) as Map<String, dynamic>;
         final items = data['data'] as List<dynamic>?;
+
         if (items != null) {
+          String? exactMatch;
+          String? fuzzyFallback;
+
           for (final item in items) {
-            final candidate =
-                (item as Map<String, dynamic>)['picture_medium'] as String?;
-            if (!_isPlaceholder(candidate)) {
-              url = candidate;
+            final map = item as Map<String, dynamic>;
+            final resultName = (map['name'] as String?)?.trim().toLowerCase();
+            final candidate = map['picture_xl'] as String?;
+
+            if (_isPlaceholder(candidate)) continue;
+
+            if (resultName == key) {
+              exactMatch = candidate;
               break;
             }
+            fuzzyFallback ??= candidate;
           }
+
+          url = exactMatch ?? fuzzyFallback;
         }
       }
 
+      _evictIfNeeded();
       _cache[key] = url;
-      _save();
+      await _save();
       return url;
     } catch (_) {
       _cache[key] = null;
-      _save();
+      await _save();
       return null;
     }
   }
@@ -61,7 +77,18 @@ class ArtistService {
     for (final name in names) {
       final key = _normalize(name);
       if (!_cache.containsKey(key)) {
-        getImageUrl(name);
+        unawaited(getImageUrl(name).catchError((_) => null));
+      }
+    }
+  }
+
+  static void _evictIfNeeded() {
+    if (_cache.length >= _maxCacheSize) {
+      // remove oldest 10% when limit hit
+      final toRemove = (_maxCacheSize * 0.1).ceil();
+      final keys = _cache.keys.take(toRemove).toList();
+      for (final k in keys) {
+        _cache.remove(k);
       }
     }
   }
@@ -71,16 +98,15 @@ class ArtistService {
     final raw = prefs.getString(_prefsKey);
     if (raw != null) {
       final decoded = jsonDecode(raw) as Map<String, dynamic>;
-      _cache = decoded.map(
+      final cleaned = decoded.map(
         (k, v) => MapEntry(k.trim().toLowerCase(), v as String?),
-      );
-      _cache.removeWhere((_, v) => _isPlaceholder(v));
+      )..removeWhere((_, v) => _isPlaceholder(v));
+      _cache.addAll(cleaned);
     }
   }
 
-  static void _save() {
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.setString(_prefsKey, jsonEncode(_cache));
-    });
+  static Future<void> _save() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_prefsKey, jsonEncode(_cache));
   }
 }

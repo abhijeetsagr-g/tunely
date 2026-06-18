@@ -4,26 +4,35 @@ import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/total_song_dur.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
+import 'package:tunely/features/library/ui/view/album/widgets/artist_album_list.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 import 'package:tunely/shared/widget/tune_sliver_list.dart';
 import 'package:tunely/shared/widget/song_action_row.dart';
 
-class AlbumView extends StatelessWidget {
+class AlbumView extends StatefulWidget {
   const AlbumView({super.key, required this.album});
   final AlbumModel album;
 
   @override
+  State<AlbumView> createState() => _AlbumViewState();
+}
+
+class _AlbumViewState extends State<AlbumView> {
+  bool _artistsExpanded = true;
+
+  @override
   Widget build(BuildContext context) {
-    final tunes = context.read<LibraryCubit>().getTunesByAlbum(album.id);
+    final cubit = context.read<LibraryCubit>();
+    final tunes = cubit.getTunesByAlbum(widget.album.id);
     final totalDuration = tunes.fold<double>(
       0,
       (sum, tune) => sum + tune.duration.inMilliseconds,
     );
+    final albumArtists = cubit.getArtistsFromTunes(tunes);
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // App Bar
           SliverAppBar(
             floating: true,
             pinned: false,
@@ -43,7 +52,7 @@ class AlbumView extends StatelessWidget {
                 children: [
                   AlbumArt(
                     size: Size(150, 150),
-                    id: album.id,
+                    id: widget.album.id,
                     type: ArtworkType.ALBUM,
                   ),
 
@@ -55,7 +64,7 @@ class AlbumView extends StatelessWidget {
                       spacing: 2,
                       children: [
                         Text(
-                          album.album.toTitleCase(),
+                          widget.album.album.toTitleCase(),
                           style: Theme.of(context).textTheme.headlineMedium
                               ?.copyWith(
                                 fontWeight: FontWeight.bold,
@@ -64,11 +73,12 @@ class AlbumView extends StatelessWidget {
                               ),
                         ),
                         Text(
-                          album.artist?.toTitleCase() ?? "Unknown Artist",
+                          widget.album.artist?.toTitleCase() ??
+                              "Unknown Artist",
                           style: Theme.of(context).textTheme.labelLarge,
                         ),
                         Text(
-                          "${totalTunesDurations(totalDuration)} | ${album.numOfSongs} Tunes",
+                          "${totalTunesDurations(totalDuration)} | ${widget.album.numOfSongs} Tunes",
                           style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ],
@@ -78,10 +88,43 @@ class AlbumView extends StatelessWidget {
               ),
             ),
           ),
+
           const SliverToBoxAdapter(child: SizedBox(height: 10)),
           SongActionRowSliver(tunes: tunes),
           TuneSliverList(tunes: tunes),
-          const SliverToBoxAdapter(child: SizedBox(height: 96)),
+          const SliverToBoxAdapter(child: SizedBox(height: 10)),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+              child: InkWell(
+                onTap: () =>
+                    setState(() => _artistsExpanded = !_artistsExpanded),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Artists in this Album",
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Icon(
+                      _artistsExpanded
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          if (_artistsExpanded) ArtistAlbumListSliver(artists: albumArtists),
+
+          SliverToBoxAdapter(
+            child: SizedBox(height: _artistsExpanded ? 16 : 96),
+          ),
         ],
       ),
     );
