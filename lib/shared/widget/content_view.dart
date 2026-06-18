@@ -15,6 +15,7 @@ class ContentView extends StatefulWidget {
     required this.artWidget,
     this.subtitleWidgets = const [],
     this.actions = const [],
+    this.backgroundGradient,
   });
 
   final String title;
@@ -22,6 +23,7 @@ class ContentView extends StatefulWidget {
   final Widget artWidget;
   final List<Widget> subtitleWidgets;
   final List<Widget> actions;
+  final Gradient? backgroundGradient;
 
   @override
   State<ContentView> createState() => _ContentViewState();
@@ -74,7 +76,9 @@ class _ContentViewState extends State<ContentView> {
         .toSet()
         .join(', ');
 
-    return Scaffold(
+    Widget body = Scaffold(
+      backgroundColor:
+          widget.backgroundGradient != null ? Colors.transparent : null,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -206,5 +210,14 @@ class _ContentViewState extends State<ContentView> {
         ],
       ),
     );
+
+    if (widget.backgroundGradient != null) {
+      body = Container(
+        decoration: BoxDecoration(gradient: widget.backgroundGradient),
+        child: body,
+      );
+    }
+
+    return body;
   }
 }

@@ -29,9 +29,14 @@ class LibraryService {
     _libraryRepo.saveTunes(tunes);
     _libraryRepo.saveArtists(artists);
 
-    final albums = await _audioQuery.queryAlbums();
+    final albums = await _audioQuery.queryAlbums(
+      sortType: AlbumSortType.NUM_OF_SONGS,
+      orderType: OrderType.ASC_OR_SMALLER,
+    );
     final genres = await _audioQuery.queryGenres();
-    final playlists = await _audioQuery.queryPlaylists();
+    final playlists = await _audioQuery.queryPlaylists(
+      sortType: PlaylistSortType.DATE_ADDED,
+    );
 
     return LibraryScanResult(
       tunes: tunes,

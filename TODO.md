@@ -67,10 +67,11 @@
 
 --- 
 
-## Working on Right now
 ### UI-10 · Playlist UI
+
 - [x] Add songs (multi-select from library)
 - [x] Remove songs (per-row trash icon)
 - [ ] Reorder via drag handle (use `ReorderableListView`)
 - [x] Auto-sort buttons (title, artist, date added, duration, shuffle)
 
+## Working on Right now

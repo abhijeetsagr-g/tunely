@@ -20,10 +20,16 @@ class LibraryRepository {
   List<Tune> getTunesByAlbum(int albumId) {
     return _tuneCache.where((tune) => tune.albumId == albumId).toList()
       ..sort((a, b) {
-        if (a.trackIndex == null && b.trackIndex == null) return 0;
-        if (a.trackIndex == null) return 1;
-        if (b.trackIndex == null) return -1;
-        return a.trackIndex!.compareTo(b.trackIndex!);
+        final aTrack = a.trackIndex == null || a.trackIndex == 0
+            ? null
+            : a.trackIndex;
+        final bTrack = b.trackIndex == null || b.trackIndex == 0
+            ? null
+            : b.trackIndex;
+        if (aTrack != null && bTrack != null) return aTrack.compareTo(bTrack);
+        if (aTrack != null) return -1;
+        if (bTrack != null) return 1;
+        return a.path.compareTo(b.path);
       });
   }
 

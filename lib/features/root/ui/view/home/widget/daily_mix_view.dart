@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/features/playlist/view/widget/playlist_song_list.dart';
+import 'package:tunely/shared/widget/tune_sliver_list.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_carousel.dart';
 import 'package:tunely/shared/widget/song_action_row.dart';
@@ -31,7 +31,7 @@ class DailyMixView extends StatelessWidget {
             ),
           ),
           SongActionRowSliver(tunes: tunes),
-          PlaylistSongListSliver(tunes: tunes),
+          TuneSliverList(tunes: tunes),
           const SliverToBoxAdapter(child: SizedBox(height: 96)),
         ],
       ),

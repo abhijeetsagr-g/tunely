@@ -5,11 +5,7 @@ import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
 class AlbumCarousel extends StatefulWidget {
-  const AlbumCarousel({
-    super.key,
-    required this.tunes,
-    required this.title,
-  });
+  const AlbumCarousel({super.key, required this.tunes, required this.title});
 
   final List<Tune> tunes;
   final String title;
@@ -115,7 +111,14 @@ class _AlbumCarouselState extends State<AlbumCarousel> {
                           (i) => AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 3),
-                            width: _currentPage % (widget.tunes.length > 5 ? 5 : widget.tunes.length) == i ? 10 : 6,
+                            width:
+                                _currentPage %
+                                        (widget.tunes.length > 5
+                                            ? 5
+                                            : widget.tunes.length) ==
+                                    i
+                                ? 10
+                                : 6,
                             height: 6,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,

@@ -4,7 +4,7 @@ import 'package:tunely/core/utlis/sort_tunes.dart';
 import 'package:tunely/features/library/ui/view/songs/song_sort_bar.dart';
 import 'package:tunely/features/playlist/view/widget/playlist_actions.dart';
 import 'package:tunely/features/playlist/view/widget/playlist_hero.dart';
-import 'package:tunely/features/playlist/view/widget/playlist_song_list.dart';
+import 'package:tunely/shared/widget/tune_sliver_list.dart';
 import 'package:tunely/shared/model/tune.dart';
 
 class PlaylistLoadedView extends StatefulWidget {
@@ -69,7 +69,7 @@ class _PlaylistLoadedViewState extends State<PlaylistLoadedView> {
             ),
           ),
         if (widget.tunes.isNotEmpty)
-          PlaylistSongListSliver(
+          TuneSliverList(
             tunes: _isEditing ? sorted : widget.tunes,
             onRemove: _isEditing ? widget.onRemove : null,
           )
