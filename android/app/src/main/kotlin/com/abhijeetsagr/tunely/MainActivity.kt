@@ -1,4 +1,4 @@
-package com.example.tunely
+package com.abhijeetsagr.tunely
 
 import android.net.Uri
 import com.ryanheise.audioservice.AudioServiceActivity

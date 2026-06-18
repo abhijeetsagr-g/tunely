@@ -1,16 +1,6 @@
 # Tunely — TODO
 
 ## UI Rebuilds
-
-### UI-06 · Artist Detail
-- [ ] Group songs by album with sticky headers
-- [ ] Extract & apply color scheme from artist cover art
-- [ ] Hero-style artist art at top
-
-### UI-07 · Album Detail
-- [ ] Extract & apply color scheme from album art
-- [ ] Artist tabs widget at bottom (one tab per featured artist)
-
 ### UI-11 · Onboarding
 - [ ] Step 1 — Welcome (app icon + name + "Get Started")
 - [ ] Step 2 — Appearance (Light/Dark/Auto picker)
@@ -56,7 +46,12 @@
 - [x] Albums grid bottom padding accounts for mini-player height
 - [x] Scroll position resets correctly so first item clears the filter bar
 
+### UI-06 · Artist Detail
+- [x] Group songs by album with sticky headers
+- [x] Hero-style artist art at top
 
+### UI-07 · Album Detail
+- [x] Artist tabs widget at bottom (one tab per featured artist)
 
 ## Deferred
 

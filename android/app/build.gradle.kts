@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tunely"
+    namespace = "com.abhijeetsagr.tunely"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
