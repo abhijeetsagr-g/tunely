@@ -5,6 +5,7 @@ import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
+import 'package:tunely/shared/widget/song_tile_sheet.dart';
 
 class SongTile extends StatelessWidget {
   const SongTile({
@@ -60,7 +61,7 @@ class SongTile extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Theme.of(
                             context,
-                          ).colorScheme.primary.withOpacity(0.12),
+                          ).colorScheme.primary.withValues(alpha: 0.12),
                         ),
                       ),
                     ),
@@ -95,7 +96,10 @@ class SongTile extends StatelessWidget {
                   ),
                   trailing:
                       trailing ??
-                      const Icon(Icons.more_horiz, color: Colors.grey),
+                      IconButton(
+                        icon: const Icon(Icons.more_horiz, color: Colors.grey),
+                        onPressed: () => showSongTileSheet(context, tune),
+                      ),
                 ),
               ],
             ),

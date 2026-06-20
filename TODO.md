@@ -1,7 +1,17 @@
 # Tunely — TODO
 
 ## UI Rebuilds
+
+### UI-12 · Menu for Songs Tiles
+
+- [x] Play Song
+- [x] Play Next
+- [x] Add To Queue
+- [x] Go to album
+- [ ] Add To Playlist -> Show Available Playlists
+
 ### UI-11 · Onboarding
+
 - [ ] Step 1 — Welcome (app icon + name + "Get Started")
 - [ ] Step 2 — Appearance (Light/Dark/Auto picker)
 - [ ] Step 3 — Permissions (storage + notifications with deep-link fallback)
@@ -11,24 +21,26 @@
 ---
 
 ### UI-08 · Settings
+
 - [x] App Theme picker
 - [x] Artist / Album Artist delimiter text fields
 - [x] Minimum Song Duration slider
 - [x] Rescan button
 - [x] Reset All Lyrics button (with confirmation)
 
-
 ### UI-04 · Player
+
 - [x] Song change: album art slides in/out (respects swipe direction)
 - [x] Play/Pause: subtle scale animation on album art (~1.05×)
 - [x] Replace hardcoded pixel gaps with `Spacer`/`Expanded`
 
-
 ### UI-12 · Queue Screen
+
 - [x] Reorderable upcoming section
 - [x] Swipe-to-remove kept, animate as `Dismissible`
 
 ### UI-05 · Lyrics
+
 - [x] Search icon opens song picker to fetch lyrics without affecting playback
 - [x] Overflow menu → "Import .lrc file"
 - [x] Move fetch trigger into dedicated cubit listening to playback stream
@@ -36,21 +48,25 @@
 - [x] Per-song in-session cache
 
 ### UI-02 · Home
+
 - [x] Remove Recently Played horizontal list
 - [x] Remove "Show More Albums / Songs"
 - [x] Remove `CurrentPlayingCard`
 - [x] Show Daily Mix (15 songs, first 5 as vertical list)
 
 ### UI-01 · Library
+
 - [x] Filter row collapses on scroll (use `SliverAppBar`)
 - [x] Albums grid bottom padding accounts for mini-player height
 - [x] Scroll position resets correctly so first item clears the filter bar
 
 ### UI-06 · Artist Detail
+
 - [x] Group songs by album with sticky headers
 - [x] Hero-style artist art at top
 
 ### UI-07 · Album Detail
+
 - [x] Artist tabs widget at bottom (one tab per featured artist)
 
 ## Deferred
@@ -60,7 +76,7 @@
 | D-01 | Adaptive vs. breakpoint player layout | Test on physical device |
 | D-02 | Color extraction — isolate vs. pre-compute | Profile on low-end device |
 
---- 
+---
 
 ### UI-10 · Playlist UI
 
