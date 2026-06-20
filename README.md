@@ -22,15 +22,15 @@ Tunely scans your device library and lets you browse, play, and vibe — no inte
 
 ### ☀️ Light Mode
 
-| Home | Player | Lyrics | Search | Library | Settings |
-|------|--------|--------|--------|---------|----------|
-| ![home](screenshots/home.png) | ![player](screenshots/player.png) | ![lyrics](screenshots/lyrics.png) | ![search](screenshots/search.png) | ![library](screenshots/library.png) | ![settings](screenshots/settings.png) |
+| Home | Player | Album | Queue | Lyrics | Search | Library | Settings |
+|------|--------|-------|-------|--------|--------|---------|----------|
+| ![home](screenshots/home.png) | ![player](screenshots/player.png) | ![album](screenshots/album.png) | ![queue](screenshots/queue.png) | ![lyrics](screenshots/lyrics.png) | ![search](screenshots/search.png) | ![library](screenshots/library.png) | ![settings](screenshots/settings.png) |
 
 ### 🌙 Dark Mode
 
-| Home | Player | Lyrics | Search | Library | Settings |
-|------|--------|--------|--------|---------|----------|
-| ![home dark](screenshots/home_dark.png) | ![player dark](screenshots/player_dark.png) | ![lyrics dark](screenshots/lyrics_dark.png) | ![search dark](screenshots/search_dark.png) | ![library dark](screenshots/library_dark.png) | ![settings dark](screenshots/settings_dark.png) |
+| Home | Player | Album | Queue | Lyrics | Search | Library | Settings |
+|------|--------|-------|-------|--------|--------|---------|----------|
+| ![home dark](screenshots/home_dark.png) | ![player dark](screenshots/player_dark.png) | ![album dark](screenshots/album_dark.png) | ![queue dark](screenshots/queue_dark.png) | ![lyrics dark](screenshots/lyrics_dark.png) | ![search dark](screenshots/search_dark.png) | ![library dark](screenshots/library_dark.png) | ![settings dark](screenshots/settings_dark.png) |
 
 ---
 
