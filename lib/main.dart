@@ -74,7 +74,6 @@ void main() async {
   final statsRepo = StatsRepository(statsBox, statsMetaBox);
   final stateService = StatsService(audioHandler.onTrackChanged, statsRepo);
 
-  // //  setup session
   final sessionRepo = SessionRepository();
 
   // setup lyrics
@@ -94,7 +93,6 @@ void main() async {
 
   // setup playlist
   final playlistService = PlaylistService(query: audioQuery);
-
 
   runApp(
     MultiBlocProvider(

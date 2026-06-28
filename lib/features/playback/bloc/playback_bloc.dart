@@ -92,10 +92,16 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     );
 
     // Playback control handlers
-    on<PlayQueueEvent>(
-      (event, emit) async =>
-          await _service.playQueue(event.items, event.startIndex),
-    );
+    on<PlayQueueEvent>((event, emit) async {
+      emit(
+        state.copyWith(
+          queue: event.items,
+          currentIndex: event.startIndex,
+          status: PlaybackStatus.loading,
+        ),
+      );
+      await _service.playQueue(event.items, event.startIndex);
+    });
 
     on<PlayEvent>((event, emit) async => await _service.play());
     on<PauseEvent>((event, emit) async => await _service.pause());

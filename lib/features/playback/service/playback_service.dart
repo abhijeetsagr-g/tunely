@@ -7,8 +7,8 @@ import 'package:tunely/shared/model/tune.dart';
 
 class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   final _player = AudioPlayer();
-  bool _isReplacingQueue = false;
   int? _lastEmittedIndex;
+  bool _isSwappingQueue = false;
 
   PlaybackService() {
     _init();
@@ -23,12 +23,13 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       }
     });
 
-    _player.sequenceStateStream.listen((state) {
-      debugPrint(
-        'currentIndex=${state.currentIndex} '
-        'sequenceLength=${state.sequence.length}',
-      );
-    });
+    // _player.sequenceStateStream.listen((state) {
+    //   if (_isSwappingQueue) return;
+    //   debugPrint(
+    //     'currentIndex=${state.currentIndex} '
+    //     'sequenceLength=${state.sequence.length}',
+    //   );
+    // });
 
     // converts events
     _player.playbackEventStream
@@ -37,8 +38,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
         .pipe(playbackState);
 
     _player.sequenceStateStream.listen((state) {
-      if (_isReplacingQueue) return;
-      if (state.currentIndex == null) return;
+      if (state.currentIndex == null || _isSwappingQueue) return;
 
       final sequence = state.effectiveSequence;
       final physicalIndex = state.currentIndex!;
@@ -116,8 +116,8 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     int startIndex, {
     bool autoPlay = true,
   }) async {
-    _isReplacingQueue = true;
     _lastEmittedIndex = null;
+    _isSwappingQueue = true;
 
     // Save Tunes as "tag"
     final playlist = tunes
@@ -132,10 +132,10 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       initialPosition: Duration.zero,
     );
 
+    _isSwappingQueue = false;
     if (autoPlay) {
       await _player.play();
     }
-    _isReplacingQueue = false;
   }
 
   // Basic Controls

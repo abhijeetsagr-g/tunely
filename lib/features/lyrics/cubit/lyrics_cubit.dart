@@ -19,6 +19,7 @@ class LyricsCubit extends Cubit<LyricsState> {
 
   final Map<String, LyricsResult> _sessionCache = {};
 
+  // ignore: unused_field
   String? _lastFetchedKey;
   String? _currentTuneKey;
 
