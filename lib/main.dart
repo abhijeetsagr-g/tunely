@@ -95,6 +95,7 @@ void main() async {
   // setup playlist
   final playlistService = PlaylistService(query: audioQuery);
 
+
   runApp(
     MultiBlocProvider(
       providers: [
