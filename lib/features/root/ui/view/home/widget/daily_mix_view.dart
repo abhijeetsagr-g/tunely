@@ -24,10 +24,7 @@ class DailyMixView extends StatelessWidget {
             ),
             flexibleSpace: FlexibleSpaceBar(
               collapseMode: CollapseMode.parallax,
-              background: AlbumCarousel(
-                tunes: tunes,
-                title: 'Daily Mix',
-              ),
+              background: AlbumCarousel(tunes: tunes, title: 'Daily Mix'),
             ),
           ),
           SongActionRowSliver(tunes: tunes),

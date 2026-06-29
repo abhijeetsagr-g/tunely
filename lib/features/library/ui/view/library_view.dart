@@ -64,7 +64,7 @@ class _LibraryViewState extends State<LibraryView> {
             builder: (context, _) {
               final tabIndex = DefaultTabController.of(context).index;
               final sortTypes = switch (tabIndex) {
-                 0 => SortType.values,
+                0 => SortType.values,
                 1 => [SortType.name, SortType.songCount, SortType.duration],
                 2 => [SortType.name, SortType.songCount, SortType.duration],
                 _ => [SortType.name],

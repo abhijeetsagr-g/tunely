@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/lyrics/model/lrclib_search_result.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/features/lyrics/view/widget/lyrics_search_result_widget.dart';
 
 void showLrcLibSearchSheet(BuildContext context) {
   showModalBottomSheet(
@@ -36,12 +38,6 @@ class _LrcLibSearchSheetState extends State<LrcLibSearchSheet> {
     final results = await cubit.searchLrclib();
     if (!mounted) return;
     setState(() => _results = results);
-  }
-
-  String _formatDuration(double seconds) {
-    final min = seconds ~/ 60;
-    final sec = (seconds % 60).round();
-    return '$min:${sec.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -96,9 +92,7 @@ class _LrcLibSearchSheetState extends State<LrcLibSearchSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(
-              color: theme.colorScheme.primary,
-            ),
+            CircularProgressIndicator(color: theme.colorScheme.primary),
             const SizedBox(height: 16),
             Text(
               'Searching...',
@@ -115,9 +109,7 @@ class _LrcLibSearchSheetState extends State<LrcLibSearchSheet> {
       return Center(
         child: Text(
           'No results found',
-          style: TextStyle(
-            color: theme.colorScheme.onSurface.withAlpha(100),
-          ),
+          style: TextStyle(color: theme.colorScheme.onSurface.withAlpha(100)),
         ),
       );
     }
@@ -126,40 +118,9 @@ class _LrcLibSearchSheetState extends State<LrcLibSearchSheet> {
       itemCount: _results!.length,
       itemBuilder: (context, index) {
         final r = _results![index];
-        return ListTile(
-          leading: CircleAvatar(
-            backgroundColor: theme.colorScheme.primaryContainer,
-            child: Text(
-              '${index + 1}',
-              style: TextStyle(
-                color: theme.colorScheme.onPrimaryContainer,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          title: Text(
-            r.trackName,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          subtitle: Text(
-            '${r.artistName} • ${r.albumName}',
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: theme.colorScheme.onSurface.withAlpha(150),
-            ),
-          ),
-          trailing: Text(
-            _formatDuration(r.duration),
-            style: TextStyle(
-              color: theme.colorScheme.onSurface.withAlpha(120),
-              fontSize: 12,
-            ),
-          ),
-          onTap: () {
-            context.read<LyricsCubit>().selectSearchResult(r);
-            Navigator.pop(context);
-          },
+        return GestureDetector(
+          onTap: () => context.read<LyricsCubit>().selectSearchResult(r),
+          child: LyricsSearchResultWidget(result: r),
         );
       },
     );

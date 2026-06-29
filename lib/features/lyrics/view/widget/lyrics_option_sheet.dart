@@ -4,9 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
-import 'package:tunely/features/lyrics/view/widget/song_picker_sheet.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/shared/model/tune.dart';
 
 void showLyricsOptionsSheet(BuildContext context) {
   showModalBottomSheet(
@@ -115,20 +113,6 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
                 ),
               ),
 
-              // Song picker from library
-              ListTile(
-                leading: const Icon(Icons.library_music_rounded),
-                title: const Text('Pick song from library'),
-                subtitle: const Text('Browse lyrics for any song'),
-                onTap: () {
-                  Navigator.pop(context);
-                  showSongPickerSheet(
-                    context,
-                    onSelected: (Tune tune) => cubit.fetchForTune(tune),
-                  );
-                },
-              ),
-
               // search manually on LRCLIB
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -146,7 +130,9 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
                         ),
                       ),
                     ),
+
                     const SizedBox(width: 10),
+
                     Expanded(
                       child: TextField(
                         controller: _artistCtrl,
@@ -159,7 +145,9 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
                         ),
                       ),
                     ),
+
                     const SizedBox(width: 10),
+
                     IconButton.filledTonal(
                       icon: const Icon(Icons.search_rounded, size: 20),
                       onPressed: () {
@@ -174,7 +162,6 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
 
               // reload from LRCLIB
               ListTile(
-                enabled: isLoaded,
                 leading: const Icon(Icons.refresh_rounded),
                 title: const Text('Reload from LRCLIB'),
                 subtitle: const Text('Clears cache and re-fetches'),

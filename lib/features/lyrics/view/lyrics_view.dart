@@ -43,6 +43,7 @@ class LyricsView extends StatelessWidget {
                         },
                       ),
                     ),
+
                     IconButton(
                       onPressed: () => showLrcLibSearchSheet(context),
                       icon: const Icon(Icons.search_rounded),

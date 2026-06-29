@@ -54,7 +54,24 @@ class _ExtractedGradientContainerState
         Theme.of(context).colorScheme.secondaryContainer,
       ];
     }
-    return [base, Color.lerp(base, Colors.black, 0.25)!];
+
+    final hsl = HSLColor.fromColor(base);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final adjusted = hsl
+        .withLightness(
+          isDark
+              ? hsl.lightness.clamp(0.2, 0.5)
+              : hsl.lightness.clamp(0.3, 0.55),
+        )
+        .withSaturation(hsl.saturation.clamp(0.3, 0.9));
+
+    final dark = adjusted
+        .withLightness((adjusted.lightness - 0.18).clamp(0.0, 1.0))
+        .withSaturation((adjusted.saturation - 0.1).clamp(0.0, 1.0))
+        .toColor();
+
+    return [adjusted.toColor(), dark];
   }
 
   @override
@@ -66,8 +83,8 @@ class _ExtractedGradientContainerState
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadius),
         gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.topRight,
+          end: Alignment.bottomRight, // less diagonal = softer transition
           colors: _gradientColors,
         ),
       ),

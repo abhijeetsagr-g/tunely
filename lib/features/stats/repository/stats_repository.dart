@@ -36,4 +36,12 @@ class StatsRepository {
   void saveRecentOrder(List<String> order) {
     _meta.put('recent_order', jsonEncode(order));
   }
+
+  void clearAllPlayCounts() {
+    for (final stats in _box.values) {
+      stats.playCount = 0;
+      stats.lastPlayed = null;
+      stats.save();
+    }
+  }
 }

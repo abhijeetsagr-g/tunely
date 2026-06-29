@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/root/ui/view/home/widget/top_song_page.dart';
+import 'package:tunely/features/root/ui/view/home/widget/top_songs_view.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 
 class TopSongsSection extends StatefulWidget {
@@ -64,7 +65,7 @@ class _TopSongsSectionState extends State<TopSongsSection> {
                         PlayQueueEvent(state.mostPlayed, startIndex: 0),
                       );
                     },
-                    label: Text('Open ${state.mostPlayed.length} songs'),
+                    label: Text('Play ${state.mostPlayed.length} songs'),
                     icon: const Icon(Icons.keyboard_arrow_right),
                   ),
                 ],
@@ -85,7 +86,7 @@ class _TopSongsSectionState extends State<TopSongsSection> {
                   }
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: TopSongPage(
+                    child: TopSongWidget(
                       tune: topSongs[i],
                       queue: topSongs,
                       index: i,
@@ -109,9 +110,7 @@ class _TopSongsSectionState extends State<TopSongsSection> {
                       borderRadius: BorderRadius.circular(4),
                       color: _currentTopSongPage == i
                           ? Theme.of(context).colorScheme.primary
-                          : Theme.of(
-                              context,
-                            ).colorScheme.primary.withAlpha(50),
+                          : Theme.of(context).colorScheme.primary.withAlpha(50),
                     ),
                   ),
                 ),
@@ -138,15 +137,12 @@ class _TopSongsSectionState extends State<TopSongsSection> {
             const SizedBox(height: 8),
             TextButton.icon(
               onPressed: () {
-                final state = context.read<StatsCubit>().state;
-                if (state is StatsLoaded) {
-                  context.read<PlaybackBloc>().add(
-                    PlayQueueEvent(state.mostPlayed, startIndex: 0),
-                  );
-                }
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const TopSongsView()));
               },
-              icon: const Icon(Icons.play_arrow_rounded),
-              label: const Text('Play All'),
+              icon: const Icon(Icons.open_in_new_rounded),
+              label: const Text('View All'),
             ),
           ],
         ),

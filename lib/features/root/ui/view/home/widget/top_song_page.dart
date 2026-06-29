@@ -9,8 +9,8 @@ import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
-class TopSongPage extends StatefulWidget {
-  const TopSongPage({
+class TopSongWidget extends StatefulWidget {
+  const TopSongWidget({
     super.key,
     required this.tune,
     required this.queue,
@@ -22,10 +22,10 @@ class TopSongPage extends StatefulWidget {
   final int index;
 
   @override
-  State<TopSongPage> createState() => _TopSongPageState();
+  State<TopSongWidget> createState() => _TopSongPageState();
 }
 
-class _TopSongPageState extends State<TopSongPage> {
+class _TopSongPageState extends State<TopSongWidget> {
   @override
   Widget build(BuildContext context) {
     final playCount = context.read<StatsCubit>().playCount(widget.tune.path);
