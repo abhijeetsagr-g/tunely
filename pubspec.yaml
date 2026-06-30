@@ -2,7 +2,7 @@ name: tunely
 description: "Local Music Player."
 publish_to: 'none' 
 
-version: 0.2.2-beta
+version: 0.2.3-beta
 
 environment:
   sdk: ^3.11.0-296.2.beta
