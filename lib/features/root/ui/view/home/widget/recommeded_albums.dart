@@ -20,15 +20,37 @@ class RecommendedAlbums extends StatelessWidget {
           final libraryState = context.watch<LibraryCubit>().state;
           if (libraryState is! LibraryLoaded) return const SizedBox();
 
+          final songCountPerAlbum = <int, int>{};
+          for (final t in libraryState.tunes) {
+            if (t.albumId != null) {
+              songCountPerAlbum[t.albumId!] =
+                  (songCountPerAlbum[t.albumId!] ?? 0) + 1;
+            }
+          }
+
           final topAlbumIds = statsState.mostPlayed
               .map((t) => t.albumId)
               .whereType<int>()
               .toSet();
 
-          final topAlbums = libraryState.albums
+          var topAlbums = libraryState.albums
               .where((a) => topAlbumIds.contains(a.id))
+              .where((a) => (songCountPerAlbum[a.id] ?? 0) > 1)
               .take(5)
               .toList();
+
+          if (topAlbums.length < 5) {
+            final fillCount = 5 - topAlbums.length;
+            final usedIds = topAlbums.map((a) => a.id).toSet();
+            final extras = [...libraryState.albums]..shuffle();
+            topAlbums = [
+              ...topAlbums,
+              ...extras
+                  .where((a) => !usedIds.contains(a.id))
+                  .where((a) => (songCountPerAlbum[a.id] ?? 0) > 1)
+                  .take(fillCount),
+            ];
+          }
 
           if (topAlbums.isEmpty) return const SizedBox();
 

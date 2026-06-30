@@ -54,7 +54,7 @@ class _DailyMixWidgetState extends State<DailyMixWidget> {
                         trailing: const Icon(Icons.arrow_circle_right_outlined),
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => DailyMixView(tunes: dailyMix),
+                            builder: (_) => const DailyMixView(),
                           ),
                         ),
                       ),

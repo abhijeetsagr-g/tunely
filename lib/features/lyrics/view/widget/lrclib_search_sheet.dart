@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/lyrics/model/lrclib_search_result.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

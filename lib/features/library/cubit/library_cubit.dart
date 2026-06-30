@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/library/service/library_service.dart';
@@ -8,6 +10,7 @@ part 'library_state.dart';
 
 class LibraryCubit extends Cubit<LibraryState> {
   final LibraryService _service;
+  int _dailyMixRefreshCount = 0;
 
   LibraryCubit({required LibraryService service})
     : _service = service,
@@ -21,7 +24,10 @@ class LibraryCubit extends Cubit<LibraryState> {
         emit(LibraryPermissionDenied());
         return;
       }
-      final dailyMix = [...result.tunes..shuffle()].take(10).toList();
+      _dailyMixRefreshCount = 0;
+      final seed = DateTime.now().millisecondsSinceEpoch ~/ 86400000;
+      final random = Random(seed);
+      final dailyMix = ([...result.tunes]..shuffle(random)).take(10).toList();
 
       emit(
         LibraryLoaded(
@@ -43,7 +49,11 @@ class LibraryCubit extends Cubit<LibraryState> {
   void reloadDailyMix() {
     final s = state;
     if (s is! LibraryLoaded) return;
-    final reshuffled = [...s.tunes]..shuffle();
+    _dailyMixRefreshCount++;
+    final seed = (DateTime.now().millisecondsSinceEpoch ~/ 86400000) +
+        _dailyMixRefreshCount;
+    final random = Random(seed);
+    final reshuffled = [...s.tunes]..shuffle(random);
     emit(s.copyWith(dailyMix: reshuffled.take(10).toList()));
   }
 

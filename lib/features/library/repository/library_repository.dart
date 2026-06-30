@@ -20,6 +20,7 @@ class LibraryRepository {
   List<Tune> getTunesByAlbum(int albumId) {
     return _tuneCache.where((tune) => tune.albumId == albumId).toList()
       ..sort((a, b) {
+        print("TRACK INDEX  = ${a.title}: ${a.trackIndex}; ");
         final aTrack = a.trackIndex == null || a.trackIndex == 0
             ? null
             : a.trackIndex;
