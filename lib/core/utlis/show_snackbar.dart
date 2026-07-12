@@ -17,9 +17,9 @@ void showFlushbar(BuildContext context, String message) {
       ],
     ),
 
-    duration: const Duration(seconds: 1),
+    duration: const Duration(seconds: 2),
     forwardAnimationCurve: Curves.bounceIn,
-    animationDuration: Duration(milliseconds: 10),
+    animationDuration: Duration(milliseconds: 700),
     flushbarPosition: FlushbarPosition.TOP,
     backgroundColor: Colors.black87,
     borderRadius: BorderRadius.circular(12),

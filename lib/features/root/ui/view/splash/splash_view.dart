@@ -9,6 +9,7 @@ import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/shared/model/tune.dart';
+import 'package:tunely/shared/service/artist_service.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -83,6 +84,11 @@ class _SplashViewState extends State<SplashView> {
 
     await playlistCubit.loadPlaylist();
     if (!mounted) return;
+
+    // Prefetch artist images in background (don't block navigation)
+    final artistNames = (library.state as LibraryLoaded).artists.map((a) => a.artist);
+    context.read<ArtistService>().preFetch(artistNames);
+
     Navigator.pushReplacementNamed(context, AppRoute.root);
   }
 

@@ -35,6 +35,7 @@ import 'package:tunely/features/stats/repository/stats_repository.dart';
 import 'package:tunely/features/stats/service/stats_service.dart';
 import 'package:tunely/hive_registrar.g.dart';
 import 'package:tunely/my_app.dart';
+import 'package:tunely/shared/service/artist_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -98,6 +99,9 @@ void main() async {
   // setup playlist
   final playlistService = PlaylistService(query: audioQuery);
 
+  // setup artist service
+  final artistService = ArtistService();
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -125,6 +129,7 @@ void main() async {
           create: (context) => PlaylistCubit(service: playlistService),
         ),
         RepositoryProvider.value(value: playlistService),
+        RepositoryProvider.value(value: artistService),
       ],
       child: MyApp(),
     ),

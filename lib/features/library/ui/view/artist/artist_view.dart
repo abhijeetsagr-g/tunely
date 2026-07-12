@@ -59,7 +59,7 @@ class _ArtistViewState extends State<ArtistView> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ArtistAvatar(size: Size(150, 150), artist: widget.artist),
+                  ArtistAvatar(size: Size(150, 150), artist: widget.artist, allowEdit: true),
                   const SizedBox(width: 20),
 
                   Expanded(

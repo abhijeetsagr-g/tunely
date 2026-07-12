@@ -118,8 +118,8 @@ class _AboutWidgetState extends State<AboutWidget> {
               ),
               _AboutCard(
                 icon: Icons.favorite_rounded,
-                title: 'Funded by',
-                value: 'Could be you',
+                title: 'Powered By',
+                value: 'Deezer API and LRCLIB API',
               ),
             ],
           ),
