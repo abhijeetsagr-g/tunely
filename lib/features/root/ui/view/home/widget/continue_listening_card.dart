@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utils/format_artist_name.dart';
@@ -99,9 +98,8 @@ class _TopRow extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(14),
           child: AlbumArt(
+            artUri: tune.artUri,
             size: const Size(64, 64),
-            id: tune.songId,
-            type: ArtworkType.AUDIO,
           ),
         ),
         const SizedBox(width: 16),

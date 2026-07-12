@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
@@ -71,8 +70,7 @@ class _AlbumCarouselState extends State<AlbumCarousel> {
               itemBuilder: (context, index) {
                 final tune = widget.tunes[index];
                 return AlbumArt(
-                  id: tune.songId,
-                  type: ArtworkType.AUDIO,
+                  artUri: tune.artUri,
                   size: size,
                 );
               },

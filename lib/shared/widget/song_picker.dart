@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
@@ -48,8 +47,7 @@ class _SongPickerState extends State<SongPicker> {
                 },
               ),
               AlbumArt(
-                id: tune.songId,
-                type: ArtworkType.AUDIO,
+                artUri: tune.artUri,
                 size: const Size(46, 46),
               ),
             ],

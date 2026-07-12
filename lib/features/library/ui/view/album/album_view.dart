@@ -51,9 +51,8 @@ class _AlbumViewState extends State<AlbumView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AlbumArt(
+                    artUri: Uri.parse("content://media/external/audio/albumart/${widget.album.id}"),
                     size: Size(150, 150),
-                    id: widget.album.id,
-                    type: ArtworkType.ALBUM,
                   ),
 
                   const SizedBox(width: 20),

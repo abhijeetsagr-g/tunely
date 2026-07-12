@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';
@@ -126,9 +125,8 @@ class _ArtistViewState extends State<ArtistView> {
               child: Row(
                 children: [
                   AlbumArt(
+                    artUri: albumId == 0 ? null : Uri.parse("content://media/external/audio/albumart/$albumId"),
                     size: const Size(40, 40),
-                    id: albumId == 0 ? null : albumId,
-                    type: ArtworkType.ALBUM,
                   ),
                   const SizedBox(width: 12),
                   Expanded(

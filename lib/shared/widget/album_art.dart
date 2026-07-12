@@ -1,19 +1,10 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:on_audio_query_pluse/on_audio_query.dart';
+import 'package:flutter/services.dart';
 
 class AlbumArt extends StatefulWidget {
-  const AlbumArt({
-    super.key,
-    this.id,
-    this.type,
-    required this.size,
-    this.fallbackSongId,
-  });
+  const AlbumArt({super.key, this.artUri, required this.size});
 
-  final int? id;
-  final ArtworkType? type;
-  final int? fallbackSongId;
+  final Uri? artUri;
   final Size size;
 
   @override
@@ -21,8 +12,11 @@ class AlbumArt extends StatefulWidget {
 }
 
 class _AlbumArtState extends State<AlbumArt> {
+  static const _channel = MethodChannel('tunely/artwork');
+  static final _cache = <String, Uint8List?>{};
+
   Uint8List? _bytes;
-  final _audioQuery = OnAudioQuery();
+  bool _loading = false;
 
   @override
   void initState() {
@@ -33,28 +27,35 @@ class _AlbumArtState extends State<AlbumArt> {
   @override
   void didUpdateWidget(AlbumArt old) {
     super.didUpdateWidget(old);
-    if (old.id != widget.id) _load();
+    if (old.artUri != widget.artUri) _load();
   }
 
   Future<void> _load() async {
-    final id = widget.id;
-    final type = widget.type;
-    if (id == null || type == null) {
+    final uri = widget.artUri;
+    if (uri == null) {
       if (mounted) setState(() => _bytes = null);
       return;
     }
 
-    try {
-      final bytes = await _audioQuery.queryArtwork(
-        id,
-        type,
-        size: 320,
-        format: ArtworkFormat.PNG,
-      );
+    final key = uri.toString();
 
-      if (mounted) setState(() => _bytes = bytes);
+    if (_cache.containsKey(key)) {
+      if (mounted) setState(() => _bytes = _cache[key]);
+      return;
+    }
+
+    if (_loading) return;
+    _loading = true;
+
+    try {
+      final result = await _channel.invokeMethod<Uint8List>('getArtwork', key);
+      _cache[key] = result;
+      if (mounted) setState(() => _bytes = result);
     } catch (_) {
+      _cache[key] = null;
       if (mounted) setState(() => _bytes = null);
+    } finally {
+      _loading = false;
     }
   }
 

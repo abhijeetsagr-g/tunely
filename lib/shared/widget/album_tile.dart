@@ -23,8 +23,7 @@ class AlbumTile extends StatelessWidget {
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         leading: AlbumArt(
-          id: album.id,
-          type: ArtworkType.ALBUM,
+          artUri: Uri.parse("content://media/external/audio/albumart/${album.id}"),
           size: const Size(46, 46),
         ),
         title: Text(
