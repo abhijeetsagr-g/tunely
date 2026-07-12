@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/library/repository/library_repository.dart';
@@ -54,4 +56,9 @@ class LibraryService {
 
   List<Tune> getTunesByGenre(String genre) =>
       _libraryRepo.getTunesByGenre(genre);
+
+  Future<Uint8List?> getAudioArt({
+    required int id,
+    required ArtworkType type,
+  }) async => _audioQuery.queryArtwork(id, type);
 }

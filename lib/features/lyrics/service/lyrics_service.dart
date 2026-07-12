@@ -49,7 +49,10 @@ class LyricsService {
     }
   }
 
-  Future<List<LrcLibSearchResult>> searchLrclib(String title, String artist) async {
+  Future<List<LrcLibSearchResult>> searchLrclib(
+    String title,
+    String artist,
+  ) async {
     final uri = Uri.parse(
       '$_base/search'
       '?track_name=${Uri.encodeComponent(_parseTitle(title))}'
@@ -180,7 +183,9 @@ class LyricsService {
 
   LyricsResult _parseSearchResult(LrcLibSearchResult result) {
     return LyricsResult(
-      synced: result.syncedLyrics != null ? _parseLrc(result.syncedLyrics!) : [],
+      synced: result.syncedLyrics != null
+          ? _parseLrc(result.syncedLyrics!)
+          : [],
       plain: result.plainLyrics,
       instrumental: result.instrumental,
     );

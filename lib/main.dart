@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_ce/hive.dart';
@@ -38,6 +39,9 @@ import 'package:tunely/my_app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Keep it portrait
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
   // Initialize Hive
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
@@ -68,7 +72,7 @@ void main() async {
     libraryRepository,
   );
 
-  // // setup stats
+  // setup stats
   final statsBox = await Hive.openBox<TuneStats>('stats_box');
   final statsMetaBox = await Hive.openBox('stats_meta');
   final statsRepo = StatsRepository(statsBox, statsMetaBox);

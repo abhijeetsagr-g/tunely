@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
@@ -50,7 +51,8 @@ class LibraryCubit extends Cubit<LibraryState> {
     final s = state;
     if (s is! LibraryLoaded) return;
     _dailyMixRefreshCount++;
-    final seed = (DateTime.now().millisecondsSinceEpoch ~/ 86400000) +
+    final seed =
+        (DateTime.now().millisecondsSinceEpoch ~/ 86400000) +
         _dailyMixRefreshCount;
     final random = Random(seed);
     final reshuffled = [...s.tunes]..shuffle(random);
@@ -70,4 +72,9 @@ class LibraryCubit extends Cubit<LibraryState> {
       return null;
     }
   }
+
+  Future<Uint8List?> getAudioArt({
+    required int id,
+    required ArtworkType type,
+  }) => _service.getAudioArt(id: id, type: type);
 }
