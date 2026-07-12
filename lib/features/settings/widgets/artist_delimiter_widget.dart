@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
@@ -21,6 +22,12 @@ class ArtistDelimiterWidget extends StatelessWidget {
               children: [
                 Text('Artist Delimiters', style: theme.textTheme.titleSmall),
                 const Spacer(),
+                if (!listEquals(delimiters, const ['/', ',', ';', '&', '+']))
+                  TextButton(
+                    onPressed: () =>
+                        cubit.updateDelimiters(const ['/', ',', ';', '&', '+']),
+                    child: const Text('Reset'),
+                  ),
                 Text('${delimiters.length}', style: theme.textTheme.labelSmall),
               ],
             ),

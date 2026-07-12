@@ -25,6 +25,9 @@ class _SplashViewState extends State<SplashView> {
   }
 
   Future<void> _load() async {
+    final sessionCubit = context.read<SessionCubit>();
+    final playlistCubit = context.read<PlaylistCubit>();
+
     // initialize library
     final library = context.read<LibraryCubit>();
     await library.initialLoad();
@@ -48,7 +51,6 @@ class _SplashViewState extends State<SplashView> {
     }
 
     // Load saved session
-    final sessionCubit = context.read<SessionCubit>();
     await sessionCubit.load();
     final session = sessionCubit.state;
 
@@ -79,7 +81,7 @@ class _SplashViewState extends State<SplashView> {
       }
     }
 
-    await context.read<PlaylistCubit>().loadPlaylist();
+    await playlistCubit.loadPlaylist();
     if (!mounted) return;
     Navigator.pushReplacementNamed(context, AppRoute.root);
   }

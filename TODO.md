@@ -2,8 +2,8 @@
 
 ## Primary Pirority
 
-- [ ] Optimize The Album Art Loading
-- [ ] Add A Visual queue in settings
+- [x] Optimize The Album Art Loading
+- [x] Add A Visual queue in settings
 - [ ] Artist Fetcher: Let User Change The current fetched artist Image
 - [ ] OnBoarding Screen
 

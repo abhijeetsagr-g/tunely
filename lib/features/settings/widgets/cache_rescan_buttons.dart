@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/utlis/show_snackbar.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 
@@ -17,7 +18,10 @@ class CacheRescanButtons extends StatelessWidget {
               child: _ActionButton(
                 icon: Icons.cached_rounded,
                 label: 'Rescan',
-                onTap: () => context.read<LibraryCubit>().rescan(),
+                onTap: () {
+                  context.read<LibraryCubit>().rescan();
+                  showFlushbar(context, "Tunes Updated");
+                },
               ),
             ),
             const SizedBox(width: 12),
@@ -25,7 +29,10 @@ class CacheRescanButtons extends StatelessWidget {
               child: _ActionButton(
                 icon: Icons.delete_outline_rounded,
                 label: 'Clear cache',
-                onTap: () => context.read<LyricsCubit>().clearCache(),
+                onTap: () {
+                  context.read<LyricsCubit>().clearCache();
+                  showFlushbar(context, "Cache has been cleared");
+                },
               ),
             ),
           ],

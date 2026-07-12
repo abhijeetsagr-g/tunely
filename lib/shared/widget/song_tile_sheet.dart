@@ -39,11 +39,6 @@ class _SongTileSheet extends StatelessWidget {
     Navigator.pop(context);
   }
 
-  void _addToPlaylist(BuildContext context) {
-    Navigator.pop(context);
-    // TODO: Show available playlists
-  }
-
   void _goToAlbum(BuildContext context) {
     if (tune.albumId == null) return;
     final state = context.read<LibraryCubit>().state;
