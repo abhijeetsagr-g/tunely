@@ -4,6 +4,8 @@ import 'package:tunely/core/const/app_route.dart';
 final ValueNotifier<bool> miniPlayerVisible = ValueNotifier(true);
 final ValueNotifier<double> miniPlayerBottom = ValueNotifier(16);
 
+double rootMiniPlayerBottom = 88.0;
+
 class MiniPlayerObserver extends NavigatorObserver {
   @override
   void didPush(Route route, Route? previousRoute) {
@@ -39,7 +41,7 @@ class MiniPlayerObserver extends NavigatorObserver {
 
       case AppRoute.root:
         miniPlayerVisible.value = true;
-        miniPlayerBottom.value = 100;
+        miniPlayerBottom.value = rootMiniPlayerBottom;
         break;
 
       default:

@@ -72,7 +72,8 @@ class _RootScreenState extends State<RootScreen> {
     final mq = MediaQuery.of(context);
     const navBarHeight = 80.0;
     final bottomInset = mq.padding.bottom;
-    miniPlayerBottom.value = navBarHeight + bottomInset + 8;
+    rootMiniPlayerBottom = navBarHeight + bottomInset + 8;
+    miniPlayerBottom.value = rootMiniPlayerBottom;
   }
 
   void _onNavTap(int index) {
