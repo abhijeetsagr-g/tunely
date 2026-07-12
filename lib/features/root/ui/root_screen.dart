@@ -15,6 +15,7 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> {
   OverlayEntry? _entry;
+  final _navBarKey = GlobalKey();
 
   late final PageController _pageController;
   int _currentIndex = 1;
@@ -69,10 +70,13 @@ class _RootScreenState extends State<RootScreen> {
   }
 
   void _updateRootBottom() {
-    final mq = MediaQuery.of(context);
-    const navBarHeight = 80.0;
-    final bottomInset = mq.padding.bottom;
-    rootMiniPlayerBottom = navBarHeight + bottomInset + 8;
+    final navBox = _navBarKey.currentContext?.findRenderObject() as RenderBox?;
+    if (navBox == null) {
+      rootMiniPlayerBottom = 88.0;
+    } else {
+      final navTop = navBox.localToGlobal(Offset.zero).dy;
+      rootMiniPlayerBottom = MediaQuery.of(context).size.height - navTop + 8;
+    }
     miniPlayerBottom.value = rootMiniPlayerBottom;
   }
 
@@ -95,6 +99,7 @@ class _RootScreenState extends State<RootScreen> {
         children: _views,
       ),
       bottomNavigationBar: BottomNav(
+        key: _navBarKey,
         currentIndex: _currentIndex,
         onNavTap: _onNavTap,
       ),
