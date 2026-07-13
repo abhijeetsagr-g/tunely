@@ -34,7 +34,19 @@ class _LibraryViewState extends State<LibraryView> {
             child: Text("Storage permission denied."),
           ),
           LibraryError(:final message) => Center(
-            child: Text("Error: $message"),
+            child: Column(
+              children: [
+                Center(
+                  child: Text("Error: $message", textAlign: TextAlign.center),
+                ),
+                FloatingActionButton(
+                  onPressed: () {
+                    context.read<LibraryCubit>().rescan();
+                  },
+                  child: Icon(Icons.refresh),
+                ),
+              ],
+            ),
           ),
           LibraryLoaded(
             :final tunes,
