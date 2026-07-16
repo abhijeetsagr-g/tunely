@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
-import 'package:tunely/core/utils/format_artist_name.dart';
 import 'package:tunely/core/utlis/extracted_gradient_container.dart';
+import 'package:tunely/core/utlis/fur_artist_name.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
@@ -97,10 +97,7 @@ class _TopRow extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(14),
-          child: AlbumArt(
-            artUri: tune.artUri,
-            size: const Size(64, 64),
-          ),
+          child: AlbumArt(artUri: tune.artUri, size: const Size(64, 64)),
         ),
         const SizedBox(width: 16),
         Expanded(
