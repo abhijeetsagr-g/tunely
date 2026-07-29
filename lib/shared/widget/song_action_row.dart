@@ -62,7 +62,7 @@ class SongActionRowSliver extends StatelessWidget {
                           PlayAfterThisEvent(tune),
                         );
                       }
-                      showFlushbar(context, 'Playing next...');
+                      popUpNotifer(context, 'Playing next...');
                     },
               icon: Icons.skip_next_rounded,
             ),
@@ -73,7 +73,7 @@ class SongActionRowSliver extends StatelessWidget {
                       context.read<PlaybackBloc>().add(
                         AddQueueItemsEvent(tunes),
                       );
-                      showFlushbar(context, 'Added to queue');
+                      popUpNotifer(context, 'Added to queue');
                     },
               icon: Icons.queue_music_rounded,
             ),

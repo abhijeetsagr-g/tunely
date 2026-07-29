@@ -3,6 +3,7 @@ import 'package:tunely/core/const/app_route.dart';
 
 final ValueNotifier<bool> miniPlayerVisible = ValueNotifier(true);
 final ValueNotifier<double> miniPlayerBottom = ValueNotifier(16);
+final ValueNotifier<double> snackBarOffset = ValueNotifier(0);
 
 double rootMiniPlayerBottom = 88.0;
 

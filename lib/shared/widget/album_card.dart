@@ -34,7 +34,9 @@ class AlbumCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AlbumArt(
-            artUri: Uri.parse("content://media/external/audio/albumart/${album.id}"),
+            artUri: Uri.parse(
+              "content://media/external/audio/albumart/${album.id}",
+            ),
             size: Size(width, width),
           ),
           const SizedBox(height: 4),

@@ -49,15 +49,20 @@ class _RootScreenState extends State<RootScreen> {
             return ValueListenableBuilder<double>(
               valueListenable: miniPlayerBottom,
               builder: (_, bottom, _) {
-                return AnimatedPositioned(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeOut,
-
-                  bottom: (visible && !keyboardOpen) ? bottom : -120,
-
-                  left: 12,
-                  right: 12,
-                  child: const MiniPlayer(),
+                return ValueListenableBuilder<double>(
+                  valueListenable: snackBarOffset,
+                  builder: (_, offset, _) {
+                    return AnimatedPositioned(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeOut,
+                      bottom: (visible && !keyboardOpen)
+                          ? bottom + offset
+                          : -120,
+                      left: 12,
+                      right: 12,
+                      child: const MiniPlayer(),
+                    );
+                  },
                 );
               },
             );

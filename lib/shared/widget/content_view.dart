@@ -167,7 +167,7 @@ class _ContentViewState extends State<ContentView> {
                       const SizedBox(width: 8),
                       OutlinedButton(
                         onPressed: () {
-                          showFlushbar(
+                          popUpNotifer(
                             context,
                             "Added to queue: ${widget.title}",
                           );

@@ -1,10 +1,22 @@
-# Tunely - TODO
+# Next Update
 
-## Primary Pirority
+> 0.2.5-beta
 
-- [x] Optimize The Album Art Loading
-- [x] Add A Visual queue in settings
-- [x] Artist Fetcher: Let User Change The current fetched artist Image
-- [ ] OnBoarding Screen
+## Features
 
-## In Future
+### Search
+
+- [ ] Clear recent search option
+- [ ] Better search algorithm
+
+### Home
+
+- [ ] Placeholder for Continue Listening Card
+- [ ] Placeholder for Top Songs Caraosual
+- [ ] Placeholder for Album Row
+- [ ] Recently Played List w/t Placeholder
+- [ ] Artist Tab
+
+## Bugs
+
+- [ ] Can't edit the queue on shuffle/repeat

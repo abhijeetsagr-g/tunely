@@ -1,6 +1,6 @@
 name: tunely
 description: "Local Music Player."
-publish_to: 'none' 
+publish_to: "none"
 
 version: 0.2.4-beta
 
@@ -36,22 +36,20 @@ dependencies:
 dev_dependencies:
   bloc_test: ^10.0.0
   mocktail: ^1.0.5
-  
+
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  
+
   build_runner: ^2.4.0
   hive_ce_generator: ^1.4.0
 
-  analyzer: ^10.0.1  
+  analyzer: ^10.0.1
   flutter_launcher_icons: ^0.14.4
 
-
 flutter_launcher_icons:
-  android: true    
+  android: true
   image_path: "assets/icon/icon.png"
-
 
 flutter:
   uses-material-design: true
@@ -86,12 +84,11 @@ flutter:
           weight: 700
         - asset: assets/fonts/Manrope-ExtraBold.ttf
           weight: 800
-    
+
     - family: NunitoSans
       fonts:
         - asset: assets/fonts/NunitoSans.ttf
           weight: 400
-     
 
   assets:
     - assets/icon/

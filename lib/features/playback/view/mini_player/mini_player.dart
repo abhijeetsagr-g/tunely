@@ -12,6 +12,8 @@ class MiniPlayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<PlaybackBloc>();
+
     return BlocBuilder<PlaybackBloc, PlaybackState>(
       buildWhen: (prev, curr) =>
           prev.currentItem != curr.currentItem ||
@@ -21,68 +23,79 @@ class MiniPlayer extends StatelessWidget {
 
         return GestureDetector(
           onTap: () => Navigator.pushNamed(context, AppRoute.player),
-          child: Card(
-            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            elevation: 1,
-            shape: RoundedRectangleBorder(
-              side: BorderSide(
-                color: Theme.of(context).brightness == .dark
-                    ? Colors.white
-                    : Colors.black,
+          onHorizontalDragEnd: (details) {
+            if (details.primaryVelocity == null) return;
+
+            if (details.primaryVelocity! > 0) {
+              bloc.add(SkipToPreviousEvent());
+            } else if (details.primaryVelocity! < 0) {
+              bloc.add(SkipToNextEvent());
+            }
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+            child: Card(
+              margin: const EdgeInsets.symmetric(vertical: 4),
+              elevation: 1,
+              shape: RoundedRectangleBorder(
+                side: BorderSide(
+                  color: Theme.of(context).brightness == .dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+                borderRadius: BorderRadius.circular(12),
               ),
-              borderRadius: BorderRadius.circular(12),
-            ),
 
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              child: Row(
-                children: [
-                  AlbumArt(artUri: tune?.artUri, size: Size(48, 48)),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                child: Row(
+                  children: [
+                    AlbumArt(artUri: tune?.artUri, size: Size(48, 48)),
 
-                  const SizedBox(width: 12),
+                    const SizedBox(width: 12),
 
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
 
-                      children: [
-                        Text(
-                          tune?.title.toTitleCase() ?? "No Song Playing",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-
-                        Text(
-                          formatArtistName(
-                            context
-                                .read<ManagementCubit>()
-                                .state
-                                .artistDelimiters,
-                            tune?.artist ?? "No Song Found",
+                        children: [
+                          Text(
+                            tune?.title.toTitleCase() ?? "No Song Playing",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ),
 
-                  IconButton(
-                    icon: Icon(
-                      state.isPlaying
-                          ? Icons.pause_rounded
-                          : Icons.play_arrow_rounded,
+                          Text(
+                            formatArtistName(
+                              context
+                                  .read<ManagementCubit>()
+                                  .state
+                                  .artistDelimiters,
+                              tune?.artist ?? "No Song Found",
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
                     ),
-                    onPressed: () {
-                      context.read<PlaybackBloc>().add(
-                        state.isPlaying ? PauseEvent() : PlayEvent(),
-                      );
-                    },
-                  ),
-                ],
+
+                    IconButton(
+                      icon: Icon(
+                        state.isPlaying
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                      ),
+                      onPressed: () {
+                        bloc.add(state.isPlaying ? PauseEvent() : PlayEvent());
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

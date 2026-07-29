@@ -119,6 +119,7 @@ class _TopRow extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w700,
+                  color: Colors.white,
                   fontSize: 15,
                 ),
               ),

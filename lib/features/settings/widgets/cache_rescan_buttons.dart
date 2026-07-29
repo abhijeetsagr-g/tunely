@@ -20,7 +20,7 @@ class CacheRescanButtons extends StatelessWidget {
                 label: 'Rescan',
                 onTap: () {
                   context.read<LibraryCubit>().rescan();
-                  showFlushbar(context, "Tunes Updated");
+                  popUpNotifer(context, "Tunes Updated");
                 },
               ),
             ),
@@ -31,7 +31,7 @@ class CacheRescanButtons extends StatelessWidget {
                 label: 'Clear cache',
                 onTap: () {
                   context.read<LyricsCubit>().clearCache();
-                  showFlushbar(context, "Cache has been cleared");
+                  popUpNotifer(context, "Cache has been cleared");
                 },
               ),
             ),

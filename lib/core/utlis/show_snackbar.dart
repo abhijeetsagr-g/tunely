@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
 
-import 'package:another_flushbar/flushbar.dart';
+void popUpNotifer(BuildContext context, String message) {
+  const double notificationHeight = 48.0;
+  snackBarOffset.value += notificationHeight;
 
-void showFlushbar(BuildContext context, String message) {
-  Flushbar(
-    messageText: Row(
-      children: [
-        CircleAvatar(
-          backgroundImage: AssetImage('assets/icon/icon.png'),
-          radius: 14,
+  final entry = OverlayEntry(
+    builder: (context) => Positioned(
+      left: 12,
+      right: 12,
+      bottom: 16,
+      child: Material(
+        elevation: 6,
+        borderRadius: BorderRadius.circular(4),
+        color:
+            Theme.of(context).snackBarTheme.backgroundColor ??
+            const Color(0xFF323232),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Text(
+            message,
+            style:
+                Theme.of(context).snackBarTheme.contentTextStyle ??
+                const TextStyle(color: Colors.white),
+          ),
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(message, style: const TextStyle(color: Colors.white)),
-        ),
-      ],
+      ),
     ),
+  );
 
-    duration: const Duration(seconds: 2),
-    forwardAnimationCurve: Curves.bounceIn,
-    animationDuration: Duration(milliseconds: 700),
-    flushbarPosition: FlushbarPosition.TOP,
-    backgroundColor: Colors.black87,
-    borderRadius: BorderRadius.circular(12),
-    margin: const EdgeInsets.all(12),
-  ).show(context);
+  Overlay.of(context).insert(entry);
+
+  Future.delayed(const Duration(milliseconds: 700)).then((_) {
+    entry.remove();
+    snackBarOffset.value -= notificationHeight;
+  });
 }
