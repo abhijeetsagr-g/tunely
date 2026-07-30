@@ -24,19 +24,30 @@ class ManagementSettingsAdapter extends TypeAdapter<ManagementSettings> {
       excludedFolders: fields[2] == null
           ? const []
           : (fields[2] as List).cast<String>(),
+      dailyMixSize: fields[3] == null ? 10 : (fields[3] as num).toInt(),
+      dailyMixTunePaths: fields[4] == null
+          ? null
+          : (fields[4] as List).cast<String>(),
+      dailyMixDateSeed: fields[5] == null ? null : (fields[5] as num).toInt(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ManagementSettings obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.artistDelimiters)
       ..writeByte(1)
       ..write(obj.minDurationMs)
       ..writeByte(2)
-      ..write(obj.excludedFolders);
+      ..write(obj.excludedFolders)
+      ..writeByte(3)
+      ..write(obj.dailyMixSize)
+      ..writeByte(4)
+      ..write(obj.dailyMixTunePaths)
+      ..writeByte(5)
+      ..write(obj.dailyMixDateSeed);
   }
 
   @override

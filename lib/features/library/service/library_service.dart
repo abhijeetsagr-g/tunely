@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:on_audio_query_pluse/on_audio_query.dart';
@@ -12,6 +13,7 @@ class LibraryService {
   final OnAudioQuery _audioQuery;
   final ManagementRepository _managementRepo;
   final LibraryRepository _libraryRepo;
+  int _dailyMixRefreshCount = 0;
 
   LibraryService(this._audioQuery, this._managementRepo, this._libraryRepo);
 
@@ -56,6 +58,46 @@ class LibraryService {
 
   List<Tune> getTunesByGenre(String genre) =>
       _libraryRepo.getTunesByGenre(genre);
+
+  Future<List<Tune>> generateDailyMix(List<Tune> tunes) async {
+    _dailyMixRefreshCount = 0;
+    final todaySeed = DateTime.now().millisecondsSinceEpoch ~/ 86400000;
+    final settings = _managementRepo.get();
+
+    if (settings.dailyMixDateSeed == todaySeed &&
+        settings.dailyMixTunePaths != null) {
+      final savedPaths = settings.dailyMixTunePaths!.toSet();
+      final restored = tunes.where((t) => savedPaths.contains(t.path)).toList();
+      if (restored.isNotEmpty) return restored;
+    }
+
+    final random = Random(todaySeed);
+    final mix = ([
+      ...tunes,
+    ]..shuffle(random)).take(settings.dailyMixSize).toList();
+    await _saveDailyMix(mix, todaySeed);
+    return mix;
+  }
+
+  Future<List<Tune>> refreshDailyMix(List<Tune> tunes) async {
+    _dailyMixRefreshCount++;
+    final todaySeed = DateTime.now().millisecondsSinceEpoch ~/ 86400000;
+    final settings = _managementRepo.get();
+    final seed = todaySeed + _dailyMixRefreshCount;
+    final random = Random(seed);
+    final size = settings.dailyMixSize * 2;
+    final mix = ([...tunes]..shuffle(random)).take(size).toList();
+    await _saveDailyMix(mix, todaySeed);
+    return mix;
+  }
+
+  Future<void> _saveDailyMix(List<Tune> mix, int dateSeed) async {
+    final updated = _managementRepo.get().copyWith(
+      dailyMixTunePaths: mix.map((t) => t.path).toList(),
+      dailyMixDateSeed: dateSeed,
+    );
+    await _managementRepo.save(updated);
+  }
 
   Future<Uint8List?> getAudioArt({
     required int id,

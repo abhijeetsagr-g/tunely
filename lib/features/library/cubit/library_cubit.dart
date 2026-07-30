@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +10,6 @@ part 'library_state.dart';
 
 class LibraryCubit extends Cubit<LibraryState> {
   final LibraryService _service;
-  int _dailyMixRefreshCount = 0;
 
   LibraryCubit({required LibraryService service})
     : _service = service,
@@ -25,11 +23,6 @@ class LibraryCubit extends Cubit<LibraryState> {
         emit(LibraryPermissionDenied());
         return;
       }
-      _dailyMixRefreshCount = 0;
-      final seed = DateTime.now().millisecondsSinceEpoch ~/ 86400000;
-      final random = Random(seed);
-      final dailyMix = ([...result.tunes]..shuffle(random)).take(10).toList();
-
       emit(
         LibraryLoaded(
           tunes: result.tunes,
@@ -37,7 +30,7 @@ class LibraryCubit extends Cubit<LibraryState> {
           albums: result.albums,
           genres: result.genres,
           playlists: result.playlists,
-          dailyMix: dailyMix,
+          dailyMix: await _service.generateDailyMix(result.tunes),
         ),
       );
     } catch (e) {
@@ -47,16 +40,11 @@ class LibraryCubit extends Cubit<LibraryState> {
 
   Future<void> rescan() => initialLoad();
 
-  void reloadDailyMix() {
+  Future<void> reloadDailyMix() async {
     final s = state;
     if (s is! LibraryLoaded) return;
-    _dailyMixRefreshCount++;
-    final seed =
-        (DateTime.now().millisecondsSinceEpoch ~/ 86400000) +
-        _dailyMixRefreshCount;
-    final random = Random(seed);
-    final reshuffled = [...s.tunes]..shuffle(random);
-    emit(s.copyWith(dailyMix: reshuffled.take(10).toList()));
+    final mix = await _service.refreshDailyMix(s.tunes);
+    emit(s.copyWith(dailyMix: mix));
   }
 
   List<Tune> getTunesByAlbum(int albumId) => _service.getTunesByAlbum(albumId);

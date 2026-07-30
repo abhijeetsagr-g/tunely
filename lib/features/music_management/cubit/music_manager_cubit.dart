@@ -18,6 +18,9 @@ class ManagementCubit extends Cubit<ManagementSettings> {
   Future<void> updateExcludedFolders(List<String> folders) =>
       _update(state.copyWith(excludedFolders: folders));
 
+  Future<void> updateDailyMixSize(int size) =>
+      _update(state.copyWith(dailyMixSize: size));
+
   Future<void> reset() => _update(ManagementSettings());
 
   Future<void> _update(ManagementSettings settings) async {
