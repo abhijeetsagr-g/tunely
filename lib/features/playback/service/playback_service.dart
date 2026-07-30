@@ -142,7 +142,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   // Play Queue
-
   Future<void> playQueue(
     List<Tune> tunes,
     int startIndex, {
@@ -163,7 +162,11 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     );
 
     _shuffleIndices = List.generate(playlist.length, (i) => i);
-    if (_shuffleEnabled) _shuffleIndices.shuffle(Random());
+    if (_shuffleEnabled && _shuffleIndices.length > 1) {
+      final current = _shuffleIndices.removeAt(startIndex);
+      _shuffleIndices.shuffle(Random());
+      _shuffleIndices.insert(0, current);
+    }
 
     _isSwappingQueue = false;
     if (autoPlay) await _player.play();
@@ -172,7 +175,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   // Basic Controls
-
   @override
   Future<void> play() => _player.play();
   @override
@@ -236,7 +238,13 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     _shuffleEnabled = enabled;
     final len = _player.sequenceState.sequence.length;
     if (enabled) {
-      _shuffleIndices = List.generate(len, (i) => i)..shuffle(Random());
+      final ci = _player.currentIndex ?? 0;
+      _shuffleIndices = List.generate(len, (i) => i);
+      if (_shuffleIndices.length > 1) {
+        final current = _shuffleIndices.removeAt(ci);
+        _shuffleIndices.shuffle(Random());
+        _shuffleIndices.insert(0, current);
+      }
     } else {
       _shuffleIndices = List.generate(len, (i) => i);
     }
@@ -349,7 +357,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   // Repeat / Speed
-
   Future<void> setRepeat(LoopMode mode) async =>
       await _player.setLoopMode(mode);
 
@@ -364,7 +371,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   // Track‑changed stream
-
   final _trackController = StreamController<MediaItem>.broadcast();
   Stream<MediaItem> get onTrackChanged => _trackController.stream;
 
