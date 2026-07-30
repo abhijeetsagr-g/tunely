@@ -35,27 +35,14 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
         add(_ProcessingStateUpdatedEvent(status));
       }),
 
-      _service.sequenceStateStream.listen((sequenceState) {
-        final sequence = sequenceState.effectiveSequence;
-        final index = sequenceState.currentIndex;
-        if (index == null) return;
-
-        final effectiveIndex = sequenceState.shuffleModeEnabled
-            ? sequenceState.shuffleIndices.indexOf(index)
-            : index;
-
-        final queue = sequence.map((s) => s.tag as Tune).toList();
-        final currentItem = effectiveIndex < queue.length
-            ? queue[effectiveIndex]
-            : null;
-
+      _service.customSequenceStream.listen((customState) {
         add(
           _SequenceStateUpdatedEvent(
-            currentItem: currentItem,
-            queue: queue,
-            currentIndex: effectiveIndex,
-            shuffleMode: sequenceState.shuffleModeEnabled,
-            repeatMode: sequenceState.loopMode,
+            currentItem: customState.queue[customState.currentIndex],
+            queue: customState.queue,
+            currentIndex: customState.currentIndex,
+            shuffleMode: customState.shuffleEnabled,
+            repeatMode: customState.repeatMode,
           ),
         );
       }),
