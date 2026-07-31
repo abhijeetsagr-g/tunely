@@ -5,11 +5,7 @@ import 'package:tunely/shared/widget/album_art.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
 
 class TuneSliverList extends StatelessWidget {
-  const TuneSliverList({
-    super.key,
-    required this.tunes,
-    this.onRemove,
-  });
+  const TuneSliverList({super.key, required this.tunes, this.onRemove});
 
   final List<Tune> tunes;
   final void Function(int songId)? onRemove;
@@ -37,11 +33,7 @@ class TuneSliverList extends StatelessWidget {
 }
 
 class _TuneSliverItem extends StatelessWidget {
-  const _TuneSliverItem({
-    super.key,
-    required this.tune,
-    this.onRemove,
-  });
+  const _TuneSliverItem({super.key, required this.tune, this.onRemove});
 
   final Tune tune;
   final VoidCallback? onRemove;
@@ -51,20 +43,13 @@ class _TuneSliverItem extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ListTile(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      leading: AlbumArt(
-        artUri: tune.artUri,
-        size: const Size(46, 46),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      leading: AlbumArt(artUri: tune.artUri, size: const Size(46, 46)),
       title: Text(
         tune.title.toTitleCase(),
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
-        style: theme.textTheme.bodyLarge?.copyWith(
-          fontWeight: FontWeight.bold,
-        ),
+        style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
       ),
       subtitle: Text(
         tune.artists.join(" • "),

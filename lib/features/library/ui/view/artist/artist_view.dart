@@ -59,7 +59,11 @@ class _ArtistViewState extends State<ArtistView> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ArtistAvatar(size: Size(150, 150), artist: widget.artist, allowEdit: true),
+                  ArtistAvatar(
+                    size: Size(150, 150),
+                    artist: widget.artist,
+                    allowEdit: true,
+                  ),
                   const SizedBox(width: 20),
 
                   Expanded(
@@ -125,7 +129,11 @@ class _ArtistViewState extends State<ArtistView> {
               child: Row(
                 children: [
                   AlbumArt(
-                    artUri: albumId == 0 ? null : Uri.parse("content://media/external/audio/albumart/$albumId"),
+                    artUri: albumId == 0
+                        ? null
+                        : Uri.parse(
+                            "content://media/external/audio/albumart/$albumId",
+                          ),
                     size: const Size(40, 40),
                   ),
                   const SizedBox(width: 12),

@@ -11,12 +11,6 @@ class LibraryRepository {
   void saveTunes(List<Tune> tunes) => _tuneCache = tunes;
   void saveArtists(List<Artist> artists) => _artistCache = artists;
 
-  List<Tune> getTunesByGenre(String genre) {
-    return _tuneCache
-        .where((tune) => tune.genre.toLowerCase() == genre.toLowerCase())
-        .toList();
-  }
-
   List<Tune> getTunesByAlbum(int albumId) {
     return _tuneCache.where((tune) => tune.albumId == albumId).toList()
       ..sort((a, b) {

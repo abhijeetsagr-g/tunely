@@ -12,11 +12,6 @@ class ArtistSettingsArguments {
   const ArtistSettingsArguments(this.artist);
 }
 
-class GenreSettingsArguments {
-  final GenreModel genre;
-  const GenreSettingsArguments(this.genre);
-}
-
 class PlaylistSettingsArguments {
   final PlaylistModel playlist;
   const PlaylistSettingsArguments({required this.playlist});

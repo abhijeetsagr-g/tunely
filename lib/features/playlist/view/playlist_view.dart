@@ -54,20 +54,10 @@ class _PlaylistBodyState extends State<_PlaylistBody> {
             ),
             PlaylistDetailLoaded(
               :final tunes,
-              :final sortType,
-              :final sortOrder,
             ) =>
               PlaylistLoadedView(
                 playlist: widget.playlist,
                 tunes: tunes,
-                sortType: sortType,
-                sortOrder: sortOrder,
-                onSortTypeChanged: context
-                    .read<PlaylistDetailCubit>()
-                    .setSortType,
-                onSortOrderToggled: context
-                    .read<PlaylistDetailCubit>()
-                    .toggleSortOrder,
                 onRemove: context.read<PlaylistDetailCubit>().removeSong,
               ),
           };

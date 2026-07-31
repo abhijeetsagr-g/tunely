@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/core/utlis/sort_tunes.dart';
+import 'package:tunely/core/utlis/sort.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/features/library/ui/view/albums/albums_tab.dart';
-import 'package:tunely/features/library/ui/view/artists/artists_tab.dart';
-import 'package:tunely/features/library/ui/view/genres/genres_tab.dart';
-import 'package:tunely/features/library/ui/view/playlists/playlists_tab.dart';
-import 'package:tunely/features/library/ui/view/songs/song_sort_bar.dart';
-import 'package:tunely/features/library/ui/view/songs/songs_tab.dart';
+import 'package:tunely/features/library/ui/widget/all_songs/all_songs_tab.dart';
+import 'package:tunely/features/library/ui/widget/albums/albums_tab.dart';
+import 'package:tunely/features/library/ui/widget/artists/artists_tab.dart';
+import 'package:tunely/features/library/ui/widget/playlists/playlists_tab.dart';
+import 'package:tunely/features/library/ui/widget/section_card.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';
+import 'package:tunely/shared/widget/action_button.dart';
 
 class LibraryView extends StatefulWidget {
   const LibraryView({super.key});
@@ -20,44 +20,80 @@ class LibraryView extends StatefulWidget {
   State<LibraryView> createState() => _LibraryViewState();
 }
 
-class _LibraryViewState extends State<LibraryView> {
-  SortType _sortType = SortType.name;
-  SortOrder _sortOrder = SortOrder.ascending;
+class _LibraryViewState extends State<LibraryView>
+    with AutomaticKeepAliveClientMixin {
+  int _selectedIndex = 0;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LibraryCubit, LibraryState>(
-      builder: (context, state) {
-        return switch (state) {
-          LibraryLoading() => const Center(child: CircularProgressIndicator()),
-          LibraryPermissionDenied() => const Center(
-            child: Text("Storage permission denied."),
+    super.build(context);
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(
+          'Library',
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
           ),
-          LibraryError(:final message) => Center(
-            child: Column(
-              children: [
-                Center(
-                  child: Text("Error: $message", textAlign: TextAlign.center),
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                    context.read<LibraryCubit>().rescan();
-                  },
-                  child: Icon(Icons.refresh),
-                ),
-              ],
-            ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoute.settings);
+            },
+            icon: Icon(Icons.settings),
           ),
-          LibraryLoaded(
-            :final tunes,
-            :final albums,
-            :final artists,
-            :final genres,
-          ) =>
-            _buildContent(tunes, albums, artists, genres),
-          _ => const SizedBox.shrink(),
-        };
-      },
+        ],
+      ),
+      body: SafeArea(
+        child: BlocBuilder<LibraryCubit, LibraryState>(
+          builder: (context, state) {
+            return switch (state) {
+              LibraryLoading() => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              LibraryPermissionDenied() => const Center(
+                child: Text("Storage permission denied."),
+              ),
+              LibraryError(:final message) => Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          "Error: $message",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      ActionButton(
+                        icon: Icons.cached_rounded,
+                        label: 'Rescan',
+                        onTap: () {
+                          context.read<LibraryCubit>().rescan();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              LibraryLoaded(
+                :final tunes,
+                :final albums,
+                :final artists,
+                :final playlists,
+              ) =>
+                _buildContent(tunes, albums, artists, playlists),
+              _ => const SizedBox.shrink(),
+            };
+          },
+        ),
+      ),
     );
   }
 
@@ -65,106 +101,61 @@ class _LibraryViewState extends State<LibraryView> {
     List<Tune> tunes,
     List<AlbumModel> albums,
     List<Artist> artists,
-    List<GenreModel> genres,
+    List<PlaylistModel> playlists,
   ) {
-    return DefaultTabController(
-      length: 5,
-      child: Builder(
-        builder: (context) {
-          return ListenableBuilder(
-            listenable: DefaultTabController.of(context),
-            builder: (context, _) {
-              final tabIndex = DefaultTabController.of(context).index;
-              final sortTypes = switch (tabIndex) {
-                0 => SortType.values,
-                1 => [SortType.name, SortType.songCount, SortType.duration],
-                2 => [SortType.name, SortType.songCount, SortType.duration],
-                _ => [SortType.name],
-              };
-
-              return NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                  SliverOverlapAbsorber(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                      context,
-                    ),
-                    sliver: SliverAppBar(
-                      backgroundColor: Theme.of(
-                        context,
-                      ).scaffoldBackgroundColor,
-                      floating: true,
-                      pinned: true,
-                      title: Text(
-                        "Library",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      actions: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoute.settings);
-                          },
-                          icon: const Icon(Icons.settings),
-                        ),
-                      ],
-                      bottom: PreferredSize(
-                        preferredSize: const Size.fromHeight(110),
-                        child: Column(
-                          children: [
-                            const TabBar(
-                              isScrollable: true,
-                              tabAlignment: TabAlignment.start,
-                              tabs: [
-                                Tab(text: "Songs"),
-                                Tab(text: "Albums"),
-                                Tab(text: "Artists"),
-                                Tab(text: "Genres"),
-                                Tab(text: "Playlists"),
-                              ],
-                            ),
-                            SongSortBar(
-                              types: sortTypes,
-                              sortType: _sortType,
-                              sortOrder: _sortOrder,
-                              onSortTypeChanged: (type) =>
-                                  setState(() => _sortType = type),
-                              onSortOrderToggled: () => setState(() {
-                                _sortOrder = _sortOrder == SortOrder.ascending
-                                    ? SortOrder.descending
-                                    : SortOrder.ascending;
-                              }),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-                body: TabBarView(
-                  children: [
-                    SongsTab(
-                      tunes: tunes,
-                      sortType: _sortType,
-                      sortOrder: _sortOrder,
-                    ),
-                    AlbumsTab(
-                      albums: albums,
-                      sortType: _sortType,
-                      sortOrder: _sortOrder,
-                    ),
-                    ArtistsTab(
-                      artists: artists,
-                      sortType: _sortType,
-                      sortOrder: _sortOrder,
-                    ),
-                    GenresTab(genres: genres),
-                    const PlaylistsTab(),
-                  ],
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: SectionCard(
+                  text: 'All Songs',
+                  icon: Icons.music_note_rounded,
+                  selected: _selectedIndex == 0,
+                  onSelect: () => setState(() => _selectedIndex = 0),
                 ),
-              );
-            },
-          );
-        },
-      ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: SectionCard(
+                  text: 'Albums',
+                  icon: Icons.album_rounded,
+                  selected: _selectedIndex == 1,
+                  onSelect: () => setState(() => _selectedIndex = 1),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: SectionCard(
+                  text: 'Artists',
+                  icon: Icons.person_rounded,
+                  selected: _selectedIndex == 2,
+                  onSelect: () => setState(() => _selectedIndex = 2),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: SectionCard(
+                  text: 'Playlists',
+                  icon: Icons.queue_music_rounded,
+                  selected: _selectedIndex == 3,
+                  onSelect: () => setState(() => _selectedIndex = 3),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: switch (_selectedIndex) {
+            0 => AllSongsTab(tunes: Sort.sortTunes(tunes)),
+            1 => AlbumsTab(albums: albums),
+            2 => ArtistsTab(artists: artists),
+            _ => PlaylistsTab(playlists: playlists),
+          },
+        ),
+      ],
     );
   }
 }

@@ -48,7 +48,6 @@ class LibraryCubit extends Cubit<LibraryState> {
   }
 
   List<Tune> getTunesByAlbum(int albumId) => _service.getTunesByAlbum(albumId);
-  List<Tune> getTunesByGenre(String genre) => _service.getTunesByGenre(genre);
   List<Artist> getArtistsFromTunes(List<Tune> tunes) => Artist.fromTunes(tunes);
 
   Artist? getFullArtist(Artist partial) {

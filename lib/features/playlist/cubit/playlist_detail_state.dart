@@ -8,27 +8,11 @@ class PlaylistDetailLoading extends PlaylistDetailState {}
 
 class PlaylistDetailLoaded extends PlaylistDetailState {
   final List<Tune> tunes;
-  final SortType sortType;
-  final SortOrder sortOrder;
 
-  PlaylistDetailLoaded({
-    required this.tunes,
-    this.sortType = SortType.name,
-    this.sortOrder = SortOrder.ascending,
-  });
+  PlaylistDetailLoaded({required this.tunes});
 
-  List<Tune> get sortedTunes => sortTunes(tunes, sortType, sortOrder);
-
-  PlaylistDetailLoaded copyWith({
-    List<Tune>? tunes,
-    SortType? sortType,
-    SortOrder? sortOrder,
-  }) =>
-      PlaylistDetailLoaded(
-        tunes: tunes ?? this.tunes,
-        sortType: sortType ?? this.sortType,
-        sortOrder: sortOrder ?? this.sortOrder,
-      );
+  PlaylistDetailLoaded copyWith({List<Tune>? tunes}) =>
+      PlaylistDetailLoaded(tunes: tunes ?? this.tunes);
 }
 
 class PlaylistDetailError extends PlaylistDetailState {

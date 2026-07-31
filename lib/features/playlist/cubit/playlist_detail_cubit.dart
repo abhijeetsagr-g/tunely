@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/core/utlis/sort_tunes.dart';
 import 'package:tunely/features/music_management/model/management_settings.dart';
 import 'package:tunely/features/playlist/service/playlist_service.dart';
 import 'package:tunely/shared/model/tune.dart';
@@ -25,25 +24,6 @@ class PlaylistDetailCubit extends Cubit<PlaylistDetailState> {
       emit(PlaylistDetailLoaded(tunes: tunes));
     } catch (e) {
       emit(PlaylistDetailError(error: e.toString()));
-    }
-  }
-
-  void setSortType(SortType type) {
-    if (state is PlaylistDetailLoaded) {
-      emit((state as PlaylistDetailLoaded).copyWith(sortType: type));
-    }
-  }
-
-  void toggleSortOrder() {
-    if (state is PlaylistDetailLoaded) {
-      final loaded = state as PlaylistDetailLoaded;
-      emit(
-        loaded.copyWith(
-          sortOrder: loaded.sortOrder == SortOrder.ascending
-              ? SortOrder.descending
-              : SortOrder.ascending,
-        ),
-      );
     }
   }
 

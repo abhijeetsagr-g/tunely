@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
-import 'package:tunely/core/utlis/sort_tunes.dart';
-import 'package:tunely/features/library/ui/view/songs/song_sort_bar.dart';
 import 'package:tunely/features/playlist/view/widget/playlist_actions.dart';
 import 'package:tunely/features/playlist/view/widget/playlist_hero.dart';
 import 'package:tunely/shared/widget/tune_sliver_list.dart';
@@ -12,19 +10,11 @@ class PlaylistLoadedView extends StatefulWidget {
     super.key,
     required this.playlist,
     required this.tunes,
-    required this.sortType,
-    required this.sortOrder,
-    required this.onSortTypeChanged,
-    required this.onSortOrderToggled,
     required this.onRemove,
   });
 
   final PlaylistModel playlist;
   final List<Tune> tunes;
-  final SortType sortType;
-  final SortOrder sortOrder;
-  final void Function(SortType type) onSortTypeChanged;
-  final VoidCallback onSortOrderToggled;
   final void Function(int songId) onRemove;
 
   @override
@@ -38,8 +28,6 @@ class _PlaylistLoadedViewState extends State<PlaylistLoadedView> {
 
   @override
   Widget build(BuildContext context) {
-    final sorted = sortTunes(widget.tunes, widget.sortType, widget.sortOrder);
-
     return CustomScrollView(
       slivers: [
         PlaylistHeroSliver(
@@ -52,25 +40,9 @@ class _PlaylistLoadedViewState extends State<PlaylistLoadedView> {
           playlist: widget.playlist,
           isEditing: _isEditing,
         ),
-        if (_isEditing && widget.tunes.isNotEmpty)
-          SliverToBoxAdapter(
-            child: SongSortBar(
-              sortType: widget.sortType,
-              sortOrder: widget.sortOrder,
-              onSortTypeChanged: widget.onSortTypeChanged,
-              onSortOrderToggled: widget.onSortOrderToggled,
-              types: [
-                SortType.name,
-                SortType.duration,
-                SortType.album,
-                SortType.artist,
-                SortType.dateAdded,
-              ],
-            ),
-          ),
         if (widget.tunes.isNotEmpty)
           TuneSliverList(
-            tunes: _isEditing ? sorted : widget.tunes,
+            tunes: widget.tunes,
             onRemove: _isEditing ? widget.onRemove : null,
           )
         else

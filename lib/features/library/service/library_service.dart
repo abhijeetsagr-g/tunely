@@ -56,9 +56,6 @@ class LibraryService {
   List<Tune> getTunesByAlbum(int albumId) =>
       _libraryRepo.getTunesByAlbum(albumId);
 
-  List<Tune> getTunesByGenre(String genre) =>
-      _libraryRepo.getTunesByGenre(genre);
-
   Future<List<Tune>> generateDailyMix(List<Tune> tunes) async {
     _dailyMixRefreshCount = 0;
     final todaySeed = DateTime.now().millisecondsSinceEpoch ~/ 86400000;
