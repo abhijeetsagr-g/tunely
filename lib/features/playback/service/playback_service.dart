@@ -341,9 +341,13 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   // Reorder
   Future<void> moveQueueItem(int oldIndex, int newIndex) async {
-    final entry = _shuffleIndices.removeAt(oldIndex);
-    _shuffleIndices.insert(newIndex, entry);
-    _emitCustomSequence();
+    if (_shuffleEnabled) {
+      final entry = _shuffleIndices.removeAt(oldIndex);
+      _shuffleIndices.insert(newIndex, entry);
+      _emitCustomSequence();
+    } else {
+      await _player.moveAudioSource(oldIndex, newIndex);
+    }
   }
 
   @override
