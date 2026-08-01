@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utlis/sort.dart';
+import 'package:tunely/core/utlis/total_dur.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/ui/widget/all_songs/all_songs_tab.dart';
 import 'package:tunely/features/library/ui/widget/albums/albums_tab.dart';
@@ -24,6 +25,14 @@ class LibraryView extends StatefulWidget {
 class _LibraryViewState extends State<LibraryView>
     with AutomaticKeepAliveClientMixin {
   int _selectedIndex = 0;
+  TuneSortType _tuneSortType = TuneSortType.name;
+  bool _tuneSortAscending = true;
+  AlbumSort _albumSortType = AlbumSort.songCount;
+  bool _albumSortAscending = true;
+  bool _albumHideSingles = true;
+  ArtistSort _artistSortType = ArtistSort.name;
+  bool _artistSortAscending = true;
+  bool _artistHideSingles = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -108,9 +117,37 @@ class _LibraryViewState extends State<LibraryView>
       children: [
         Expanded(
           child: switch (_selectedIndex) {
-            0 => AllSongsTab(tunes: Sort.sortTunes(tunes)),
-            1 => AlbumsTab(albums: Sort.sortAlbums(albums)),
-            2 => ArtistsTab(artists: Sort.sortArtists(artists)),
+            0 => AllSongsTab(
+              tunes: tunes,
+              sortType: _tuneSortType,
+              ascending: _tuneSortAscending,
+              onSortChanged: (type) => setState(() => _tuneSortType = type),
+              onDirectionChanged: (ascending) =>
+                  setState(() => _tuneSortAscending = ascending),
+            ),
+            1 => AlbumsTab(
+              albums: albums,
+              durations: totalDurationBy(tunes, (tune) => tune.albumId),
+              sortType: _albumSortType,
+              ascending: _albumSortAscending,
+              onSortChanged: (type) => setState(() => _albumSortType = type),
+              onDirectionChanged: (ascending) =>
+                  setState(() => _albumSortAscending = ascending),
+              hideSingles: _albumHideSingles,
+              onHideSinglesChanged: (hide) =>
+                  setState(() => _albumHideSingles = hide),
+            ),
+            2 => ArtistsTab(
+              artists: artists,
+              sortType: _artistSortType,
+              ascending: _artistSortAscending,
+              onSortChanged: (type) => setState(() => _artistSortType = type),
+              onDirectionChanged: (ascending) =>
+                  setState(() => _artistSortAscending = ascending),
+              hideSingles: _artistHideSingles,
+              onHideSinglesChanged: (hide) =>
+                  setState(() => _artistHideSingles = hide),
+            ),
             _ => PlaylistsTab(playlists: playlists),
           },
         ),
