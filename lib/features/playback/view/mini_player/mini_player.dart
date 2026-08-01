@@ -5,13 +5,28 @@ import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utlis/fur_artist_name.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
+import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
-class MiniPlayer extends StatelessWidget {
+class MiniPlayer extends StatefulWidget {
   const MiniPlayer({super.key});
 
   @override
+  State<MiniPlayer> createState() => _MiniPlayerState();
+}
+
+class _MiniPlayerState extends State<MiniPlayer> {
+  final GlobalKey _sizeKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final box = _sizeKey.currentContext?.findRenderObject() as RenderBox?;
+      if (box != null && box.hasSize) {
+        miniPlayerHeight.value = box.size.height;
+      }
+    });
+
     final bloc = context.read<PlaybackBloc>();
 
     return BlocBuilder<PlaybackBloc, PlaybackState>(
@@ -33,6 +48,7 @@ class MiniPlayer extends StatelessWidget {
             }
           },
           child: AnimatedContainer(
+            key: _sizeKey,
             duration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut,
             child: Card(

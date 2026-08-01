@@ -9,6 +9,7 @@ import 'package:tunely/features/library/ui/widget/albums/albums_tab.dart';
 import 'package:tunely/features/library/ui/widget/artists/artists_tab.dart';
 import 'package:tunely/features/library/ui/widget/playlists/playlists_tab.dart';
 import 'package:tunely/features/library/ui/widget/section_card.dart';
+import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/action_button.dart';
@@ -105,54 +106,64 @@ class _LibraryViewState extends State<LibraryView>
   ) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            children: [
-              Expanded(
-                child: SectionCard(
-                  text: 'All Songs',
-                  icon: Icons.music_note_rounded,
-                  selected: _selectedIndex == 0,
-                  onSelect: () => setState(() => _selectedIndex = 0),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: SectionCard(
-                  text: 'Albums',
-                  icon: Icons.album_rounded,
-                  selected: _selectedIndex == 1,
-                  onSelect: () => setState(() => _selectedIndex = 1),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: SectionCard(
-                  text: 'Artists',
-                  icon: Icons.person_rounded,
-                  selected: _selectedIndex == 2,
-                  onSelect: () => setState(() => _selectedIndex = 2),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: SectionCard(
-                  text: 'Playlists',
-                  icon: Icons.queue_music_rounded,
-                  selected: _selectedIndex == 3,
-                  onSelect: () => setState(() => _selectedIndex = 3),
-                ),
-              ),
-            ],
-          ),
-        ),
         Expanded(
           child: switch (_selectedIndex) {
             0 => AllSongsTab(tunes: Sort.sortTunes(tunes)),
-            1 => AlbumsTab(albums: albums),
-            2 => ArtistsTab(artists: artists),
+            1 => AlbumsTab(albums: Sort.sortAlbums(albums)),
+            2 => ArtistsTab(artists: Sort.sortArtists(artists)),
             _ => PlaylistsTab(playlists: playlists),
+          },
+        ),
+        ValueListenableBuilder<double>(
+          valueListenable: miniPlayerHeight,
+          builder: (context, height, _) {
+            return Padding(
+              padding: EdgeInsets.only(
+                top: 8,
+                left: 16,
+                right: 16,
+                bottom: height + 12,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SectionCard(
+                      text: 'All Songs',
+                      icon: Icons.music_note_rounded,
+                      selected: _selectedIndex == 0,
+                      onSelect: () => setState(() => _selectedIndex = 0),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SectionCard(
+                      text: 'Albums',
+                      icon: Icons.album_rounded,
+                      selected: _selectedIndex == 1,
+                      onSelect: () => setState(() => _selectedIndex = 1),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SectionCard(
+                      text: 'Artists',
+                      icon: Icons.person_rounded,
+                      selected: _selectedIndex == 2,
+                      onSelect: () => setState(() => _selectedIndex = 2),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SectionCard(
+                      text: 'Playlists',
+                      icon: Icons.queue_music_rounded,
+                      selected: _selectedIndex == 3,
+                      onSelect: () => setState(() => _selectedIndex = 3),
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
         ),
       ],
