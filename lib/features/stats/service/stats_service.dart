@@ -21,7 +21,7 @@ class StatsService {
     final recent = repo.getRecentOrder();
     recent.remove(item.id);
     recent.insert(0, item.id);
-    if (recent.length > 10) {
+    if (recent.length > 50) {
       recent.removeLast();
     }
     repo.saveRecentOrder(recent);

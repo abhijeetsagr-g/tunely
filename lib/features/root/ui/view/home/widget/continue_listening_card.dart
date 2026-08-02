@@ -7,6 +7,7 @@ import 'package:tunely/core/utlis/fur_artist_name.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
+import 'package:tunely/features/root/ui/view/home/widget/continue_listening_placeholder.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
@@ -23,7 +24,7 @@ class ContinueListeningCard extends StatelessWidget {
           p.duration != c.duration,
       builder: (context, ps) {
         final (tune, position, isActive) = _resolve(context, ps);
-        if (tune == null) return const SizedBox.shrink();
+        if (tune == null) return const ContinueListeningPlaceholder();
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),

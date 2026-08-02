@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/shared/widget/album_card.dart';
 
 class RecommendedAlbums extends StatelessWidget {
@@ -9,77 +8,38 @@ class RecommendedAlbums extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final libraryState = context.watch<LibraryCubit>().state;
+    if (libraryState is! LibraryLoaded ||
+        libraryState.recommendedAlbums.isEmpty) {
+      return const SizedBox();
+    }
+
     return SliverToBoxAdapter(
-      child: BlocBuilder<StatsCubit, StatsState>(
-        buildWhen: (prev, curr) => curr is StatsLoaded,
-        builder: (context, statsState) {
-          if (statsState is! StatsLoaded || statsState.mostPlayed.isEmpty) {
-            return const SizedBox();
-          }
-
-          final libraryState = context.watch<LibraryCubit>().state;
-          if (libraryState is! LibraryLoaded) return const SizedBox();
-
-          final songCountPerAlbum = <int, int>{};
-          for (final t in libraryState.tunes) {
-            if (t.albumId != null) {
-              songCountPerAlbum[t.albumId!] =
-                  (songCountPerAlbum[t.albumId!] ?? 0) + 1;
-            }
-          }
-
-          final topAlbumIds = statsState.mostPlayed
-              .map((t) => t.albumId)
-              .whereType<int>()
-              .toSet();
-
-          var topAlbums = libraryState.albums
-              .where((a) => topAlbumIds.contains(a.id))
-              .where((a) => (songCountPerAlbum[a.id] ?? 0) > 1)
-              .take(5)
-              .toList();
-
-          if (topAlbums.length < 5) {
-            final fillCount = 5 - topAlbums.length;
-            final usedIds = topAlbums.map((a) => a.id).toSet();
-            final extras = [...libraryState.albums]..shuffle();
-            topAlbums = [
-              ...topAlbums,
-              ...extras
-                  .where((a) => !usedIds.contains(a.id))
-                  .where((a) => (songCountPerAlbum[a.id] ?? 0) > 1)
-                  .take(fillCount),
-            ];
-          }
-
-          if (topAlbums.isEmpty) return const SizedBox();
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  'Your Albums',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 200,
-                child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: topAlbums.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 20),
-                  itemBuilder: (context, i) => AlbumCard(album: topAlbums[i]),
-                ),
-              ),
-            ],
-          );
-        },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              'Your Albums',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 200,
+            child: ListView.separated(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              scrollDirection: Axis.horizontal,
+              itemCount: libraryState.recommendedAlbums.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 20),
+              itemBuilder: (context, i) =>
+                  AlbumCard(album: libraryState.recommendedAlbums[i]),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -12,6 +12,7 @@ class LibraryLoaded extends LibraryState {
   final List<AlbumModel> albums;
   final List<GenreModel> genres;
   final List<Tune> dailyMix;
+  final List<AlbumModel> recommendedAlbums;
 
   LibraryLoaded({
     required this.tunes,
@@ -19,6 +20,7 @@ class LibraryLoaded extends LibraryState {
     required this.albums,
     required this.genres,
     required this.dailyMix,
+    required this.recommendedAlbums,
   });
 
   LibraryLoaded copyWith({
@@ -27,6 +29,7 @@ class LibraryLoaded extends LibraryState {
     List<AlbumModel>? albums,
     List<GenreModel>? genres,
     List<Tune>? dailyMix,
+    List<AlbumModel>? recommendedAlbums,
   }) =>
       LibraryLoaded(
         tunes: tunes ?? this.tunes,
@@ -34,6 +37,7 @@ class LibraryLoaded extends LibraryState {
         albums: albums ?? this.albums,
         genres: genres ?? this.genres,
         dailyMix: dailyMix ?? this.dailyMix,
+        recommendedAlbums: recommendedAlbums ?? this.recommendedAlbums,
       );
 }
 

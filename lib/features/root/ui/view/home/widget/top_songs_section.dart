@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/root/ui/view/home/widget/top_song_page.dart';
+import 'package:tunely/features/root/ui/view/home/widget/top_songs_empty.dart';
 import 'package:tunely/features/root/ui/view/home/widget/top_songs_view.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 class TopSongsSection extends StatefulWidget {
   const TopSongsSection({super.key});
@@ -39,7 +41,7 @@ class _TopSongsSectionState extends State<TopSongsSection> {
       buildWhen: (prev, curr) => curr is StatsLoaded,
       builder: (context, state) {
         if (state is! StatsLoaded || state.mostPlayed.isEmpty) {
-          return const SizedBox.shrink();
+          return const TopSongsEmpty();
         }
 
         final topSongs = state.mostPlayed.take(5).toList();
@@ -61,12 +63,15 @@ class _TopSongsSectionState extends State<TopSongsSection> {
                   TextButton.icon(
                     style: TextButton.styleFrom(foregroundColor: Colors.grey),
                     onPressed: () {
-                      context.read<PlaybackBloc>().add(
-                        PlayQueueEvent(state.mostPlayed, startIndex: 0),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TopSongsView(),
+                        ),
                       );
                     },
-                    label: Text('Play ${state.mostPlayed.length} songs'),
-                    icon: const Icon(Icons.keyboard_arrow_right),
+                    label: Text('See ${state.mostPlayed.length} songs'),
+                    icon: const Icon(Icons.music_note),
                   ),
                 ],
               ),
@@ -81,7 +86,10 @@ class _TopSongsSectionState extends State<TopSongsSection> {
                   if (i == topSongs.length) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: _allTopSongsCard(state.mostPlayed.length),
+                      child: _allTopSongsCard(
+                        topSongs,
+                        state.mostPlayed.length,
+                      ),
                     );
                   }
                   return Padding(
@@ -122,7 +130,7 @@ class _TopSongsSectionState extends State<TopSongsSection> {
     );
   }
 
-  Widget _allTopSongsCard(int totalCount) {
+  Widget _allTopSongsCard(List<Tune> tunes, int totalCount) {
     return Card(
       child: Center(
         child: Column(
@@ -137,12 +145,12 @@ class _TopSongsSectionState extends State<TopSongsSection> {
             const SizedBox(height: 8),
             TextButton.icon(
               onPressed: () {
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (_) => const TopSongsView()));
+                context.read<PlaybackBloc>().add(
+                  PlayQueueEvent(tunes, startIndex: 0),
+                );
               },
-              icon: const Icon(Icons.open_in_new_rounded),
-              label: const Text('View All'),
+              icon: const Icon(Icons.play_circle_outline_sharp),
+              label: const Text('Play All'),
             ),
           ],
         ),
