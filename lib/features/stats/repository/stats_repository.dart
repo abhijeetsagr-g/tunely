@@ -25,8 +25,6 @@ class StatsRepository {
     save(stats);
   }
 
-  List<TuneStats> getAll() => _box.values.toList();
-
   List<String> getRecentOrder() {
     final raw = _meta.get('recent_order');
     if (raw == null) return [];

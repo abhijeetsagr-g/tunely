@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
-import 'package:tunely/features/playlist/cubit/playlist_detail_cubit.dart';
+import 'package:tunely/features/playlist/bloc/playlist_bloc.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/song_picker.dart';
 
 void showAddSongsSheet(BuildContext context, PlaylistModel playlist) {
-  final detailCubit = context.read<PlaylistDetailCubit>();
+  final bloc = context.read<PlaylistBloc>();
   final library = context.read<LibraryCubit>().state;
   final tunes = library is LibraryLoaded ? library.tunes : <Tune>[];
 
@@ -105,9 +104,10 @@ void showAddSongsSheet(BuildContext context, PlaylistModel playlist) {
                         onPressed: selectedSongIds.isEmpty
                             ? null
                             : () {
-                                detailCubit.addSongs(
-                                  selectedSongIds.toList(),
-                                );
+                                bloc.add(AddSongsEvent(
+                                  playlistId: playlist.id,
+                                  songIds: selectedSongIds.toList(),
+                                ));
                                 Navigator.pop(context);
                               },
                         icon: const Icon(Icons.add_rounded),
@@ -131,12 +131,12 @@ class PlaylistOptionsSheet extends StatelessWidget {
   const PlaylistOptionsSheet({
     super.key,
     required this.playlist,
-    required this.cubit,
+    required this.bloc,
     this.onEditTap,
   });
 
   final PlaylistModel playlist;
-  final PlaylistCubit cubit;
+  final PlaylistBloc bloc;
   final VoidCallback? onEditTap;
 
   @override
@@ -204,7 +204,10 @@ class PlaylistOptionsSheet extends StatelessWidget {
             onPressed: () {
               final name = controller.text.trim();
               if (name.isEmpty) return;
-              cubit.renamePlaylist(playlist.id, name);
+              bloc.add(RenamePlaylistEvent(
+                playlistId: playlist.id,
+                newName: name,
+              ));
               Navigator.pop(context);
               Navigator.pop(context);
             },
@@ -228,7 +231,7 @@ class PlaylistOptionsSheet extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              cubit.deletePlaylist(playlist.id);
+              bloc.add(DeletePlaylistEvent(playlistId: playlist.id));
               Navigator.pop(context);
               Navigator.pop(context);
             },

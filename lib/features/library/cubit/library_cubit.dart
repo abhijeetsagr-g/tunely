@@ -29,7 +29,6 @@ class LibraryCubit extends Cubit<LibraryState> {
           artists: result.artists,
           albums: result.albums,
           genres: result.genres,
-          playlists: result.playlists,
           dailyMix: await _service.generateDailyMix(result.tunes),
         ),
       );

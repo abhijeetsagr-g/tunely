@@ -136,10 +136,6 @@ class SearchCubit extends Cubit<SearchState> {
         .where((g) => (g.genre).toLowerCase().contains(q))
         .toList();
 
-    final playlists = _library!.playlists
-        .where((p) => (p.playlist).toLowerCase().contains(q))
-        .toList();
-
     emit(
       SearchLoaded(
         query: q,
@@ -148,7 +144,6 @@ class SearchCubit extends Cubit<SearchState> {
           artists: artists,
           albums: albums,
           genres: genres,
-          playlists: playlists,
         ),
       ),
     );

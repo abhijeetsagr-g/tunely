@@ -4,7 +4,6 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
@@ -27,7 +26,6 @@ class _SplashViewState extends State<SplashView> {
 
   Future<void> _load() async {
     final sessionCubit = context.read<SessionCubit>();
-    final playlistCubit = context.read<PlaylistCubit>();
 
     // initialize library
     final library = context.read<LibraryCubit>();
@@ -46,7 +44,6 @@ class _SplashViewState extends State<SplashView> {
           artists: state.artists,
           albums: state.albums,
           genres: state.genres,
-          playlists: state.playlists,
         ),
       );
     }
@@ -82,11 +79,12 @@ class _SplashViewState extends State<SplashView> {
       }
     }
 
-    await playlistCubit.loadPlaylist();
     if (!mounted) return;
 
     // Prefetch artist images in background (don't block navigation)
-    final artistNames = (library.state as LibraryLoaded).artists.map((a) => a.artist);
+    final artistNames = (library.state as LibraryLoaded)
+        .artists
+        .map((a) => a.artist);
     context.read<ArtistService>().preFetch(artistNames);
 
     Navigator.pushReplacementNamed(context, AppRoute.root);

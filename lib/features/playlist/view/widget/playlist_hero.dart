@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
-import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
+import 'package:tunely/features/playlist/bloc/playlist_bloc.dart';
 import 'package:tunely/features/playlist/view/widget/playlist_dialogs.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_carousel.dart';
@@ -45,12 +45,12 @@ class PlaylistHeroSliver extends StatelessWidget {
   }
 
   void _showOptionsSheet(BuildContext context) {
-    final cubit = context.read<PlaylistCubit>();
+    final bloc = context.read<PlaylistBloc>();
     showModalBottomSheet<void>(
       context: context,
       builder: (_) => PlaylistOptionsSheet(
         playlist: playlist,
-        cubit: cubit,
+        bloc: bloc,
         onEditTap: onEditToggle,
       ),
     );

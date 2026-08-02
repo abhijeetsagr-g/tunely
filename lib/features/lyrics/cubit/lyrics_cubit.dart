@@ -19,8 +19,6 @@ class LyricsCubit extends Cubit<LyricsState> {
 
   final Map<String, LyricsResult> _sessionCache = {};
 
-  // ignore: unused_field
-  String? _lastFetchedKey;
   String? _currentTuneKey;
 
   int _fetchGen = 0;
@@ -53,8 +51,6 @@ class LyricsCubit extends Cubit<LyricsState> {
     final gen = ++_fetchGen;
 
     if (_sessionCache.containsKey(key)) {
-      _lastFetchedKey = key;
-
       emit(LyricsLoaded(result: _sessionCache[key]!, tune: tune));
 
       return;
@@ -71,7 +67,6 @@ class LyricsCubit extends Cubit<LyricsState> {
       }
 
       _sessionCache[key] = result;
-      _lastFetchedKey = key;
 
       emit(LyricsLoaded(result: result, tune: tune));
     } catch (_) {
@@ -110,7 +105,6 @@ class LyricsCubit extends Cubit<LyricsState> {
       }
 
       _sessionCache[key] = lyrics;
-      _lastFetchedKey = key;
 
       emit(LyricsLoaded(result: lyrics, tune: tune));
     } catch (_) {
@@ -208,7 +202,6 @@ class LyricsCubit extends Cubit<LyricsState> {
     final key = _tuneKey(tune);
 
     _sessionCache.remove(key);
-    _lastFetchedKey = null;
 
     emit(LyricsLoading(tune));
 
@@ -223,7 +216,6 @@ class LyricsCubit extends Cubit<LyricsState> {
   Future<void> clearCache() async {
     _sessionCache.clear();
 
-    _lastFetchedKey = null;
     _currentTuneKey = null;
 
     await _service.clearCache();
@@ -252,7 +244,6 @@ class LyricsCubit extends Cubit<LyricsState> {
       }
 
       _sessionCache[key] = result;
-      _lastFetchedKey = key;
 
       emit(LyricsLoaded(result: result, tune: s.tune));
     } catch (_) {
@@ -279,7 +270,6 @@ class LyricsCubit extends Cubit<LyricsState> {
     final key = _tuneKey(tune);
 
     _sessionCache[key] = result;
-    _lastFetchedKey = key;
 
     emit(LyricsLoaded(result: result, tune: tune));
   }

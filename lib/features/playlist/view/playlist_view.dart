@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
-import 'package:tunely/features/playlist/cubit/playlist_detail_cubit.dart';
-import 'package:tunely/features/playlist/service/playlist_service.dart';
+import 'package:tunely/features/playlist/bloc/playlist_bloc.dart';
 import 'widget/playlist_states.dart';
 
 class PlaylistView extends StatelessWidget {
@@ -13,13 +12,7 @@ class PlaylistView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final service = context.read<PlaylistService>();
-        return PlaylistDetailCubit(playlistId: playlist.id, service: service);
-      },
-      child: _PlaylistBody(playlist: playlist),
-    );
+    return _PlaylistBody(playlist: playlist);
   }
 }
 
@@ -36,33 +29,44 @@ class _PlaylistBodyState extends State<_PlaylistBody> {
   void initState() {
     super.initState();
     final settings = context.read<ManagementCubit>().state;
-    context.read<PlaylistDetailCubit>().loadSongs(settings);
+    context.read<PlaylistBloc>().add(
+      LoadSongsEvent(playlistId: widget.playlist.id, settings: settings),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<PlaylistDetailCubit, PlaylistDetailState>(
+      body: BlocBuilder<PlaylistBloc, PlaylistState>(
         builder: (context, state) {
           return switch (state) {
-            PlaylistDetailInitial() => const SizedBox.shrink(),
-            PlaylistDetailLoading() => const Center(
+            PlaylistLoading() => const Center(
               child: CircularProgressIndicator(),
             ),
-            PlaylistDetailError(:final error) => PlaylistErrorView(
-              error: error,
-            ),
-            PlaylistDetailLoaded(
-              :final tunes,
-            ) =>
-              PlaylistLoadedView(
-                playlist: widget.playlist,
-                tunes: tunes,
-                onRemove: context.read<PlaylistDetailCubit>().removeSong,
-              ),
+            PlaylistError(:final error) => PlaylistErrorView(error: error),
+            LoadedPlaylist(:final detail) => _buildDetail(detail),
           };
         },
       ),
+    );
+  }
+
+  Widget _buildDetail(PlaylistDetailState detail) {
+    if (detail.playlistId != widget.playlist.id) {
+      return const SizedBox.shrink();
+    }
+    if (detail.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (detail.error != null) {
+      return PlaylistErrorView(error: detail.error!);
+    }
+    return PlaylistLoadedView(
+      playlist: widget.playlist,
+      tunes: detail.songs,
+      onRemove: (songId) => context
+          .read<PlaylistBloc>()
+          .add(RemoveSongEvent(playlistId: widget.playlist.id, songId: songId)),
     );
   }
 }

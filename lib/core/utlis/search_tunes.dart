@@ -26,13 +26,4 @@ abstract class SearchFunctions {
     final q = query.toLowerCase();
     return genres.where((g) => g.genre.toLowerCase().contains(q)).toList();
   }
-
-  static List<PlaylistModel> filterPlaylist(
-    List<PlaylistModel> playlist,
-    String query,
-  ) {
-    if (query.trim().isEmpty) return playlist;
-    final q = query.toLowerCase();
-    return playlist.where((p) => p.playlist.toLowerCase().contains(q)).toList();
-  }
 }

@@ -96,9 +96,8 @@ class _LibraryViewState extends State<LibraryView>
                 :final tunes,
                 :final albums,
                 :final artists,
-                :final playlists,
               ) =>
-                _buildContent(tunes, albums, artists, playlists),
+                _buildContent(tunes, albums, artists),
               _ => const SizedBox.shrink(),
             };
           },
@@ -111,7 +110,6 @@ class _LibraryViewState extends State<LibraryView>
     List<Tune> tunes,
     List<AlbumModel> albums,
     List<Artist> artists,
-    List<PlaylistModel> playlists,
   ) {
     return Column(
       children: [
@@ -148,7 +146,7 @@ class _LibraryViewState extends State<LibraryView>
               onHideSinglesChanged: (hide) =>
                   setState(() => _artistHideSingles = hide),
             ),
-            _ => PlaylistsTab(playlists: playlists),
+            _ => const PlaylistsTab(),
           },
         ),
         ValueListenableBuilder<double>(

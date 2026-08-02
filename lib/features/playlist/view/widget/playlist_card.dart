@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utlis/settings_arguments.dart';
-import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
+import 'package:tunely/features/playlist/bloc/playlist_bloc.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
 class PlaylistCard extends StatelessWidget {
@@ -12,7 +12,7 @@ class PlaylistCard extends StatelessWidget {
   final PlaylistModel playlist;
 
   void _showRenameDialog(BuildContext context) {
-    final cubit = context.read<PlaylistCubit>();
+    final bloc = context.read<PlaylistBloc>();
     final controller = TextEditingController(text: playlist.playlist);
 
     showDialog<void>(
@@ -34,7 +34,10 @@ class PlaylistCard extends StatelessWidget {
             onPressed: () {
               final name = controller.text.trim();
               if (name.isEmpty) return;
-              cubit.renamePlaylist(playlist.id, name);
+              bloc.add(RenamePlaylistEvent(
+                playlistId: playlist.id,
+                newName: name,
+              ));
               Navigator.pop(context);
             },
             child: const Text('Rename'),
@@ -45,7 +48,7 @@ class PlaylistCard extends StatelessWidget {
   }
 
   void _showDeleteDialog(BuildContext context) {
-    final cubit = context.read<PlaylistCubit>();
+    final bloc = context.read<PlaylistBloc>();
 
     showDialog<void>(
       context: context,
@@ -59,7 +62,7 @@ class PlaylistCard extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              cubit.deletePlaylist(playlist.id);
+              bloc.add(DeletePlaylistEvent(playlistId: playlist.id));
               Navigator.pop(context);
             },
             style: TextButton.styleFrom(

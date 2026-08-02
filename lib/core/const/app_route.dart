@@ -6,7 +6,6 @@ class AppRoute {
   static const artist = 'artist';
   static const playlist = 'playlist';
   static const lyrics = 'lyrics';
-  static const welcome = 'welcome';
   static const settings = 'settings';
   static const queue = 'queue';
 }

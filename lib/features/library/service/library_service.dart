@@ -38,16 +38,12 @@ class LibraryService {
       orderType: OrderType.ASC_OR_SMALLER,
     );
     final genres = await _audioQuery.queryGenres();
-    final playlists = await _audioQuery.queryPlaylists(
-      sortType: PlaylistSortType.DATE_ADDED,
-    );
 
     return LibraryScanResult(
       tunes: tunes,
       artists: artists,
       albums: albums,
       genres: genres,
-      playlists: playlists,
     );
   }
 

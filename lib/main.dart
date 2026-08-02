@@ -6,6 +6,9 @@ import 'package:hive_ce/hive.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:tunely/hive_registrar.g.dart';
+import 'package:tunely/my_app.dart';
+
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
 import 'package:tunely/features/customization/repository/customization_repository.dart';
 import 'package:tunely/features/customization/service/customization_service.dart';
@@ -21,8 +24,6 @@ import 'package:tunely/features/music_management/model/management_settings.dart'
 import 'package:tunely/features/music_management/repository/management_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
-import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
-import 'package:tunely/features/playlist/service/playlist_service.dart';
 import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/search/repository/search_repository.dart';
@@ -33,8 +34,6 @@ import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/features/stats/model/tune_stats.dart';
 import 'package:tunely/features/stats/repository/stats_repository.dart';
 import 'package:tunely/features/stats/service/stats_service.dart';
-import 'package:tunely/hive_registrar.g.dart';
-import 'package:tunely/my_app.dart';
 import 'package:tunely/shared/service/artist_service.dart';
 
 void main() async {
@@ -96,9 +95,6 @@ void main() async {
   // setup search
   final searchRepo = SearchRepository();
 
-  // setup playlist
-  final playlistService = PlaylistService(query: audioQuery);
-
   // setup artist service
   final artistService = ArtistService();
 
@@ -125,10 +121,6 @@ void main() async {
         BlocProvider(
           create: (context) => CustomizationCubit(customizationService),
         ),
-        BlocProvider(
-          create: (context) => PlaylistCubit(service: playlistService),
-        ),
-        RepositoryProvider.value(value: playlistService),
         RepositoryProvider.value(value: artistService),
       ],
       child: MyApp(),
