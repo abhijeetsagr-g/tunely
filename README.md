@@ -4,17 +4,26 @@
 
 **Your music. Offline. Always.**
 
-An offline music player for Android built with Flutter.
-Tunely scans your device library and lets you browse, play, and vibe — no internet required.
+A beautiful, free music player for Android that plays the songs already on
+your device — no internet, no accounts, no subscriptions. Open it and your
+whole library is right there.
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style-for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![Android](https://img.shields.io/badge/Android-API%2021+-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com)
+[![Android](https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://developer.android.com)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
+[![Release](https://img.shields.io/badge/Release-Closed%20Beta-orange?style=for-the-badge)]()
 
-> 🚀 **v1.0.0** — currently in closed beta. Play Store release coming soon.
+> 🚀 **Currently in closed beta.** Public release on the Play Store coming soon.
 
 </div>
+
+---
+
+## ✨ Why Tunely
+
+- **Plays your own music** — reads what's already on your phone. No streaming, no sign-ups.
+- **Fully offline** — every feature works without a connection.
+- **Personal by design** — light and dark themes, and album art that drives the whole look.
+- **Lyrics that follow along** — Get lyrics easily; synced lyrics scroll in time with the song, automatically.
 
 ---
 
@@ -34,202 +43,87 @@ Tunely scans your device library and lets you browse, play, and vibe — no inte
 
 ---
 
-## ✨ Features
+## 🎶 Features
 
-### 🏠 Home
-- Greeting message with time-aware random texts
-- **Continue listening** — resume your last played track
-- **Top songs** — card-based page viewer of most played tracks
-- **Daily mix** — 15 shuffled songs, first 5 shown as a vertical list
-- **Recommended albums** — horizontal carousel
+### Pick up where you left off
 
-### 📚 Library
-- Browse by **Songs**, **Albums**, **Artists**, **Genres**, and **Playlists**
-- Filter chips (All / Music / Podcasts) on songs tab
-- Sortable song lists (title, artist, album, duration, date added)
-- Albums shown in a 2-column grid
-- Artists with Deezer-fetched profile images
-- Songs grouped by album on artist detail pages (sticky headers)
+- **Continue listening** — jump straight back into your last played track.
+- **Top songs & daily mix** — revisit your most played tracks or shuffle a fresh mix.
+- **Recommended albums** — a carousel to browse and rediscover your library.
 
-### 🔍 Search
-- Real-time search with debounce across your entire library
-- Filter chips — All / Songs / Albums / Artists
-- Recently searched items persisted across sessions
+### 📚 Your library, organized
 
-### 🎵 Player
-- Full playback controls — play, pause, next, prev, seek
-- **Shuffle and repeat** modes (none, repeat all, repeat one)
-- Animated album art with scale transition on play/pause
-- Gradient background extracted from album art
-- **Queue management** with drag-to-reorder and swipe-to-remove
-- Sleep timer with countdown (5m / 15m / 30m / 1h / 2h)
+- Browse by Songs, Albums, Artists, and more.
+- Sort by title, artist, album, duration, or date added.
+- Tap an artist to see their catalog grouped by album, with fetched artist photos and album covers.
 
-### 📖 Lyrics
-- **Synced and unsynced** lyrics via [lrclib](https://lrclib.net) API
-- Lyrics scroll **in sync** with song playback
-- Manual lyrics search if auto-fetch doesn't match
-- Import `.lrc` files from device storage
-- Edit synced line timing or plain lyrics directly
-- Lyrics cached locally with Hive for offline reuse
-- Per-song in-session memory cache
+### 🔍 Find anything instantly
 
-### 🎨 Theming
-- Light / Dark / System theme modes
-- **Dynamic color** — extract accent from current album art
-- Custom accent color picker
-- Inter, Manrope, and NunitoSans fonts
+- Search your entire library as you type, filtered by songs, albums, or artists.
+- Recent searches are remembered.
 
-### 📊 Play Stats
-- Play count tracking for every song
-- Recently played (last 10)
-- Most played (top 50)
-- Like/unlike songs
+### 🎵 A player that feels right
 
-### 📋 Playlists
-- Create, rename, and delete playlists
-- Add songs via multi-select song picker
-- Remove songs from playlists
-- Auto-sort by title, artist, date added, duration, or shuffle
+- Play, pause, skip, and seek with ease.
+- Shuffle and repeat modes for every mood.
+- Player colors adapt to the album art you're listening to.
+- Drag to reorder the queue, or swipe a song away.
+- **Sleep timer** — from 5 minutes to 2 hours.
 
-### ⚙️ Other
-- Background audio with **lock screen controls**
-- Sleep timer with background-aware countdown
-- Session persistence — queue, position, shuffle, repeat, speed restored on relaunch
-- Artist delimiter configuration (tune how joint artists are parsed)
-- Minimum song duration filter
-- Settings persist across app restarts via shared_preferences
+### 📖 Sing along
 
----
+- Synced lyrics scroll in time with the music; plain lyrics as a fallback.
+- Search for lyrics manually or import your own `.lrc` files.
+- Lyrics are cached, so they're available offline next time.
 
-## 🛠️ Tech Stack
+### 🎨 Make it yours
 
-| Category | Technology |
-|----------|------------|
-| Framework | Flutter (Dart 3.x) |
-| State Management | BLoC / Cubit (flutter_bloc 9.x) |
-| Audio Playback | just_audio |
-| Background Audio | audio_service |
-| Media Scanning | on_audio_query_pluse |
-| Lyrics | lrclib.net API |
-| Artist Images | Deezer API |
-| Local Storage | Hive CE (lyrics, stats, management settings) |
-| Settings Persistence | shared_preferences |
-| Color Extraction | palette_generator |
-| Image Caching | cached_network_image + flutter_cache_manager |
+- Light, dark, or system theme.
+- Dynamic colors pulled from album art.
 
----
+### ⚙️ The little things
 
-## 🏗️ Architecture
-
-Tunely follows a **feature-first layered architecture** with clean separation between services, state, and UI.
-
-```
-lib/
-├── core/
-│   ├── config/           # App theme, route params
-│   ├── const/            # Route names, app constants, router
-│   ├── extensions/       # String extensions
-│   └── utils/            # Parsers, formatters, sort helpers
-├── shared/
-│   ├── model/            # Tune, Artist
-│   ├── service/          # ArtistService (Deezer image fetch)
-│   └── widget/           # AlbumArt, SongTile, AlbumCard, etc.
-├── features/
-│   ├── customization/    # Theme mode, dynamic color extraction
-│   ├── library/          # Library browser (5 tabs)
-│   ├── lyrics/           # Lyrics cubit, synced + unsynced views
-│   ├── music_management/ # Scan settings (delimiters, min duration)
-│   ├── playback/         # Playback BLoC + service (just_audio)
-│   ├── playlist/         # Playlist CRUD
-│   ├── root/             # Root navigation shell + Home view
-│   ├── search/           # Search cubit, filter chips
-│   ├── session/          # Queue/position persistence
-│   ├── settings/         # Settings screen
-│   ├── sleep_mode/       # Sleep timer cubit
-│   ├── splash/           # Splash/init screen
-│   └── stats/            # Play stats, likes
-└── ui/
-    └── shell/            # Legacy root view
-```
-
-### 💡 Key Design Decisions
-
-- **Feature-first** — each feature owns its cubit/bloc, view, and widgets
-- `PlaybackService` owns the audio queue — BLoC only listens via streams
-- `effectiveSequence` used for correct shuffle order in just_audio
-- `Tune` is the single UI model — decoupled from Android's `SongModel`
-- Mini player via `OverlayEntry` + `NavigatorObserver` — persists above all routes
-- `PageView` preserves tab state across navigation switches
-- Dynamic color extracts palette from album art, falls back to user accent
-- Hive CE for structured persistence (lyrics cache, stats, management settings)
-- Session cache for lyrics avoids redundant Hive reads during playback
-
-### 🔄 Data Flow
-
-```
-SplashView
-  └── LibraryService.loadAll()
-        └── SessionCubit.restore()
-              └── PlaybackBloc.restoreSession()
-                    └── Navigate to RootScreen (PageView)
-
-User taps song
-  └── PlayQueueEvent(index, tunes) → PlaybackBloc
-        └── PlaybackService.playQueue() → just_audio
-              └── sequenceStateStream → state update
-
-Song changes
-  └── StatsService.onTrackChanged → Hive (play count)
-  └── LyricsCubit.fetch(tune)
-        └── LyricsRepository checks Hive cache → miss → lrclib API → cache
-```
+- Background playback with lock screen controls — music keeps going with the screen off.
+- Your queue, position, and settings are remembered when you reopen the app.
+- Set a minimum song length to filter out clips, and tweak how artist names are read.
 
 ---
 
 ## 🚀 Getting Started
+> You'll be asked for storage permission the first time the library is scanned.
 
-### Prerequisites
+### 📱 For users
 
-- Flutter SDK 3.x+
-- Android device or emulator (API 21+)
-- Storage permission (requested during library scanning)
+Tunely is currently in **closed beta**, with a public Play Store release on
+the way.
 
-### Run
+Find the latest release on the [Releases page](https://github.com/abhijeetsagr-g/tunely/releases/latest).
+### 🛠️ For developers
 
 ```bash
+git clone https://github.com/abhijeetsagr-g/tunely
+cd tunely
 flutter pub get
 flutter run
 ```
 
-### Release Build
-
-```bash
-flutter build apk --release
-```
 
 ---
 
-## 🗺️ Roadmap
+<summary><b>🛠️ How it's built</b></summary>
 
-| Phase | Description | Status |
-|-------|-------------|--------|
-| 1 | Core Playback Service | ✅ Complete |
-| 2 | Library Scanning & Browser | ✅ Complete |
-| 3 | BLoC State Management | ✅ Complete |
-| 4 | Home, Search, Lyrics, Theming | ✅ Complete |
-| 5 | Player, Queue, Mini Player | ✅ Complete |
-| 6 | Settings, Stats, Sleep Timer | ✅ Complete |
-| 7 | Playlists | ✅ Complete |
-| 8 | Onboarding Flow | 🔨 In Progress |
-| 9 | Play Store Release | ⬜ Planned |
+Built with **Flutter** and **Dart**, using a feature-first architecture:
 
----
-
-## 🤝 Contributing
-
-Pull requests are welcome! For major changes, open an issue first to discuss what you'd like to change.
-
----
+| Category | Technology |
+| ---------- | ------------ |
+| Framework | Flutter (Dart 3.x) |
+| State Management | BLoC / Cubit (flutter_bloc) |
+| Audio Playback | just_audio + audio_service |
+| Media Scanning | on_audio_query_pluse |
+| Lyrics | lrclib.net API |
+| Artist Images | Deezer API |
+| Local Storage | Hive CE + shared_preferences |
+| Color Extraction | palette_generator |
 
 <div align="center">
 
