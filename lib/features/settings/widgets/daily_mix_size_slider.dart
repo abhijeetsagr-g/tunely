@@ -20,10 +20,7 @@ class DailyMixSizeSlider extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(
-                  'Daily mix size',
-                  style: theme.textTheme.titleSmall,
-                ),
+                Text('Daily mix size', style: theme.textTheme.titleSmall),
                 const Spacer(),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -46,7 +43,7 @@ class DailyMixSizeSlider extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Number of songs in the initial daily mix. Refreshing doubles the count.',
+              'Number of songs in the initial daily mix.',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: scheme.onSurfaceVariant,
               ),

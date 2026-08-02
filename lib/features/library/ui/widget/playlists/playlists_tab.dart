@@ -5,6 +5,11 @@ class PlaylistsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('One Day Sure'));
+    return const Center(
+      child: Text(
+        'If You Are Reading This,\nI Will Add This Feature For You Soon.',
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 }

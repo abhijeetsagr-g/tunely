@@ -59,8 +59,12 @@ class LibraryService {
 
     if (settings.dailyMixDateSeed == todaySeed &&
         settings.dailyMixTunePaths != null) {
-      final savedPaths = settings.dailyMixTunePaths!.toSet();
-      final restored = tunes.where((t) => savedPaths.contains(t.path)).toList();
+      final savedPaths = settings.dailyMixTunePaths!;
+      final byPath = {for (final t in tunes) t.path: t};
+      final restored = savedPaths
+          .map((p) => byPath[p])
+          .whereType<Tune>()
+          .toList();
       if (restored.isNotEmpty) return restored;
     }
 
@@ -78,8 +82,9 @@ class LibraryService {
     final settings = _managementRepo.get();
     final seed = todaySeed + _dailyMixRefreshCount;
     final random = Random(seed);
-    final size = settings.dailyMixSize * 2;
-    final mix = ([...tunes]..shuffle(random)).take(size).toList();
+    final mix = ([...tunes]..shuffle(random))
+        .take(settings.dailyMixSize)
+        .toList();
     await _saveDailyMix(mix, todaySeed);
     return mix;
   }
