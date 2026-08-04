@@ -8,4 +8,6 @@ class AppRoute {
   static const lyrics = 'lyrics';
   static const settings = 'settings';
   static const queue = 'queue';
+  static const dailyMix = 'dailyMix';
+  static const recent = 'recent';
 }

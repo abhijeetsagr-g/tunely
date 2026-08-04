@@ -26,10 +26,13 @@ class SongTile extends StatelessWidget {
     final playback = context.read<PlaybackBloc>();
 
     return BlocBuilder<PlaybackBloc, PlaybackState>(
-      buildWhen: (prev, curr) =>
-          prev.currentItem?.path != curr.currentItem?.path ||
-          prev.position != curr.position ||
-          prev.duration != curr.duration,
+      buildWhen: (prev, curr) {
+        if (prev.currentItem?.path != curr.currentItem?.path) return true;
+        final isCurrent = curr.currentItem?.path == tune.path;
+        if (!isCurrent) return false;
+        return prev.position != curr.position ||
+            prev.duration != curr.duration;
+      },
       builder: (context, state) {
         final isCurrent = state.currentItem?.path == tune.path;
 

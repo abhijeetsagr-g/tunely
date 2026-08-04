@@ -1,44 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
-import 'package:tunely/shared/model/tune.dart';
-import 'package:tunely/shared/widget/mini_song_tile.dart';
+import 'package:tunely/shared/widget/song_tile.dart';
 
 class RecentList extends StatelessWidget {
   const RecentList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<Tune> recent = context.select<StatsCubit, List<Tune>>((cubit) {
-      final state = cubit.state;
-      if (state is StatsLoaded) return state.recent;
-      return [];
-    });
+    return BlocBuilder<StatsCubit, StatsState>(
+      builder: (context, state) {
+        if (state is StatsLoaded) {
+          final recent = state.recent;
 
-    if (recent.isEmpty) return const SizedBox.shrink();
+          return SliverMainAxisGroup(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  child: Text(
+                    "Recently Played",
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              if (recent.isEmpty)
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 120,
+                    child: Center(child: Text('No songs available')),
+                  ),
+                )
+              else
+                SliverList.builder(
+                  itemCount: (recent.length < 5 ? recent.length : 5) + 1,
+                  itemBuilder: (context, i) {
+                    final lastIndex = recent.length < 5 ? recent.length : 5;
+                    if (i == lastIndex) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: ListTile(
+                          title: Text("See all recently played"),
+                          trailing: const Icon(
+                            Icons.arrow_circle_right_outlined,
+                          ),
+                          onTap: () => Navigator.of(
+                            context,
+                          ).pushNamed(AppRoute.recent),
+                        ),
+                      );
+                    }
+                    return SongTile(tunes: recent, index: i);
+                  },
+                ),
+            ],
+          );
+        }
 
-    final items = recent.take(6).toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 3.2,
-            ),
-            itemCount: items.length,
-            itemBuilder: (context, i) => MiniSongTile(tunes: items, index: i),
-          ),
-        ),
-        SizedBox(height: 10),
-      ],
+        return SizedBox.shrink();
+      },
     );
   }
 }
