@@ -32,14 +32,41 @@ class CustomizationService {
     final bytes = await _query.queryArtwork(id, type);
     if (bytes == null || bytes.isEmpty) return null;
 
+    // Downscale before extracting so the palette reflects broad regions
+    // instead of fine pixel noise, and decode stays cheap.
     final palette = await PaletteGenerator.fromImageProvider(
-      MemoryImage(bytes),
+      ResizeImage.resizeIfNeeded(256, 256, MemoryImage(bytes)),
+      maximumColorCount: 24,
     );
-    final raw = palette.vibrantColor?.color ?? palette.dominantColor?.color;
+    final raw = _pickPaletteColor(palette.paletteColors);
 
     return brightness == Brightness.dark
         ? _adjustForDark(raw)
         : _adjustForLight(raw);
+  }
+
+  // Prefer common colors, nudged toward moderate saturation/lightness, so the
+  // result is representative of the artwork rather than a rare flashy swatch.
+  Color _pickPaletteColor(List<PaletteColor> colors) {
+    if (colors.isEmpty) return Colors.blueAccent;
+    final dominant = colors.first.population;
+    PaletteColor best = colors.first;
+    var bestScore = double.negativeInfinity;
+    for (final color in colors) {
+      final hsl = HSLColor.fromColor(color.color);
+      final populationScore = color.population / dominant;
+      final saturationScore = 1 - (hsl.saturation - 0.45).abs();
+      final lightnessScore = 1 - (hsl.lightness - 0.5).abs();
+      final score =
+          populationScore * 0.55 +
+          saturationScore * 0.30 +
+          lightnessScore * 0.15;
+      if (score > bestScore) {
+        bestScore = score;
+        best = color;
+      }
+    }
+    return best.color;
   }
 
   // Dark mode — keep colors vivid, just ensure minimum lightness
