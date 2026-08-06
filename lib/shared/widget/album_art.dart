@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AlbumArt extends StatefulWidget {
-  const AlbumArt({super.key, this.artUri, required this.size});
+  const AlbumArt({
+    super.key,
+    this.artUri,
+    required this.size,
+    this.borderRadius = 16,
+  });
 
   final Uri? artUri;
   final Size size;
+  final double borderRadius;
 
   @override
   State<AlbumArt> createState() => _AlbumArtState();
@@ -17,10 +23,12 @@ class _AlbumArtState extends State<AlbumArt> {
 
   Uint8List? _bytes;
   bool _loading = false;
+  late double _borderRadius;
 
   @override
   void initState() {
     super.initState();
+    _borderRadius = widget.borderRadius;
     _load();
   }
 
@@ -28,6 +36,7 @@ class _AlbumArtState extends State<AlbumArt> {
   void didUpdateWidget(AlbumArt old) {
     super.didUpdateWidget(old);
     if (old.artUri != widget.artUri) _load();
+    _borderRadius = old.borderRadius;
   }
 
   Future<void> _load() async {
@@ -61,22 +70,36 @@ class _AlbumArtState extends State<AlbumArt> {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: SizedBox(
-        width: widget.size.width,
-        height: widget.size.height,
-        child: _bytes != null
-            ? Image.memory(_bytes!, fit: BoxFit.cover, gaplessPlayback: true)
-            : _Placeholder(size: widget.size),
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(
+        begin: _borderRadius,
+        end: widget.borderRadius,
       ),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      builder: (context, radius, child) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(radius),
+          child: SizedBox(
+            width: widget.size.width,
+            height: widget.size.height,
+            child: _bytes != null
+                ? Image.memory(_bytes!, fit: BoxFit.cover, gaplessPlayback: true)
+                : _Placeholder(
+                    size: widget.size,
+                    borderRadius: radius,
+                  ),
+          ),
+        );
+      },
     );
   }
 }
 
 class _Placeholder extends StatelessWidget {
-  const _Placeholder({required this.size});
+  const _Placeholder({required this.size, required this.borderRadius});
   final Size size;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +108,7 @@ class _Placeholder extends StatelessWidget {
       height: size.height,
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: const Icon(Icons.music_note, color: Colors.white54),
     );

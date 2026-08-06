@@ -30,8 +30,7 @@ class SongTile extends StatelessWidget {
         if (prev.currentItem?.path != curr.currentItem?.path) return true;
         final isCurrent = curr.currentItem?.path == tune.path;
         if (!isCurrent) return false;
-        return prev.position != curr.position ||
-            prev.duration != curr.duration;
+        return prev.position != curr.position || prev.duration != curr.duration;
       },
       builder: (context, state) {
         final isCurrent = state.currentItem?.path == tune.path;
@@ -76,6 +75,7 @@ class SongTile extends StatelessWidget {
                   leading: AlbumArt(
                     artUri: tune.artUri,
                     size: Size(46, 46),
+                    borderRadius: isCurrent ? 2 : 16,
                   ),
                   title: Text(
                     tune.title.toTitleCase(),

@@ -86,19 +86,21 @@ class _PlayerGradientBackgroundState extends State<PlayerGradientBackground>
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final surface = Theme.of(context).colorScheme.surface;
 
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: const [0.0, 0.22, 0.50, 0.78, 1.0],
-                colors: [
-                  blended.withAlpha(isDark ? 120 : 80),
-                  blended.withAlpha(isDark ? 70 : 45),
-                  blended.withAlpha(isDark ? 35 : 20),
-                  surface.withAlpha(isDark ? 8 : 6),
-                  surface,
-                ],
+          return Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0.0, 0.22, 0.50, 0.78, 1.0],
+                  colors: [
+                    blended.withAlpha(isDark ? 120 : 80),
+                    blended.withAlpha(isDark ? 70 : 45),
+                    blended.withAlpha(isDark ? 33 : 20),
+                    surface.withAlpha(isDark ? 40 : 6),
+                    surface,
+                  ],
+                ),
               ),
             ),
           );

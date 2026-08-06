@@ -16,35 +16,42 @@ class PlayerAlbumArt extends StatelessWidget {
         final tune = state.currentItem;
         final playScale = state.isPlaying ? 1.0 : 300 / 320;
 
-        return SizedBox(
-          height: 320,
-          child: Align(
-            child: AnimatedScale(
-              scale: playScale,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 350),
-                switchInCurve: Curves.easeOut,
-                switchOutCurve: Curves.easeIn,
-                transitionBuilder: (child, animation) {
-                  final scale = Tween<double>(
-                    begin: 0.85,
-                    end: 1.0,
-                  ).animate(animation);
-                  return FadeTransition(
-                    opacity: animation,
-                    child: ScaleTransition(scale: scale, child: child),
-                  );
-                },
-                child: AlbumArt(
-                  key: ValueKey(tune?.songId),
-                  artUri: tune?.artUri,
-                  size: const Size(320, 320),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final availableHeight = constraints.maxHeight.isFinite
+                ? constraints.maxHeight
+                : 320.0;
+            final artSize = availableHeight.clamp(160.0, 320.0);
+
+            return Align(
+              child: AnimatedScale(
+                scale: playScale,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 350),
+                  switchInCurve: Curves.easeOut,
+                  switchOutCurve: Curves.easeIn,
+                  transitionBuilder: (child, animation) {
+                    final scale = Tween<double>(
+                      begin: 0.85,
+                      end: 1.0,
+                    ).animate(animation);
+                    return FadeTransition(
+                      opacity: animation,
+                      child: ScaleTransition(scale: scale, child: child),
+                    );
+                  },
+                  child: AlbumArt(
+                    key: ValueKey(tune?.songId),
+                    artUri: tune?.artUri,
+                    size: Size(artSize, artSize),
+                    borderRadius: state.isPlaying ? 16 : 2,
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

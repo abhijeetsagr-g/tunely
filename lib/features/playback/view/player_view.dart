@@ -19,12 +19,12 @@ class PlayerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final isWide = size.width > 600;
+    final isWide = size.width > 600 && size.height > 600;
 
     return Scaffold(
       body: Stack(
         children: [
-          const PlayerGradientBackground(),
+          Positioned.fill(child: const PlayerGradientBackground()),
           SafeArea(
             child: Center(
               child: ConstrainedBox(
@@ -69,7 +69,7 @@ class PlayerView extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: size.height * 0.06),
+                      SizedBox(height: size.height * 0.05),
                     ],
                   ),
                 ),
