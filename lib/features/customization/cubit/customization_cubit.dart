@@ -19,4 +19,9 @@ class CustomizationCubit extends Cubit<CustomizationState> {
     int? songId, {
     Brightness brightness = Brightness.dark,
   }) => _colorCustomizer.extractColors(songId, brightness: brightness);
+
+  Future<Color?> extractAlbumColor(
+    int? albumId, {
+    Brightness brightness = Brightness.dark,
+  }) => _colorCustomizer.extractAlbumColor(albumId, brightness: brightness);
 }

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
+import 'package:tunely/core/utlis/animated_gradient_background.dart';
 import 'package:tunely/core/utlis/total_song_dur.dart';
+import 'package:tunely/features/customization/cubit/customization_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/ui/view/album/widgets/artist_album_list.dart';
 import 'package:tunely/shared/widget/album_art.dart';
@@ -19,6 +21,26 @@ class AlbumView extends StatefulWidget {
 
 class _AlbumViewState extends State<AlbumView> {
   bool _artistsExpanded = true;
+  bool _bgExtracted = false;
+  Color? _bgColor;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_bgExtracted) return;
+    _bgExtracted = true;
+    _extractBackground();
+  }
+
+  Future<void> _extractBackground() async {
+    final brightness = Theme.of(context).brightness;
+    final color = await context.read<CustomizationCubit>().extractAlbumColor(
+      widget.album.id,
+      brightness: brightness,
+    );
+    if (color == null || !mounted) return;
+    setState(() => _bgColor = color);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,98 +53,107 @@ class _AlbumViewState extends State<AlbumView> {
     final albumArtists = cubit.getArtistsFromTunes(tunes);
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            floating: true,
-            pinned: false,
-            centerTitle: true,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.keyboard_arrow_down),
-            ),
-          ),
+      body: Stack(
+        children: [
+          AnimatedGradientBackground(color: _bgColor),
+          CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                floating: true,
+                pinned: false,
+                centerTitle: true,
+                backgroundColor: Colors.transparent,
+                surfaceTintColor: Colors.transparent,
+                leading: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                ),
+              ),
 
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AlbumArt(
-                    artUri: Uri.parse("content://media/external/audio/albumart/${widget.album.id}"),
-                    size: Size(150, 150),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AlbumArt(
+                        artUri: Uri.parse(
+                          "content://media/external/audio/albumart/${widget.album.id}",
+                        ),
+                        size: Size(150, 150),
+                      ),
+
+                      const SizedBox(width: 20),
+
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 2,
+                          children: [
+                            Text(
+                              widget.album.album.toTitleCase(),
+                              style: Theme.of(context).textTheme.headlineMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: -0.5,
+                                    fontSize: 20,
+                                  ),
+                            ),
+                            Text(
+                              widget.album.artist?.toTitleCase() ??
+                                  "Unknown Artist",
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                            Text(
+                              "${totalTunesDurations(totalDuration)} | ${widget.album.numOfSongs} Tunes",
+                              style: Theme.of(context).textTheme.labelSmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+              ),
 
-                  const SizedBox(width: 20),
+              const SliverToBoxAdapter(child: SizedBox(height: 10)),
+              SongActionRowSliver(tunes: tunes),
+              TuneSliverList(tunes: tunes),
+              const SliverToBoxAdapter(child: SizedBox(height: 10)),
 
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 2,
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+                  child: InkWell(
+                    onTap: () =>
+                        setState(() => _artistsExpanded = !_artistsExpanded),
+                    child: Row(
                       children: [
-                        Text(
-                          widget.album.album.toTitleCase(),
-                          style: Theme.of(context).textTheme.headlineMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: -0.5,
-                                fontSize: 20,
-                              ),
+                        Expanded(
+                          child: Text(
+                            "Artists in this Album",
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        Text(
-                          widget.album.artist?.toTitleCase() ??
-                              "Unknown Artist",
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                        Text(
-                          "${totalTunesDurations(totalDuration)} | ${widget.album.numOfSongs} Tunes",
-                          style: Theme.of(context).textTheme.labelSmall,
+                        Icon(
+                          _artistsExpanded
+                              ? Icons.keyboard_arrow_up
+                              : Icons.keyboard_arrow_down,
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
-
-          const SliverToBoxAdapter(child: SizedBox(height: 10)),
-          SongActionRowSliver(tunes: tunes),
-          TuneSliverList(tunes: tunes),
-          const SliverToBoxAdapter(child: SizedBox(height: 10)),
-
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-              child: InkWell(
-                onTap: () =>
-                    setState(() => _artistsExpanded = !_artistsExpanded),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Artists in this Album",
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Icon(
-                      _artistsExpanded
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down,
-                    ),
-                  ],
                 ),
               ),
-            ),
-          ),
 
-          if (_artistsExpanded) ArtistAlbumListSliver(artists: albumArtists),
+              if (_artistsExpanded)
+                ArtistAlbumListSliver(artists: albumArtists),
 
-          SliverToBoxAdapter(
-            child: SizedBox(height: _artistsExpanded ? 16 : 96),
+              SliverToBoxAdapter(
+                child: SizedBox(height: _artistsExpanded ? 16 : 96),
+              ),
+            ],
           ),
         ],
       ),

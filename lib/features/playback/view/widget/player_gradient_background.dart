@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/utlis/animated_gradient_background.dart';
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 
@@ -11,44 +12,19 @@ class PlayerGradientBackground extends StatefulWidget {
       _PlayerGradientBackgroundState();
 }
 
-class _PlayerGradientBackgroundState extends State<PlayerGradientBackground>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animController;
-  late Animation<double> _animation;
-
-  // animates from prev to new
-  Color _currentColor = Colors.transparent;
-  Color _previousColor = Colors.transparent;
-  int? _lastSongId; // graud it up
+class _PlayerGradientBackgroundState extends State<PlayerGradientBackground> {
+  Color? _color;
+  int? _lastSongId; // guard it up
 
   @override
   void initState() {
     super.initState();
-    _animController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-    _animation = CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeInOutCubic, // smoother curve
-    );
-
-    // Seed with surface color so there's no transparent flash on first frame
+    // Trigger color extraction immediately if a song is already playing
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final surface = Theme.of(context).colorScheme.surface;
-      _previousColor = surface;
-      _currentColor = surface;
-
-      // Trigger color extraction immediately if a song is already playing
+      if (!mounted) return;
       final songId = context.read<PlaybackBloc>().state.currentItem?.songId;
       _updateColor(songId);
     });
-  }
-
-  @override
-  void dispose() {
-    _animController.dispose();
-    super.dispose();
   }
 
   Future<void> _updateColor(int? songId) async {
@@ -62,12 +38,7 @@ class _PlayerGradientBackgroundState extends State<PlayerGradientBackground>
     );
 
     if (color == null || !mounted) return;
-
-    _previousColor =
-        Color.lerp(_previousColor, _currentColor, _animation.value) ??
-        _currentColor;
-    _currentColor = color;
-    _animController.forward(from: 0);
+    setState(() => _color = color);
   }
 
   @override
@@ -76,36 +47,7 @@ class _PlayerGradientBackgroundState extends State<PlayerGradientBackground>
       listenWhen: (prev, curr) =>
           prev.currentItem?.songId != curr.currentItem?.songId,
       listener: (context, state) => _updateColor(state.currentItem?.songId),
-      child: AnimatedBuilder(
-        animation: _animation,
-        builder: (context, _) {
-          final blended =
-              Color.lerp(_previousColor, _currentColor, _animation.value) ??
-              _currentColor;
-
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final surface = Theme.of(context).colorScheme.surface;
-
-          return Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: const [0.0, 0.22, 0.50, 0.78, 1.0],
-                  colors: [
-                    blended.withAlpha(isDark ? 120 : 80),
-                    blended.withAlpha(isDark ? 70 : 45),
-                    blended.withAlpha(isDark ? 33 : 20),
-                    surface.withAlpha(isDark ? 40 : 6),
-                    surface,
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+      child: AnimatedGradientBackground(color: _color),
     );
   }
 }
