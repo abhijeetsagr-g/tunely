@@ -5,6 +5,7 @@ import 'package:tunely/core/utlis/settings_arguments.dart';
 import 'package:tunely/features/library/ui/view/album/album_view.dart';
 import 'package:tunely/features/library/ui/view/artist/artist_view.dart';
 import 'package:tunely/features/lyrics/view/lyrics_view.dart';
+import 'package:tunely/features/onboarding/view/onboarding_view.dart';
 import 'package:tunely/features/playback/view/player_view.dart';
 import 'package:tunely/features/playback/view/queue/queue_view.dart';
 import 'package:tunely/features/playlist/view/playlist_view.dart';
@@ -28,6 +29,13 @@ class AppRouter {
         return AppPageRoute(
           settings: settings,
           builder: (context) => SettingsScreen(),
+        );
+
+      case AppRoute.onboarding:
+        return AppPageRoute(
+          settings: settings,
+          transition: RouteTransition.fade,
+          builder: (_) => const OnboardingView(),
         );
 
       case AppRoute.root:

@@ -22,6 +22,7 @@ import 'package:tunely/features/lyrics/service/lyrics_service.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
 import 'package:tunely/features/music_management/model/management_settings.dart';
 import 'package:tunely/features/music_management/repository/management_repository.dart';
+import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
 import 'package:tunely/features/root/cubit/root_cubit.dart';
@@ -98,6 +99,9 @@ void main() async {
   // setup artist service
   final artistService = ArtistService();
 
+  // setup onboarding
+  final onboardingRepo = await OnboardingRepository.create();
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -122,6 +126,7 @@ void main() async {
           create: (context) => CustomizationCubit(customizationService),
         ),
         RepositoryProvider.value(value: artistService),
+        RepositoryProvider.value(value: onboardingRepo),
       ],
       child: MyApp(),
     ),

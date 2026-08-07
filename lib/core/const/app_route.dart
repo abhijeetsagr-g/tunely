@@ -1,5 +1,6 @@
 class AppRoute {
   static const splash = 'splash';
+  static const onboarding = 'onboarding';
   static const root = 'root';
   static const player = 'player';
   static const album = 'album';

@@ -16,6 +16,10 @@ class LibraryCubit extends Cubit<LibraryState> {
     : _service = service,
       super(LibraryInitial());
 
+  Future<bool> hasPermission() => _service.hasPermission();
+
+  Future<bool> requestPermission() => _service.requestPermission();
+
   Future<void> initialLoad() async {
     emit(LibraryLoading());
     try {

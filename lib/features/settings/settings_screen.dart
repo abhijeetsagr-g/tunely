@@ -4,7 +4,7 @@ import 'package:tunely/features/settings/widgets/artist_delimiter_widget.dart';
 import 'package:tunely/features/settings/widgets/cache_rescan_buttons.dart';
 import 'package:tunely/features/settings/widgets/daily_mix_size_slider.dart';
 import 'package:tunely/features/settings/widgets/min_song_dur_slider.dart';
-import 'package:tunely/features/settings/widgets/theme_picker.dart';
+import 'package:tunely/shared/widget/theme_picker.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -18,7 +18,12 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: CustomScrollView(
         slivers: [
-          const ThemePickerWidget(),
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ThemePicker(),
+            ),
+          ),
 
           const SliverToBoxAdapter(child: SizedBox(height: 40)),
 

@@ -17,6 +17,10 @@ class LibraryService {
 
   LibraryService(this._audioQuery, this._managementRepo, this._libraryRepo);
 
+  Future<bool> hasPermission() => _audioQuery.permissionsStatus();
+
+  Future<bool> requestPermission() => _audioQuery.checkAndRequest();
+
   Future<LibraryScanResult?> scan() async {
     final permission = await _audioQuery.checkAndRequest();
     if (!permission) return null;
