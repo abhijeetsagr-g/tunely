@@ -27,6 +27,10 @@ class SongTile extends StatelessWidget {
 
     return BlocBuilder<PlaybackBloc, PlaybackState>(
       buildWhen: (prev, curr) {
+        if (prev.missingPaths.contains(tune.path) !=
+            curr.missingPaths.contains(tune.path)) {
+          return true;
+        }
         if (prev.currentItem?.path != curr.currentItem?.path) return true;
         final isCurrent = curr.currentItem?.path == tune.path;
         if (!isCurrent) return false;
@@ -34,6 +38,7 @@ class SongTile extends StatelessWidget {
       },
       builder: (context, state) {
         final isCurrent = state.currentItem?.path == tune.path;
+        final missing = state.missingPaths.contains(tune.path);
 
         final progress =
             isCurrent &&
@@ -47,7 +52,7 @@ class SongTile extends StatelessWidget {
           key: ValueKey(tunes[index].path),
           direction: DismissDirection.startToEnd,
           confirmDismiss: (direction) async {
-            if (direction == DismissDirection.startToEnd) {
+            if (direction == DismissDirection.startToEnd && !missing) {
               playback.add(PlayAfterThisEvent(tune));
             }
             return false;
@@ -63,6 +68,7 @@ class SongTile extends StatelessWidget {
           ),
           child: InkWell(
             onTap: () {
+              if (missing) return;
               onTap?.call();
               playback.add(PlayQueueEvent(tunes, startIndex: index));
             },
@@ -90,10 +96,14 @@ class SongTile extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    leading: AlbumArt(
-                      artUri: tune.artUri,
-                      size: Size(46, 46),
-                      borderRadius: isCurrent ? 2 : 16,
+                    enabled: !missing,
+                    leading: Opacity(
+                      opacity: missing ? 0.35 : 1,
+                      child: AlbumArt(
+                        artUri: tune.artUri,
+                        size: Size(46, 46),
+                        borderRadius: isCurrent ? 2 : 16,
+                      ),
                     ),
                     title: Text(
                       tune.title.toTitleCase(),
@@ -101,7 +111,9 @@ class SongTile extends StatelessWidget {
                       maxLines: 1,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: isCurrent
+                        color: missing
+                            ? Colors.grey
+                            : isCurrent
                             ? Theme.of(context).colorScheme.primary
                             : null,
                       ),

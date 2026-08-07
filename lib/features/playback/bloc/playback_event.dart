@@ -151,3 +151,8 @@ class _SequenceStateUpdatedEvent extends PlaybackEvent {
     required this.repeatMode,
   });
 }
+
+class _SongUnavailableEvent extends PlaybackEvent {
+  final Tune tune;
+  const _SongUnavailableEvent(this.tune);
+}

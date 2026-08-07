@@ -52,6 +52,8 @@ class LibraryService {
   List<Tune> getTunesByAlbum(int albumId) =>
       _libraryRepo.getTunesByAlbum(albumId);
 
+  void removeTune(String path) => _libraryRepo.removeTune(path);
+
   Future<List<Tune>> generateDailyMix(List<Tune> tunes) async {
     _dailyMixRefreshCount = 0;
     final todaySeed = DateTime.now().millisecondsSinceEpoch ~/ 86400000;
@@ -82,9 +84,9 @@ class LibraryService {
     final settings = _managementRepo.get();
     final seed = todaySeed + _dailyMixRefreshCount;
     final random = Random(seed);
-    final mix = ([...tunes]..shuffle(random))
-        .take(settings.dailyMixSize)
-        .toList();
+    final mix = ([
+      ...tunes,
+    ]..shuffle(random)).take(settings.dailyMixSize).toList();
     await _saveDailyMix(mix, todaySeed);
     return mix;
   }

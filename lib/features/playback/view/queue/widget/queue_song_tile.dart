@@ -17,11 +17,13 @@ class QueueSongTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final playback = context.read<PlaybackBloc>();
+    final missing = playback.state.missingPaths.contains(tune.path);
 
     return Dismissible(
       key: ValueKey(tune.path),
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
+          if (missing) return false;
           playback.add(
             ChangeQueueOrder(
               oldIndex: index,
@@ -30,7 +32,7 @@ class QueueSongTile extends StatelessWidget {
           );
           return false;
         }
-        return true;
+        return !missing;
       },
       direction: DismissDirection.horizontal,
       onDismissed: (_) {
@@ -58,17 +60,23 @@ class QueueSongTile extends StatelessWidget {
 
       child: InkWell(
         onTap: () {
+          if (missing) return;
           context.read<PlaybackBloc>().add(SkipToQueueItemEvent(index));
         },
         child: ListTile(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          leading: AlbumArt(artUri: tune.artUri, size: const Size(46, 46)),
+          enabled: !missing,
+          leading: Opacity(
+            opacity: missing ? 0.35 : 1,
+            child: AlbumArt(artUri: tune.artUri, size: const Size(46, 46)),
+          ),
           title: Text(
             tune.title.toTitleCase(),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
             style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
+              color: missing ? Colors.grey : null,
             ),
           ),
           subtitle: Text(

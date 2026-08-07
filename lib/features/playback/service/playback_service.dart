@@ -29,11 +29,20 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   bool _shuffleEnabled = false;
   List<int> _shuffleIndices = [];
 
+  // Missing-song tracking
+  final Set<String> _failedPaths = {};
+  int? _pendingFailedIndex;
+  Tune? _pendingFailedTune;
+
   // Custom stream for bloc (replaces just_audio's sequenceStateStream)
   final _customSequenceController =
       StreamController<CustomSequenceState>.broadcast();
   Stream<CustomSequenceState> get customSequenceStream =>
       _customSequenceController.stream;
+
+  // Emits the Tune whenever a queued song can no longer be loaded/played
+  final _unavailableController = StreamController<Tune>.broadcast();
+  Stream<Tune> get onSongUnavailable => _unavailableController.stream;
 
   PlaybackService() {
     _init();
@@ -46,6 +55,8 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
         _player.pause();
       }
     });
+
+    _player.errorStream.listen((error) => _handleLoadError(error));
 
     _player.playbackEventStream
         .map(_transformEvent)
@@ -102,6 +113,112 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     );
   }
 
+  // Handles a source that could not be loaded/played (file deleted, unmounted
+  // storage, ...). Reported either by the player's error stream or thrown from
+  // a play/load call. Removes the song from the queue, notifies the bloc, and
+  // advances to the next track.
+  void _handleLoadError(PlayerException error, {Tune? fallbackTune}) {
+    final sequence = _player.sequenceState.sequence;
+
+    Tune? failed;
+    if (fallbackTune != null) {
+      failed = fallbackTune;
+      _pendingFailedIndex = error.index;
+      _pendingFailedTune = fallbackTune;
+    } else if (_pendingFailedTune != null &&
+        error.index == _pendingFailedIndex) {
+      // Same failure redelivered (thrown future + error stream). The error
+      // index is stale now that the source was removed, so reuse the tune the
+      // first delivery identified.
+      failed = _pendingFailedTune;
+      _pendingFailedIndex = null;
+      _pendingFailedTune = null;
+    } else {
+      _pendingFailedIndex = null;
+      _pendingFailedTune = null;
+      final index = error.index;
+      if (index == null || index < 0 || index >= sequence.length) return;
+      final tag = sequence[index].tag;
+      if (tag is! Tune) return;
+      failed = tag;
+    }
+
+    if (failed == null) return;
+    if (!_failedPaths.add(failed.path)) return;
+
+    final physicalIndex = sequence.indexWhere((s) => s.tag == failed);
+    if (physicalIndex == -1) {
+      _failedPaths.remove(failed.path);
+      return;
+    }
+    _handleFailedTune(failed, physicalIndex);
+  }
+
+  Future<void> _handleFailedTune(Tune tune, int physicalIndex) async {
+    _unavailableController.add(tune);
+
+    final effectiveIndex = _shuffleEnabled
+        ? _shuffleIndices.indexOf(physicalIndex)
+        : physicalIndex;
+
+    if (_shuffleEnabled && effectiveIndex != -1) {
+      _shuffleIndices.removeAt(effectiveIndex);
+      for (int i = 0; i < _shuffleIndices.length; i++) {
+        if (_shuffleIndices[i] > physicalIndex) _shuffleIndices[i]--;
+      }
+    }
+
+    try {
+      await _player.removeAudioSourceAt(physicalIndex);
+    } catch (e) {
+      debugPrint('Failed to remove missing song from queue: $e');
+    }
+
+    await _advanceAfterFailure(physicalIndex, effectiveIndex);
+  }
+
+  Future<void> _advanceAfterFailure(
+    int failedPhysicalIndex,
+    int effectiveIndex,
+  ) async {
+    final sequence = _player.sequenceState.sequence;
+
+    if (_shuffleEnabled) {
+      if (_shuffleIndices.isEmpty) {
+        await _player.stop();
+        return;
+      }
+      int nextPhysical;
+      if (effectiveIndex >= 0 && effectiveIndex < _shuffleIndices.length) {
+        nextPhysical = _shuffleIndices[effectiveIndex];
+      } else if (_player.loopMode == LoopMode.all) {
+        nextPhysical = _shuffleIndices.first;
+      } else {
+        await _player.seek(Duration.zero);
+        await _player.pause();
+        return;
+      }
+      await _player.seek(Duration.zero, index: nextPhysical);
+    } else {
+      if (failedPhysicalIndex < sequence.length) {
+        await _player.seek(Duration.zero, index: failedPhysicalIndex);
+      } else if (_player.loopMode == LoopMode.all) {
+        await _player.seek(Duration.zero, index: 0);
+      } else {
+        await _player.seek(Duration.zero);
+        await _player.pause();
+        return;
+      }
+    }
+
+    _emitCustomSequence();
+    unawaited(
+      _player.play().catchError((Object e) {
+        debugPrint('Failed to resume after skipping missing song: $e');
+      }),
+    );
+  }
+
   PlaybackState _transformEvent(PlaybackEvent _) {
     return PlaybackState(
       controls: [
@@ -149,34 +266,53 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }) async {
     _lastEmittedIndex = null;
     _isSwappingQueue = true;
+    _failedPaths.clear();
+    _pendingFailedIndex = null;
+    _pendingFailedTune = null;
 
     final playlist = tunes
         .map((t) => AudioSource.uri(Uri.parse(t.path), tag: t))
         .toList();
 
-    await _player.setAudioSources(
-      playlist,
-      preload: true,
-      initialIndex: startIndex,
-      initialPosition: Duration.zero,
-    );
+    try {
+      await _player.setAudioSources(
+        playlist,
+        preload: true,
+        initialIndex: startIndex,
+        initialPosition: Duration.zero,
+      );
 
-    _shuffleIndices = List.generate(playlist.length, (i) => i);
-    if (_shuffleEnabled && _shuffleIndices.length > 1) {
-      final current = _shuffleIndices.removeAt(startIndex);
-      _shuffleIndices.shuffle(Random());
-      _shuffleIndices.insert(0, current);
+      _shuffleIndices = List.generate(playlist.length, (i) => i);
+      if (_shuffleEnabled && _shuffleIndices.length > 1) {
+        final current = _shuffleIndices.removeAt(startIndex);
+        _shuffleIndices.shuffle(Random());
+        _shuffleIndices.insert(0, current);
+      }
+
+      _isSwappingQueue = false;
+      if (autoPlay) await _player.play();
+    } on PlayerException catch (e) {
+      _isSwappingQueue = false;
+      _handleLoadError(
+        e,
+        fallbackTune: startIndex < tunes.length ? tunes[startIndex] : null,
+      );
+      return;
     }
-
-    _isSwappingQueue = false;
-    if (autoPlay) await _player.play();
 
     _emitCustomSequence();
   }
 
   // Basic Controls
   @override
-  Future<void> play() => _player.play();
+  Future<void> play() async {
+    try {
+      await _player.play();
+    } on PlayerException catch (e) {
+      _handleLoadError(e);
+    }
+  }
+
   @override
   Future<void> pause() => _player.pause();
   @override
@@ -255,6 +391,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   Future<void> addToQueue(Tune tune) async {
     final newIndex = _player.sequenceState.sequence.length;
+    _failedPaths.remove(tune.path);
     if (_shuffleEnabled) {
       _shuffleIndices.add(newIndex);
       final pos = Random().nextInt(_shuffleIndices.length);
@@ -270,6 +407,9 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   Future<void> addManyToQueue(List<Tune> tunes) async {
     final start = _player.sequenceState.sequence.length;
+    for (final t in tunes) {
+      _failedPaths.remove(t.path);
+    }
     for (int i = 0; i < tunes.length; i++) {
       if (_shuffleEnabled) {
         _shuffleIndices.add(start + i);
@@ -306,6 +446,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   Future<void> playAfterThis(Tune tune) async {
+    _failedPaths.remove(tune.path);
     if (_shuffleEnabled) {
       final ci = _player.currentIndex;
       if (ci == null) return;
@@ -371,6 +512,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   Future<void> onTaskRemoved() async {
     await _player.dispose();
     await _customSequenceController.close();
+    await _unavailableController.close();
     return super.onTaskRemoved();
   }
 

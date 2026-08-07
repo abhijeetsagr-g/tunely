@@ -41,6 +41,21 @@ class LibraryCubit extends Cubit<LibraryState> {
 
   Future<void> rescan() => initialLoad();
 
+  void removeMissingSong(String path) {
+    final s = state;
+    if (s is! LibraryLoaded) return;
+    final updatedTunes = s.tunes.where((t) => t.path != path).toList();
+    if (updatedTunes.length == s.tunes.length) return;
+    _service.removeTune(path);
+    emit(
+      s.copyWith(
+        tunes: updatedTunes,
+        artists: Artist.fromTunes(updatedTunes),
+        dailyMix: s.dailyMix.where((t) => t.path != path).toList(),
+      ),
+    );
+  }
+
   Future<void> reloadDailyMix() async {
     final s = state;
     if (s is! LibraryLoaded) return;
@@ -65,10 +80,9 @@ class LibraryCubit extends Cubit<LibraryState> {
             (songCountPerAlbum[t.albumId!] ?? 0) + 1;
       }
     }
-    final pool = albums
-        .where((a) => (songCountPerAlbum[a.id] ?? 0) > 1)
-        .toList()
-      ..shuffle();
+    final pool =
+        albums.where((a) => (songCountPerAlbum[a.id] ?? 0) > 1).toList()
+          ..shuffle();
     return pool.take(_recommendedCount).toList();
   }
 

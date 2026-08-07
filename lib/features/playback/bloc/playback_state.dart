@@ -14,6 +14,7 @@ class PlaybackState {
   final int? currentIndex;
   final bool shuffleEnabled;
   final LoopMode repeatMode;
+  final Set<String> missingPaths;
 
   const PlaybackState({
     this.isPlaying = false,
@@ -27,6 +28,7 @@ class PlaybackState {
     this.currentIndex,
     this.shuffleEnabled = false,
     this.repeatMode = LoopMode.off,
+    this.missingPaths = const {},
   });
 
   PlaybackState copyWith({
@@ -41,6 +43,7 @@ class PlaybackState {
     int? currentIndex,
     bool? shuffleEnabled,
     LoopMode? repeatMode,
+    Set<String>? missingPaths,
   }) {
     return PlaybackState(
       isPlaying: isPlaying ?? this.isPlaying,
@@ -54,6 +57,7 @@ class PlaybackState {
       currentIndex: currentIndex ?? this.currentIndex,
       shuffleEnabled: shuffleEnabled ?? this.shuffleEnabled,
       repeatMode: repeatMode ?? this.repeatMode,
+      missingPaths: missingPaths ?? this.missingPaths,
     );
   }
 }

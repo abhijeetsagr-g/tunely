@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/const/app_router.dart';
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
+import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
@@ -17,6 +19,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  Set<String> _syncedMissingPaths = const {};
+
   @override
   void initState() {
     super.initState();
@@ -75,6 +79,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           },
         ),
 
+        // Sync songs that failed to load with the library so they disappear
+        BlocListener<PlaybackBloc, PlaybackState>(
+          listenWhen: (prev, curr) =>
+              !setEquals(prev.missingPaths, curr.missingPaths),
+          listener: (context, state) {
+            final library = context.read<LibraryCubit>();
+            for (final path in state.missingPaths) {
+              if (_syncedMissingPaths.contains(path)) continue;
+              library.removeMissingSong(path);
+            }
+            _syncedMissingPaths = state.missingPaths;
+          },
+        ),
       ],
 
       child: MaterialApp(

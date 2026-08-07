@@ -46,6 +46,10 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           ),
         );
       }),
+
+      _service.onSongUnavailable.listen(
+        (tune) => add(_SongUnavailableEvent(tune)),
+      ),
     ]);
 
     // Internal stream update handlers
@@ -77,6 +81,15 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       (event, emit) =>
           emit(state.copyWith(bufferedPosition: event.bufferedPosition)),
     );
+
+    on<_SongUnavailableEvent>((event, emit) {
+      emit(
+        state.copyWith(
+          queue: state.queue.where((t) => t.path != event.tune.path).toList(),
+          missingPaths: {...state.missingPaths, event.tune.path},
+        ),
+      );
+    });
 
     // Playback control handlers
     on<PlayQueueEvent>((event, emit) async {

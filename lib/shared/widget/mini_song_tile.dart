@@ -24,12 +24,16 @@ class MiniSongTile extends StatelessWidget {
 
     return BlocBuilder<PlaybackBloc, PlaybackState>(
       buildWhen: (prev, curr) =>
-          prev.currentItem?.path != curr.currentItem?.path,
+          prev.currentItem?.path != curr.currentItem?.path ||
+          prev.missingPaths.contains(tune.path) !=
+              curr.missingPaths.contains(tune.path),
       builder: (context, state) {
         final isCurrent = state.currentItem?.path == tune.path;
+        final missing = state.missingPaths.contains(tune.path);
 
         return InkWell(
           onTap: () {
+            if (missing) return;
             onTap?.call();
             playback.add(PlayQueueEvent(tunes, startIndex: index));
           },
@@ -37,18 +41,27 @@ class MiniSongTile extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: isCurrent
+              color: missing
+                  ? Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest.withAlpha(40)
+                  : isCurrent
                   ? Theme.of(context).colorScheme.primaryContainer.withAlpha(60)
-                  : Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(40),
+                  : Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerHighest.withAlpha(40),
             ),
             padding: const EdgeInsets.all(8),
             child: Row(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: AlbumArt(
-                    artUri: tune.artUri,
-                    size: const Size(40, 40),
+                Opacity(
+                  opacity: missing ? 0.35 : 1,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: AlbumArt(
+                      artUri: tune.artUri,
+                      size: const Size(40, 40),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -63,7 +76,9 @@ class MiniSongTile extends StatelessWidget {
                         maxLines: 1,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: isCurrent
+                          color: missing
+                              ? Colors.grey
+                              : isCurrent
                               ? Theme.of(context).colorScheme.primary
                               : null,
                         ),
@@ -72,9 +87,9 @@ class MiniSongTile extends StatelessWidget {
                         tune.artists.join(" • "),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Colors.grey,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelSmall?.copyWith(color: Colors.grey),
                       ),
                     ],
                   ),
