@@ -43,66 +43,88 @@ class SongTile extends StatelessWidget {
                   .clamp(0.0, 1.0)
             : 0.0;
 
-        return InkWell(
-          onTap: () {
-            onTap?.call();
-            playback.add(PlayQueueEvent(tunes, startIndex: index));
+        return Dismissible(
+          key: ValueKey(tunes[index].path),
+          direction: DismissDirection.startToEnd,
+          confirmDismiss: (direction) async {
+            if (direction == DismissDirection.startToEnd) {
+              playback.add(PlayAfterThisEvent(tune));
+            }
+            return false;
           },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Stack(
-              children: [
-                // Progress fill
-                if (isCurrent)
-                  Positioned.fill(
-                    child: FractionallySizedBox(
-                      alignment: Alignment.centerLeft,
-                      widthFactor: progress,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.primary.withValues(alpha: 0.12),
+          background: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.only(left: 20),
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: Icon(
+              Icons.skip_next,
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
+          ),
+          child: InkWell(
+            onTap: () {
+              onTap?.call();
+              playback.add(PlayQueueEvent(tunes, startIndex: index));
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Stack(
+                children: [
+                  // Progress fill
+                  if (isCurrent)
+                    Positioned.fill(
+                      child: FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: progress,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.12),
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                ListTile(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  leading: AlbumArt(
-                    artUri: tune.artUri,
-                    size: Size(46, 46),
-                    borderRadius: isCurrent ? 2 : 16,
-                  ),
-                  title: Text(
-                    tune.title.toTitleCase(),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: isCurrent
-                          ? Theme.of(context).colorScheme.primary
-                          : null,
+                  ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ),
-                  subtitle: Text(
-                    tune.artists.join(" • "),
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.labelLarge?.copyWith(color: Colors.grey),
-                  ),
-                  trailing:
-                      trailing ??
-                      IconButton(
-                        icon: const Icon(Icons.more_horiz, color: Colors.grey),
-                        onPressed: () => showSongTileSheet(context, tune),
+                    leading: AlbumArt(
+                      artUri: tune.artUri,
+                      size: Size(46, 46),
+                      borderRadius: isCurrent ? 2 : 16,
+                    ),
+                    title: Text(
+                      tune.title.toTitleCase(),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: isCurrent
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
                       ),
-                ),
-              ],
+                    ),
+                    subtitle: Text(
+                      tune.artists.join(" • "),
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelLarge?.copyWith(color: Colors.grey),
+                    ),
+                    trailing:
+                        trailing ??
+                        IconButton(
+                          icon: const Icon(
+                            Icons.more_horiz,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () => showSongTileSheet(context, tune),
+                        ),
+                  ),
+                ],
+              ),
             ),
           ),
         );

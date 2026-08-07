@@ -62,10 +62,7 @@ class QueueSongTile extends StatelessWidget {
         },
         child: ListTile(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          leading: AlbumArt(
-            artUri: tune.artUri,
-            size: const Size(46, 46),
-          ),
+          leading: AlbumArt(artUri: tune.artUri, size: const Size(46, 46)),
           title: Text(
             tune.title.toTitleCase(),
             overflow: TextOverflow.ellipsis,

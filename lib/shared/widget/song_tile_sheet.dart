@@ -24,11 +24,6 @@ class _SongTileSheet extends StatelessWidget {
   const _SongTileSheet({required this.tune});
   final Tune tune;
 
-  void _playSong(BuildContext context) {
-    context.read<PlaybackBloc>().add(PlayQueueEvent([tune], startIndex: 0));
-    Navigator.pop(context);
-  }
-
   void _playNext(BuildContext context) {
     context.read<PlaybackBloc>().add(PlayAfterThisEvent(tune));
     Navigator.pop(context);
@@ -61,24 +56,31 @@ class _SongTileSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: colors.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(40),
+            blurRadius: 40,
+            offset: const Offset(0, -8),
+          ),
+        ],
       ),
       padding: EdgeInsets.only(
-        bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
+        bottom: MediaQuery.viewInsetsOf(context).bottom + 20,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Drag handle
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.only(top: 12, bottom: 8),
             child: Center(
               child: Container(
-                width: 36,
+                width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: colors.onSurface.withAlpha(40),
-                  borderRadius: BorderRadius.circular(2),
+                  color: colors.onSurfaceVariant.withAlpha(70),
+                  borderRadius: BorderRadius.circular(4),
                 ),
               ),
             ),
@@ -86,35 +88,49 @@ class _SongTileSheet extends StatelessWidget {
 
           // Song header
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 52,
-                  height: 52,
+                  width: 108,
+                  height: 108,
+                  clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
                     color: colors.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colors.shadow.withAlpha(60),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
                   ),
-                  child: AlbumArt(size: Size(52, 52)),
+                  child: AlbumArt(
+                    artUri: tune.artUri,
+                    size: const Size(108, 108),
+                  ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 18),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         tune.title,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.2,
                         ),
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 4),
                       Text(
                         tune.artist,
-                        style: theme.textTheme.bodySmall?.copyWith(
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           color: colors.onSurfaceVariant,
                         ),
                         maxLines: 1,
@@ -127,53 +143,44 @@ class _SongTileSheet extends StatelessWidget {
             ),
           ),
 
-          Divider(height: 1, thickness: 0.5, color: colors.outlineVariant),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: colors.outlineVariant.withAlpha(90),
+            ),
+          ),
 
           // Actions
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
 
-          _SheetAction(
-            icon: Icons.play_arrow_rounded,
-            iconColor: colors.primary,
-            iconBgColor: colors.primaryContainer,
-            title: 'Play song',
-            subtitle: 'Start playing now',
-            onTap: () => _playSong(context),
-          ),
           _SheetAction(
             icon: Icons.skip_next_rounded,
             title: 'Play next',
             subtitle: 'Insert after current song',
+            iconColor: colors.primary,
+            iconBgColor: colors.primaryContainer.withAlpha(140),
             onTap: () => _playNext(context),
           ),
           _SheetAction(
             icon: Icons.queue_music_rounded,
             title: 'Add to queue',
             subtitle: 'Play after the queue ends',
+            iconColor: colors.tertiary,
+            iconBgColor: colors.tertiaryContainer.withAlpha(140),
             onTap: () => _addToQueue(context),
           ),
-
           _SheetAction(
-            icon: Icons.album,
+            icon: Icons.album_rounded,
             title: 'Album',
             subtitle: 'Show album',
+            iconColor: colors.secondary,
+            iconBgColor: colors.secondaryContainer.withAlpha(140),
             onTap: () => _goToAlbum(context),
           ),
 
-          // Divider(
-          //   height: 16,
-          //   indent: 20,
-          //   endIndent: 20,
-          //   thickness: 0.5,
-          //   color: colors.outlineVariant,
-          // ),
-
-          // _SheetAction(
-          //   icon: Icons.playlist_add_rounded,
-          //   title: 'Add to playlist',
-          //   subtitle: 'Choose from your playlists',
-          //   onTap: () => _addToPlaylist(context),
-          // ),
+          const SizedBox(height: 6),
         ],
       ),
     );
@@ -200,45 +207,64 @@ class _SheetAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
 
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: iconBgColor ?? colors.surfaceContainerHighest,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                icon,
-                size: 18,
-                color: iconColor ?? colors.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          splashColor: (iconColor ?? colors.primary).withAlpha(30),
+          highlightColor: (iconColor ?? colors.primary).withAlpha(15),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            child: Row(
               children: [
-                Text(
-                  title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colors.onSurfaceVariant,
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: iconBgColor ?? colors.surfaceContainerHighest,
+                    shape: BoxShape.circle,
                   ),
+                  child: Icon(
+                    icon,
+                    size: 20,
+                    color: iconColor ?? colors.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        style: textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        subtitle,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 20,
+                  color: colors.onSurfaceVariant.withAlpha(120),
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

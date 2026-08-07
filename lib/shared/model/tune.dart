@@ -31,7 +31,9 @@ class Tune {
     required this.genre,
     required this.duration,
     required this.dateAdded,
-  }) : artUri = Uri.parse("content://media/external/audio/media/$songId/albumart");
+  }) : artUri = Uri.parse(
+         "content://media/external/audio/media/$songId/albumart",
+       );
 
   Tune copyWith({List<String>? artists, Uri? artUri}) => Tune(
     songId: songId,

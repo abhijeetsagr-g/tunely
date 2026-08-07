@@ -92,11 +92,7 @@ class _LibraryViewState extends State<LibraryView>
                   ),
                 ),
               ),
-              LibraryLoaded(
-                :final tunes,
-                :final albums,
-                :final artists,
-              ) =>
+              LibraryLoaded(:final tunes, :final albums, :final artists) =>
                 _buildContent(tunes, albums, artists),
               _ => const SizedBox.shrink(),
             };
