@@ -76,7 +76,7 @@ class _AnimatedGradientBackgroundState extends State<AnimatedGradientBackground>
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final surface = Theme.of(context).colorScheme.surface;
 
-        return Positioned.fill(
+        return SizedBox.expand(
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

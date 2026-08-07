@@ -79,10 +79,15 @@ class LyricsCubit extends Cubit<LyricsState> {
     await _fetch(tune);
   }
 
-  Future<List<LrcLibSearchResult>> searchLrclib() async {
+  Future<List<LrcLibSearchResult>> searchLrclib({
+    String? title,
+    String? artist,
+  }) async {
     final tune = _playbackBloc.state.currentItem;
-    if (tune == null) return [];
-    return _service.searchLrclib(tune.title, tune.artist);
+    final queryTitle = title ?? tune?.title;
+    final queryArtist = artist ?? tune?.artist ?? '';
+    if (queryTitle == null) return [];
+    return _service.searchLrclib(queryTitle, queryArtist);
   }
 
   Future<void> selectSearchResult(LrcLibSearchResult result) async {

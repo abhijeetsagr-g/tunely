@@ -89,6 +89,8 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(width: 10),
+
               Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -103,68 +105,11 @@ class _LyricsOptionSheetState extends State<LyricsOptionSheet> {
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-                child: Text(
-                  'Lyrics Options',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-
-              // search manually on LRCLIB
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _titleCtrl,
-                        enabled: isLoaded,
-                        textInputAction: TextInputAction.next,
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          labelText: 'Title',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    Expanded(
-                      child: TextField(
-                        controller: _artistCtrl,
-                        enabled: isLoaded,
-                        textInputAction: TextInputAction.search,
-                        decoration: const InputDecoration(
-                          isDense: true,
-                          labelText: 'Artist',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 10),
-
-                    IconButton.filledTonal(
-                      icon: const Icon(Icons.search_rounded, size: 20),
-                      onPressed: () {
-                        if (isLoaded) {
-                          cubit.reloadManual(_titleCtrl.text, _artistCtrl.text);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
               // reload from LRCLIB
               ListTile(
                 leading: const Icon(Icons.refresh_rounded),
-                title: const Text('Reload from LRCLIB'),
-                subtitle: const Text('Clears cache and re-fetches'),
+                title: const Text('Refresh'),
+                subtitle: const Text('Re-fetch lyrics for this song'),
                 onTap: isLoaded
                     ? () {
                         cubit.reload();
