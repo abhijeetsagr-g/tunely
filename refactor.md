@@ -68,7 +68,7 @@ Checklist per feature:
 
 - [ ] `features/library`
 - [ ] `features/playback`
-- [ ] `features/session`
+- [x] `features/session`
 - [ ] `features/search`
 - [ ] `features/lyrics`
 - [x] `features/stats`
@@ -77,6 +77,13 @@ Checklist per feature:
 - [ ] `features/sleep_mode`
 - [ ] `features/playlist`
 - [ ] `features/onboarding`
+
+### Session audit notes (done)
+
+- [x] Hardened `SessionRepository.load()` — corrupt JSON now returns `null` instead of crashing splash
+- [x] Clamped `startIndex` in `PlaybackService.playQueue()` — restores can no longer OOB-crash when saved tunes were deleted from device
+- [ ] Deferred: `SessionCubit.save()`/`clear()` are dead (PlaybackBloc writes repo directly); continue-listening card fallback state can be stale within a run
+- [ ] Deferred (D2): `QueueSessionModel` couples persistence to `just_audio` `LoopMode` enum
 
 ### Stats audit notes (done)
 

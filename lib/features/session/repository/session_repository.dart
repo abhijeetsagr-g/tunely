@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tunely/features/session/model/queue_session_model.dart';
 
@@ -17,7 +18,12 @@ class SessionRepository {
 
     if (json == null) return null;
 
-    return QueueSessionModel.fromJson(jsonDecode(json));
+    try {
+      return QueueSessionModel.fromJson(jsonDecode(json));
+    } catch (e) {
+      debugPrint('Failed to load session: $e');
+      return null;
+    }
   }
 
   Future<void> clear() async {

@@ -264,6 +264,8 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     int startIndex, {
     bool autoPlay = true,
   }) async {
+    if (tunes.isEmpty) return;
+    startIndex = startIndex.clamp(0, tunes.length - 1);
     _lastEmittedIndex = null;
     _isSwappingQueue = true;
     _failedPaths.clear();
