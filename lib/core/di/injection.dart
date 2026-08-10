@@ -10,7 +10,6 @@ import 'package:tunely/features/lyrics/service/lyrics_service.dart';
 import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
-import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/sleep_mode/cubit/sleep_mode_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/hive_registrar.g.dart';
@@ -101,9 +100,6 @@ abstract class TunelyInjection {
     );
     sl.registerLazySingleton<ManagementCubit>(
       () => ManagementCubit(sl<ManagementRepository>()),
-    );
-    sl.registerLazySingleton<SessionCubit>(
-      () => SessionCubit(sl<SessionRepository>()),
     );
     sl.registerLazySingleton<StatsCubit>(
       () => StatsCubit(sl<StatsService>(), sl<LibraryCubit>()),

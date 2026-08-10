@@ -6,7 +6,7 @@ import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
-import 'package:tunely/features/session/cubit/session_cubit.dart';
+import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/service/artist_service.dart';
 
@@ -25,8 +25,6 @@ class _SplashViewState extends State<SplashView> {
   }
 
   Future<void> _load() async {
-    final sessionCubit = context.read<SessionCubit>();
-
     // First launch → onboarding
     final onboarding = context.read<OnboardingRepository>();
     if (!onboarding.isCompleted) {
@@ -40,6 +38,7 @@ class _SplashViewState extends State<SplashView> {
 
     // initialize library
     final library = context.read<LibraryCubit>();
+    final sessionRepository = context.read<SessionRepository>();
     await library.initialLoad();
     if (!mounted) return;
 
@@ -58,8 +57,7 @@ class _SplashViewState extends State<SplashView> {
     }
 
     // Load saved session
-    await sessionCubit.load();
-    final session = sessionCubit.state;
+    final session = await sessionRepository.load();
 
     if (session != null &&
         session.tunePaths.isNotEmpty &&

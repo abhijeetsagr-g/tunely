@@ -14,7 +14,7 @@ import 'package:tunely/features/onboarding/repository/onboarding_repository.dart
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
-import 'package:tunely/features/session/cubit/session_cubit.dart';
+import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/features/sleep_mode/cubit/sleep_mode_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/shared/service/artist_service.dart';
@@ -42,7 +42,6 @@ void main() async {
       providers: [
         BlocProvider(create: (_) => sl<ManagementCubit>()),
         BlocProvider(create: (_) => sl<PlaybackBloc>()),
-        BlocProvider(create: (_) => sl<SessionCubit>()),
         BlocProvider(create: (_) => sl<StatsCubit>()),
         BlocProvider(create: (_) => sl<SearchCubit>()),
         BlocProvider(create: (_) => sl<LyricsCubit>()),
@@ -51,6 +50,7 @@ void main() async {
         BlocProvider(create: (_) => sl<CustomizationCubit>()),
         RepositoryProvider.value(value: sl<ArtistService>()),
         RepositoryProvider.value(value: sl<OnboardingRepository>()),
+        RepositoryProvider.value(value: sl<SessionRepository>()),
       ],
       child: MyApp(),
     ),

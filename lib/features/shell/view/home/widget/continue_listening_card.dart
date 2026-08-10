@@ -4,11 +4,9 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utils/extracted_gradient_container.dart';
 import 'package:tunely/core/utils/fur_artist_name.dart';
-import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/shell/view/home/widget/continue_listening_placeholder.dart';
-import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
@@ -23,73 +21,29 @@ class ContinueListeningCard extends StatelessWidget {
           p.position != c.position ||
           p.duration != c.duration,
       builder: (context, ps) {
-        final (tune, position, isActive) = _resolve(context, ps);
+        final tune = ps.currentItem;
         if (tune == null) return const ContinueListeningPlaceholder();
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-          child: GestureDetector(
-            onTap: isActive ? null : () => _restoreSession(context),
-            child: ExtractedGradientContainer(
-              songId: tune.songId,
-              borderRadius: 20,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 20, 14),
-                child: _TopRow(tune: tune, ps: ps, isActive: isActive),
-              ),
+          child: ExtractedGradientContainer(
+            songId: tune.songId,
+            borderRadius: 20,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 20, 14),
+              child: _TopRow(tune: tune, ps: ps),
             ),
           ),
         );
       },
     );
   }
-
-  (Tune?, Duration, bool) _resolve(BuildContext context, PlaybackState ps) {
-    if (ps.currentItem != null) return (ps.currentItem, ps.position, true);
-    final session = context.read<SessionCubit>().state;
-    if (session == null || session.tunePaths.isEmpty) {
-      return (null, Duration.zero, false);
-    }
-    final lib = context.read<LibraryCubit>().state;
-    if (lib is! LibraryLoaded) return (null, Duration.zero, false);
-    final tuneMap = {for (final t in lib.tunes) t.path: t};
-    return (
-      tuneMap[session.tunePaths[session.currentIndex]],
-      session.position,
-      false,
-    );
-  }
-
-  void _restoreSession(BuildContext context) {
-    final session = context.read<SessionCubit>().state;
-    if (session == null) return;
-    final lib = context.read<LibraryCubit>().state as LibraryLoaded;
-    final tuneMap = {for (final t in lib.tunes) t.path: t};
-    final queue = session.tunePaths
-        .map((p) => tuneMap[p])
-        .whereType<Tune>()
-        .toList();
-    if (queue.isEmpty) return;
-    context.read<PlaybackBloc>()
-      ..add(
-        RestoreSessionEvent(
-          queue: queue,
-          currentIndex: session.currentIndex,
-          position: session.position,
-          shuffleEnabled: session.shuffleEnabled,
-          repeatMode: session.repeatMode,
-          speed: session.speed,
-        ),
-      )
-      ..add(PlayEvent());
-  }
 }
 
 class _TopRow extends StatelessWidget {
-  const _TopRow({required this.tune, required this.ps, required this.isActive});
+  const _TopRow({required this.tune, required this.ps});
   final Tune tune;
   final PlaybackState ps;
-  final bool isActive;
 
   @override
   Widget build(BuildContext context) {

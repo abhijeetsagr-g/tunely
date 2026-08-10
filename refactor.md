@@ -82,7 +82,7 @@ Checklist per feature:
 
 - [x] Hardened `SessionRepository.load()` — corrupt JSON now returns `null` instead of crashing splash
 - [x] Clamped `startIndex` in `PlaybackService.playQueue()` — restores can no longer OOB-crash when saved tunes were deleted from device
-- [ ] Deferred: `SessionCubit.save()`/`clear()` are dead (PlaybackBloc writes repo directly); continue-listening card fallback state can be stale within a run
+- [x] **Deleted `SessionCubit`** — it was a redundant copy of the session: PlaybackBloc already persists to the repo and holds the live session in state. Splash now reads `SessionRepository` directly (provided via `RepositoryProvider.value`); continue-listening card reads `PlaybackBloc.currentItem` only (the `_restoreSession` tap path + `LibraryCubit` fallback were dead after splash-restore, so they were removed). Dead `save()`/`clear()` went away with it
 - [ ] Deferred (D2): `QueueSessionModel` couples persistence to `just_audio` `LoopMode` enum
 
 ### Stats audit notes (done)
