@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
 
-class EmptyHint extends StatelessWidget {
-  const EmptyHint({
+class SearchEmptyState extends StatelessWidget {
+  const SearchEmptyState({
     super.key,
+    required this.icon,
+    required this.message,
+    required this.sub,
+  });
+
+  final IconData icon;
+  final String message;
+  final String sub;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverFillRemaining(
+      hasScrollBody: false,
+      child: _EmptyHint(icon: icon, message: message, sub: sub),
+    );
+  }
+}
+
+class _EmptyHint extends StatelessWidget {
+  const _EmptyHint({
     required this.icon,
     required this.message,
     required this.sub,

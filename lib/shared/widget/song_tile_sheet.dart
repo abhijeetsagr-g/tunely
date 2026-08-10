@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
+import 'package:tunely/core/utils/fur_duration.dart';
 import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
@@ -131,6 +132,15 @@ class _SongTileSheet extends StatelessWidget {
                       Text(
                         tune.artist,
                         style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        formatDur(tune.duration),
+                        style: theme.textTheme.bodySmall?.copyWith(
                           color: colors.onSurfaceVariant,
                         ),
                         maxLines: 1,

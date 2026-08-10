@@ -69,7 +69,7 @@ Checklist per feature:
 - [ ] `features/playlist`
 - [ ] `features/playback`
 - [ ] `features/onboarding`
-- [ ] `features/search`
+- [x] `features/search`
 
 - [x] `features/lyrics`
 - [x] `features/library`
@@ -103,6 +103,18 @@ Checklist per feature:
 - [x] **UI: `settings_screen.dart` → `ListView`** — the `CustomScrollView` used nothing but `SliverToBoxAdapter`/`SliverList` (zero lazy-loading benefit); stripped the sliver wrappers from `artist_delimiter_widget`, `cache_rescan_buttons`, `daily_mix_size_slider`, `min_song_dur_slider`, `about_widget`
 - [x] About cards updated (`Created By`/`Special Thanks`); `popUpNotifer` import added, dead `url_launcher` import removed
 - [x] `flutter analyze` clean
+
+### Search audit notes (done)
+
+- [x] View verified — slivers are legitimate here (`SliverAppBar` + lazy `SliverList`/`SliverGrid`); `SongTile.onTap` is additive (tap records recent *and* plays via `PlayQueueEvent`), so recents/search taps play correctly
+- [x] **Deleted dead code**: `shared/widget/content_view.dart` + `features/search/helper/search_tunes.dart` (`SearchFunctions` — its only consumer was ContentView; the cubit filters inline). Also cleared the corresponding Backlog items
+- [x] **Removed dead `SearchResult.genres`** + the genre filtering in `_runSearch` — computed but never displayed (no genre section/chip)
+- [x] **Hardened `SearchRepository.loadRecentItems()`** — corrupt `recent_searches` JSON now returns `[]` instead of crashing splash (matches session-repo hardening)
+- [x] `_loadRecentItems` clears before loading → no recents duplication on repeated `setLibrary`
+- [x] `addRecentItem` re-emits `SearchIdle` when idle → recents order bumps to front on tap (guarded so it never clears live search results)
+- [x] **`SearchCubit` now depends on `LibraryCubit` directly** (constructor dep + `library.stream` subscription + construct-time state check, like StatsCubit). Splash `setLibrary` hand-off removed. On `rescan()` (→ `LibraryLoaded` re-emit) search resets: recents reload against the fresh library (deleted tunes dropped), stale-result/stale-recents-after-rescan fixed. `_setLibrary` is now private + `isClosed`-guarded
+- [ ] Deferred: tapping a recent item bumps it but doesn't navigate/play from the *artist/album* variants (they have no default tap); songs play correctly
+- [ ] Tests to add: debounce→search transitions, recents cap/dedupe/reorder, repo corrupt-JSON, resolve-missing-library
 
 ## Phase D — Stretch (only if A-C land early)
 

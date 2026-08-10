@@ -6,12 +6,10 @@ class SearchResult {
   final List<Artist> artists;
   final List<AlbumModel> albums;
   final List<Tune> tunes;
-  final List<GenreModel> genres;
 
   SearchResult({
     required this.artists,
     required this.albums,
     required this.tunes,
-    required this.genres,
   });
 }

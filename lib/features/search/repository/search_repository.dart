@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tunely/features/search/model/recent_item.dart';
+import 'package:tunely/features/search/model/recent_item_data.dart';
 
 class SearchRepository {
   static const _key = 'recent_searches';
@@ -16,11 +17,15 @@ class SearchRepository {
     final json = prefs.getString(_key);
     if (json == null) return [];
 
-    final list = jsonDecode(json) as List;
-    return list
-        .map((e) => _fromJson(e as Map<String, dynamic>))
-        .whereType<RecentItemData>()
-        .toList();
+    try {
+      final list = jsonDecode(json) as List;
+      return list
+          .map((e) => _fromJson(e as Map<String, dynamic>))
+          .whereType<RecentItemData>()
+          .toList();
+    } catch (_) {
+      return [];
+    }
   }
 
   Future<void> clearRecentItems() async {
@@ -64,22 +69,4 @@ class SearchRepository {
       artistId: json['artistId'] as int?,
     );
   }
-}
-
-class RecentItemData {
-  final String type;
-  final String title;
-  final String? subtitle;
-  final int? songId;
-  final int? albumId;
-  final int? artistId;
-
-  const RecentItemData({
-    required this.type,
-    required this.title,
-    this.subtitle,
-    this.songId,
-    this.albumId,
-    this.artistId,
-  });
 }

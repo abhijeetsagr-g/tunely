@@ -105,7 +105,7 @@ abstract class TunelyInjection {
       () => StatsCubit(sl<StatsService>(), sl<LibraryCubit>()),
     );
     sl.registerLazySingleton<SearchCubit>(
-      () => SearchCubit(sl<SearchRepository>()),
+      () => SearchCubit(sl<SearchRepository>(), sl<LibraryCubit>()),
     );
     sl.registerLazySingleton<LyricsCubit>(
       () => LyricsCubit(sl<LyricsService>(), sl<PlaybackBloc>()),

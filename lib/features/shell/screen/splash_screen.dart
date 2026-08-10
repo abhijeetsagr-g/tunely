@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/service/artist_service.dart';
@@ -41,20 +39,6 @@ class _SplashViewState extends State<SplashView> {
     final sessionRepository = context.read<SessionRepository>();
     await library.initialLoad();
     if (!mounted) return;
-
-    // Load stats (StatsCubit reloads itself on library changes)
-    if (library.state is LibraryLoaded) {
-      final state = library.state as LibraryLoaded;
-
-      await context.read<SearchCubit>().setLibrary(
-        LibraryScanResult(
-          tunes: state.tunes,
-          artists: state.artists,
-          albums: state.albums,
-          genres: state.genres,
-        ),
-      );
-    }
 
     // Load saved session
     final session = await sessionRepository.load();

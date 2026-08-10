@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/search/model/recent_item.dart';
+import 'package:tunely/features/search/model/recent_item_data.dart';
 import 'package:tunely/features/search/model/search_result.dart';
 import 'package:tunely/features/search/repository/search_repository.dart';
 
@@ -12,12 +14,32 @@ class SearchCubit extends Cubit<SearchState> {
   LibraryScanResult? _library;
   final List<RecentItem> _recentItems = [];
   final SearchRepository _repository;
+  late final StreamSubscription _librarySub;
 
-  SearchCubit(this._repository) : super(const SearchIdle());
+  SearchCubit(this._repository, LibraryCubit library)
+    : super(const SearchIdle()) {
+    final state = library.state;
+    if (state is LibraryLoaded) _applyLibrary(state);
+    _librarySub = library.stream.listen((state) {
+      if (state is LibraryLoaded) _applyLibrary(state);
+    });
+  }
 
-  Future<void> setLibrary(LibraryScanResult library) async {
+  void _applyLibrary(LibraryLoaded state) {
+    _setLibrary(
+      LibraryScanResult(
+        tunes: state.tunes,
+        artists: state.artists,
+        albums: state.albums,
+        genres: state.genres,
+      ),
+    );
+  }
+
+  Future<void> _setLibrary(LibraryScanResult library) async {
     _library = library;
     await _loadRecentItems();
+    if (isClosed) return;
     emit(SearchIdle(recentItems: List.of(_recentItems)));
   }
 
@@ -26,6 +48,7 @@ class SearchCubit extends Cubit<SearchState> {
     final library = _library;
     if (library == null) return;
 
+    _recentItems.clear();
     for (final item in data) {
       final resolved = _resolveItem(item, library);
       if (resolved != null) {
@@ -51,7 +74,10 @@ class SearchCubit extends Cubit<SearchState> {
     return null;
   }
 
-  RecentAlbumItem? _resolveAlbum(RecentItemData data, LibraryScanResult library) {
+  RecentAlbumItem? _resolveAlbum(
+    RecentItemData data,
+    LibraryScanResult library,
+  ) {
     final album = data.albumId != null
         ? library.albums.where((a) => a.id == data.albumId).firstOrNull
         : null;
@@ -59,7 +85,10 @@ class SearchCubit extends Cubit<SearchState> {
     return null;
   }
 
-  RecentArtistItem? _resolveArtist(RecentItemData data, LibraryScanResult library) {
+  RecentArtistItem? _resolveArtist(
+    RecentItemData data,
+    LibraryScanResult library,
+  ) {
     final artist = data.artistId != null
         ? library.artists.where((a) => a.artistId == data.artistId).firstOrNull
         : null;
@@ -88,11 +117,13 @@ class SearchCubit extends Cubit<SearchState> {
   void setFilter(FilterMode mode) {
     final current = state;
     if (current is SearchLoaded) {
-      emit(SearchLoaded(
-        query: current.query,
-        result: current.result,
-        filterMode: mode,
-      ));
+      emit(
+        SearchLoaded(
+          query: current.query,
+          result: current.result,
+          filterMode: mode,
+        ),
+      );
     }
   }
 
@@ -103,6 +134,9 @@ class SearchCubit extends Cubit<SearchState> {
       _recentItems.removeLast();
     }
     _repository.saveRecentItems(_recentItems);
+    if (state is SearchIdle) {
+      emit(SearchIdle(recentItems: List.of(_recentItems)));
+    }
   }
 
   void clearRecentItems() {
@@ -132,19 +166,10 @@ class SearchCubit extends Cubit<SearchState> {
         .where((a) => (a.album).toLowerCase().contains(q))
         .toList();
 
-    final genres = _library!.genres
-        .where((g) => (g.genre).toLowerCase().contains(q))
-        .toList();
-
     emit(
       SearchLoaded(
         query: q,
-        result: SearchResult(
-          tunes: tunes,
-          artists: artists,
-          albums: albums,
-          genres: genres,
-        ),
+        result: SearchResult(tunes: tunes, artists: artists, albums: albums),
       ),
     );
   }
@@ -152,6 +177,7 @@ class SearchCubit extends Cubit<SearchState> {
   @override
   Future<void> close() {
     _debounce?.cancel();
+    _librarySub.cancel();
     return super.close();
   }
 }
