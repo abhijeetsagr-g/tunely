@@ -59,7 +59,7 @@ Go through each feature one at a time: check `state`/`bloc`, `repository`, `serv
 
 Checklist per feature:
 
-- [x] State: clean, minimal, correct transitions; no dead fields
+- [ ] State: clean, minimal, correct transitions; no dead fields
 - [ ] Repository: consistent pattern (owns a data source), no logic leaks
 - [ ] Service: single responsibility; no duplication with other features
 - [ ] UI: reads via BlocProvider (no `sl<>` in widgets), no hand-rolled wiring
@@ -71,12 +71,21 @@ Checklist per feature:
 - [ ] `features/session`
 - [ ] `features/search`
 - [ ] `features/lyrics`
-- [ ] `features/stats`
+- [x] `features/stats`
 - [ ] `features/settings`
 - [ ] `features/shell`
 - [ ] `features/sleep_mode`
 - [ ] `features/playlist`
 - [ ] `features/onboarding`
+
+### Stats audit notes (done)
+
+- [x] Decoupled `StatsCubit.load` from splash — cubit now listens to `LibraryCubit` (also fixes stale lists after rescan)
+- [x] `clearAll()` now clears `recent_order` too (was leaving stale recency)
+- [x] Removed unused `StatsCubit` import from `splash_view.dart`
+- [ ] Deferred: `liked` is dead UI surface (model field + `isLiked`/`toggleLike`/`StatsLoaded.liked`); keep for a future Liked screen
+- [ ] Deferred (D2): `StatsService` still takes raw `audioHandler.onTrackChanged` stream; subscription never cancelled (bounded — singleton)
+- [ ] Tests to add: `_mostPlayed` order/limit, `_recent` path mapping, repo `toggleLike`/`clearAll`, service play-count dedup + recency
 
 ## Phase D — Stretch (only if A-C land early)
 

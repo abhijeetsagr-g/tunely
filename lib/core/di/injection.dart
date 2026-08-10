@@ -105,7 +105,9 @@ abstract class TunelyInjection {
     sl.registerFactory<SessionCubit>(
       () => SessionCubit(sl<SessionRepository>()),
     );
-    sl.registerFactory<StatsCubit>(() => StatsCubit(sl<StatsService>()));
+    sl.registerFactory<StatsCubit>(
+      () => StatsCubit(sl<StatsService>(), sl<LibraryCubit>()),
+    );
     sl.registerFactory<SearchCubit>(() => SearchCubit(sl<SearchRepository>()));
     sl.registerFactory<LyricsCubit>(
       () => LyricsCubit(sl<LyricsService>(), sl<PlaybackBloc>()),

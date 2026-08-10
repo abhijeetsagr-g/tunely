@@ -7,7 +7,6 @@ import 'package:tunely/features/onboarding/repository/onboarding_repository.dart
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
-import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/service/artist_service.dart';
 
@@ -44,11 +43,9 @@ class _SplashViewState extends State<SplashView> {
     await library.initialLoad();
     if (!mounted) return;
 
-    // Load stats
+    // Load stats (StatsCubit reloads itself on library changes)
     if (library.state is LibraryLoaded) {
       final state = library.state as LibraryLoaded;
-
-      context.read<StatsCubit>().load(state.tunes);
 
       await context.read<SearchCubit>().setLibrary(
         LibraryScanResult(

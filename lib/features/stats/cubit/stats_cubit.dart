@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/stats/repository/stats_repository.dart';
 import 'package:tunely/features/stats/service/stats_service.dart';
 import 'package:tunely/shared/model/tune.dart';
@@ -10,15 +11,19 @@ part 'stats_state.dart';
 class StatsCubit extends Cubit<StatsState> {
   final StatsService service;
   late final StreamSubscription _sub;
+  late final StreamSubscription _librarySub;
   StatsRepository get _repo => service.repo;
 
   List<Tune>? _currentTunes;
 
-  StatsCubit(this.service) : super(StatsInitial()) {
+  StatsCubit(this.service, LibraryCubit library) : super(StatsInitial()) {
     _sub = service.repo.watch().listen((_) {
       if (_currentTunes != null) {
         load(_currentTunes!);
       }
+    });
+    _librarySub = library.stream.listen((state) {
+      if (state is LibraryLoaded) load(state.tunes);
     });
   }
 
@@ -61,12 +66,13 @@ class StatsCubit extends Cubit<StatsState> {
   int playCount(String path) => _repo.get(path).playCount;
 
   void clearAll() {
-    _repo.clearAllPlayCounts();
+    _repo.clearAll();
   }
 
   @override
   Future<void> close() {
     _sub.cancel();
+    _librarySub.cancel();
     return super.close();
   }
 }
