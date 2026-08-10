@@ -60,7 +60,7 @@ class RecentList extends StatelessWidget {
           );
         }
 
-        return SizedBox.shrink();
+        return const SliverToBoxAdapter();
       },
     );
   }

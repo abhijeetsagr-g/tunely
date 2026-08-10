@@ -91,9 +91,9 @@ class _SplashViewState extends State<SplashView> {
     if (!mounted) return;
 
     // Prefetch artist images in background (don't block navigation)
-    final artistNames = (library.state as LibraryLoaded)
-        .artists
-        .map((a) => a.artist);
+    final artistNames = (library.state as LibraryLoaded).artists.map(
+      (a) => a.artist,
+    );
     context.read<ArtistService>().preFetch(artistNames);
 
     Navigator.pushReplacementNamed(context, AppRoute.root);

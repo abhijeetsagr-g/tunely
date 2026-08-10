@@ -11,7 +11,7 @@ class RecommendedAlbums extends StatelessWidget {
     final libraryState = context.watch<LibraryCubit>().state;
     if (libraryState is! LibraryLoaded ||
         libraryState.recommendedAlbums.isEmpty) {
-      return const SizedBox();
+      return const SliverToBoxAdapter();
     }
 
     return SliverToBoxAdapter(

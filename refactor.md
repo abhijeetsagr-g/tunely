@@ -88,6 +88,8 @@ Checklist per feature:
 ### Stats audit notes (done)
 
 - [x] Decoupled `StatsCubit.load` from splash — cubit now listens to `LibraryCubit` (also fixes stale lists after rescan)
+- [x] **Bugfix:** `StatsCubit` is a lazy provider → missed the initial `LibraryLoaded` → top songs never loaded/updated. Now checks current library state in constructor (belt + stream suspenders)
+- [x] **Bugfix (systemic):** all cubits were `registerFactory` → `sl<Cubit>()` returned a *fresh* instance per call, so cubit-to-cubit DI deps detached from the widget tree (`StatsCubit→LibraryCubit` never saw the scan; `LyricsCubit→PlaybackBloc` similarly broken). Converted all cubits to `registerLazySingleton` — `sl<X>()` now always returns the app-scope instance the tree uses
 - [x] Split `clearAll()` into specific clears: `clearPlayCounts()`, `clearLikes()`, `clearRecent()` (recent/playCount/likes now independent)
 - [x] Removed unused `StatsCubit` import from `splash_view.dart`
 - [ ] Deferred: `liked` is dead UI surface (model field + `isLiked`/`toggleLike`/`StatsLoaded.liked`); keep for a future Liked screen

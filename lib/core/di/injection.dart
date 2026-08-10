@@ -96,29 +96,31 @@ abstract class TunelyInjection {
     sl.registerLazySingleton<ArtistService>(() => ArtistService());
 
     // Register Cubits/Bloc
-    sl.registerFactory<PlaybackBloc>(
+    sl.registerLazySingleton<PlaybackBloc>(
       () => PlaybackBloc(audioHandler, sl<SessionRepository>()),
     );
-    sl.registerFactory<ManagementCubit>(
+    sl.registerLazySingleton<ManagementCubit>(
       () => ManagementCubit(sl<ManagementRepository>()),
     );
-    sl.registerFactory<SessionCubit>(
+    sl.registerLazySingleton<SessionCubit>(
       () => SessionCubit(sl<SessionRepository>()),
     );
-    sl.registerFactory<StatsCubit>(
+    sl.registerLazySingleton<StatsCubit>(
       () => StatsCubit(sl<StatsService>(), sl<LibraryCubit>()),
     );
-    sl.registerFactory<SearchCubit>(() => SearchCubit(sl<SearchRepository>()));
-    sl.registerFactory<LyricsCubit>(
+    sl.registerLazySingleton<SearchCubit>(
+      () => SearchCubit(sl<SearchRepository>()),
+    );
+    sl.registerLazySingleton<LyricsCubit>(
       () => LyricsCubit(sl<LyricsService>(), sl<PlaybackBloc>()),
     );
-    sl.registerFactory<SleepModeCubit>(
+    sl.registerLazySingleton<SleepModeCubit>(
       () => SleepModeCubit(playbackService: audioHandler),
     );
-    sl.registerFactory<LibraryCubit>(
+    sl.registerLazySingleton<LibraryCubit>(
       () => LibraryCubit(service: sl<LibraryService>()),
     );
-    sl.registerFactory<CustomizationCubit>(
+    sl.registerLazySingleton<CustomizationCubit>(
       () => CustomizationCubit(sl<CustomizationService>()),
     );
   }

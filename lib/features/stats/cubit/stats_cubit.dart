@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/stats/repository/stats_repository.dart';
@@ -17,23 +18,45 @@ class StatsCubit extends Cubit<StatsState> {
   List<Tune>? _currentTunes;
 
   StatsCubit(this.service, LibraryCubit library) : super(StatsInitial()) {
+    debugPrint('[stats] StatsCubit constructed');
+    final libraryState = library.state;
+    debugPrint('[stats] library loaded at construct: ${libraryState is LibraryLoaded}');
+    if (libraryState is LibraryLoaded) {
+      load(libraryState.tunes);
+    }
     _sub = service.repo.watch().listen((_) {
+      debugPrint('[stats] box watch event fired');
       if (_currentTunes != null) {
         load(_currentTunes!);
+      } else {
+        debugPrint('[stats]   skipped: _currentTunes is null');
       }
     });
     _librarySub = library.stream.listen((state) {
+      debugPrint('[stats] library stream event: $state');
       if (state is LibraryLoaded) load(state.tunes);
     });
   }
 
   void load(List<Tune> tunes) {
     _currentTunes = tunes;
+    final mostPlayed = _mostPlayed(tunes);
+    final recent = _recent(tunes);
+    final liked = _liked(tunes);
+    debugPrint(
+      '[stats] load: tunes=${tunes.length} mostPlayed=${mostPlayed.length} '
+      'recent=${recent.length} liked=${liked.length}',
+    );
+    for (final t in mostPlayed.take(5)) {
+      debugPrint(
+        '[stats]   top: "${t.title}" -> ${_repo.get(t.path).playCount} plays',
+      );
+    }
     emit(
       StatsLoaded(
-        mostPlayed: _mostPlayed(tunes),
-        recent: _recent(tunes),
-        liked: _liked(tunes),
+        mostPlayed: mostPlayed,
+        recent: recent,
+        liked: liked,
       ),
     );
   }
