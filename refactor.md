@@ -30,13 +30,14 @@
 ### B1. Tidy `core/utlis` → `core/utils` (fix `praser`/`avater` typos)
 
 - [x] Rename dir to `core/utils`
-- [ ] Move domain helpers into their features:
-  - [ ] `sort.dart`, `total_dur.dart`, `total_song_dur.dart`, `artist_praser.dart`, `tune_praser.dart` → `features/library`
-  - [ ] `search_tunes.dart` → `features/search`
-  - [ ] `fur_artist_name.dart`, `fur_duration.dart` → wherever used
-  - [ ] `show_snackbar.dart`, `random_texts.dart`, `settings_arguments.dart` → `core/utils` (generic)
-- [ ] Grep-confirm zero references to `core/utlis` / old typos
-- [ ] Verify: `flutter analyze` clean
+- [x] Move domain helpers into their features:
+  - [x] `sort.dart`, `total_dur.dart`, `total_song_dur.dart`, `artist_praser`→`artist_parser`, `tune_praser`→`tune_parser` → `features/library/helper`
+  - [x] `search_tunes.dart` → `features/search/helper`
+  - [x] `artist_avater`→`artist_avatar` (kept in `shared/widget`)
+  - [x] `fur_artist_name.dart`, `fur_duration.dart` → kept in `core/utils` (generic, cross-feature)
+  - [x] `show_snackbar.dart`, `random_texts.dart`, `settings_arguments.dart` → kept in `core/utils`
+- [x] Grep-confirm zero references to `core/utlis` / old typos
+- [x] Verify: `flutter analyze` clean
 
 ## Phase C — Tests
 

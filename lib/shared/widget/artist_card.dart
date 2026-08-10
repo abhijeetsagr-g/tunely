@@ -3,7 +3,7 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/shared/model/artist.dart';
-import 'package:tunely/shared/widget/artist_avater.dart';
+import 'package:tunely/shared/widget/artist_avatar.dart';
 
 class ArtistCard extends StatelessWidget {
   const ArtistCard({super.key, required this.artist, this.onTap});

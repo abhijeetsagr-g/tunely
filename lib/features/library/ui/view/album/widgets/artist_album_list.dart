@@ -5,7 +5,7 @@ import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/shared/model/artist.dart';
-import 'package:tunely/shared/widget/artist_avater.dart';
+import 'package:tunely/shared/widget/artist_avatar.dart';
 
 class ArtistAlbumListSliver extends StatelessWidget {
   const ArtistAlbumListSliver({super.key, required this.artists});

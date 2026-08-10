@@ -3,7 +3,7 @@ import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
-import 'package:tunely/shared/widget/artist_avater.dart';
+import 'package:tunely/shared/widget/artist_avatar.dart';
 import 'package:tunely/shared/widget/song_action_row.dart';
 import 'package:tunely/shared/widget/tune_sliver_list.dart';
 

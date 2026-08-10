@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utils/animated_gradient_background.dart';
-import 'package:tunely/core/utils/total_song_dur.dart';
+import 'package:tunely/features/library/helper/total_song_dur.dart';
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/ui/view/album/widgets/artist_album_list.dart';

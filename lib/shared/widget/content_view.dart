@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/extensions/title_case.dart';
-import 'package:tunely/core/utils/search_tunes.dart';
+import 'package:tunely/features/search/helper/search_tunes.dart';
 import 'package:tunely/core/utils/show_snackbar.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/shared/model/tune.dart';
