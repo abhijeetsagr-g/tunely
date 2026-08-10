@@ -103,4 +103,9 @@ class CustomizationService {
     ThemeMode.light => "light",
     ThemeMode.dark => "dark",
   });
+
+  // Accent color
+  Color getAccentColor() => Color(_repo.accentColor);
+  Future<void> setAccentColor(Color color) =>
+      _repo.setAccentColor(color.toARGB32());
 }

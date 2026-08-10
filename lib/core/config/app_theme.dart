@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 
 abstract class AppTheme {
   static const String font = "NunitoSans";
-  static const Color black = Color(0xFF0A0A0A);
   static const Color white = Color(0xFFFFFFFF);
-  static const Color defaultAccent = Color(0xffB3E0F2);
-  static const Color warmAccent = Color(0xFFFFB347);
-  static const Color roseAccent = Color(0xFFF2B3C6);
+  static const Color primary = Color(0xFF8070A4);
 
   // Light
   static const Color lightBg = Color(0xFFE9E3E6);
   static const Color lightSurface = Color(0xFFC3BABA);
-  static const Color lightPrimary = Color.fromARGB(255, 112, 126, 163);
+  static const Color lightPrimary = primary;
   static const Color lightSecondary = Color(0xFFB2B2B2);
   static const Color lightOnSurface = Color(0xFF423E41);
   static const Color lightOnSurfaceVariant = Color(0xFF736F72);
@@ -19,7 +16,7 @@ abstract class AppTheme {
   // Dark
   static const Color darkBg = Color(0xFF181617);
   static const Color darkSurface = Color(0xFF282427);
-  static const Color darkPrimary = Color.fromARGB(255, 112, 126, 163);
+  static const Color darkPrimary = primary;
   static const Color darkSecondary = Color(0xFF736F72);
   static const Color darkOnSurface = Color(0xFFE9E3E6);
   static const Color darkOnSurfaceVariant = Color(0xFFC3BABA);
@@ -36,9 +33,9 @@ abstract class AppTheme {
   static ThemeData dark({Color accent = darkPrimary}) => ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: darkBg,
-    primaryColor: darkPrimary,
+    primaryColor: accent,
     colorScheme: ColorScheme.dark(
-      primary: darkPrimary,
+      primary: accent,
       secondary: darkSecondary,
       surface: darkSurface,
       onPrimary: darkOnSurface,
@@ -50,12 +47,12 @@ abstract class AppTheme {
     highlightColor: Colors.transparent,
     iconTheme: IconThemeData(color: darkOnSurface),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      selectedIconTheme: IconThemeData(color: darkPrimary),
+      selectedIconTheme: IconThemeData(color: accent),
       unselectedIconTheme: IconThemeData(color: darkOnSurface),
-      selectedItemColor: darkPrimary,
+      selectedItemColor: accent,
       unselectedItemColor: darkOnSurface,
     ),
-    sliderTheme: _sliderTheme(darkPrimary, darkSecondary),
+    sliderTheme: _sliderTheme(accent, darkSecondary),
   );
 
   static ThemeData light({Color accent = lightPrimary}) => ThemeData(
@@ -63,7 +60,7 @@ abstract class AppTheme {
     scaffoldBackgroundColor: lightBg,
     primaryColor: accent,
     colorScheme: ColorScheme.light(
-      primary: lightPrimary,
+      primary: accent,
       secondary: lightSecondary,
       surface: lightSurface,
       onPrimary: white,
@@ -75,12 +72,12 @@ abstract class AppTheme {
     highlightColor: Colors.transparent,
     iconTheme: IconThemeData(color: lightOnSurface),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      selectedIconTheme: IconThemeData(color: lightPrimary),
+      selectedIconTheme: IconThemeData(color: accent),
       unselectedIconTheme: IconThemeData(color: lightOnSurface),
-      selectedItemColor: lightPrimary,
+      selectedItemColor: accent,
       unselectedItemColor: lightOnSurface,
     ),
-    sliderTheme: _sliderTheme(lightPrimary, lightSecondary),
+    sliderTheme: _sliderTheme(accent, lightSecondary),
   );
 
   static SliderThemeData _sliderTheme(Color accent, Color base) {

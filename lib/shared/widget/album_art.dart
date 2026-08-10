@@ -6,7 +6,7 @@ class AlbumArt extends StatefulWidget {
     super.key,
     this.artUri,
     required this.size,
-    this.borderRadius = 16,
+    this.borderRadius = 8,
   });
 
   final Uri? artUri;
@@ -71,10 +71,7 @@ class _AlbumArtState extends State<AlbumArt> {
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
-      tween: Tween<double>(
-        begin: _borderRadius,
-        end: widget.borderRadius,
-      ),
+      tween: Tween<double>(begin: _borderRadius, end: widget.borderRadius),
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       builder: (context, radius, child) {
@@ -84,11 +81,12 @@ class _AlbumArtState extends State<AlbumArt> {
             width: widget.size.width,
             height: widget.size.height,
             child: _bytes != null
-                ? Image.memory(_bytes!, fit: BoxFit.cover, gaplessPlayback: true)
-                : _Placeholder(
-                    size: widget.size,
-                    borderRadius: radius,
-                  ),
+                ? Image.memory(
+                    _bytes!,
+                    fit: BoxFit.cover,
+                    gaplessPlayback: true,
+                  )
+                : _Placeholder(size: widget.size, borderRadius: radius),
           ),
         );
       },

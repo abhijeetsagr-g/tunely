@@ -102,7 +102,7 @@ class SongTile extends StatelessWidget {
                       child: AlbumArt(
                         artUri: tune.artUri,
                         size: Size(46, 46),
-                        borderRadius: isCurrent ? 2 : 16,
+                        borderRadius: !isCurrent ? 2 : 8,
                       ),
                     ),
                     title: Text(

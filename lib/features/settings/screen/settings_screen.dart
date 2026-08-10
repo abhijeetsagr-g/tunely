@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/features/settings/widgets/about_widget.dart';
+import 'package:tunely/features/settings/widgets/accent_color_picker.dart';
 import 'package:tunely/features/settings/widgets/artist_delimiter_widget.dart';
 import 'package:tunely/features/settings/widgets/cache_rescan_buttons.dart';
 import 'package:tunely/features/settings/widgets/daily_mix_size_slider.dart';
@@ -21,6 +22,8 @@ class SettingsScreen extends StatelessWidget {
 
         children: [
           ThemePicker(),
+
+          AccentColorPicker(),
 
           SizedBox(height: 20),
 

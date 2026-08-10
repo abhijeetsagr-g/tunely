@@ -57,8 +57,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         initialRoute: AppRoute.splash,
         debugShowCheckedModeBanner: false,
         themeMode: theme.themeMode,
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
+        theme: AppTheme.light(accent: theme.accentColor),
+        darkTheme: AppTheme.dark(accent: theme.accentColor),
       ),
     );
   }

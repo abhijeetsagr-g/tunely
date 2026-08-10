@@ -69,15 +69,16 @@ Checklist per feature:
 - [ ] `features/playlist`
 - [ ] `features/playback`
 - [ ] `features/onboarding`
-- [x] `features/search`
 
+- [ ] `features/settings`
+
+- [x] `features/search`
 - [x] `features/lyrics`
 - [x] `features/library`
 - [x] `features/sleep_mode`
 - [x] `features/session`
 - [x] `features/shell`
 - [x] `features/stats`
-- [x] `features/settings`
 
 ### Session audit notes (done)
 
