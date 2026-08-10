@@ -16,34 +16,39 @@ class SettingsScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: const Text('Settings'),
       ),
-      body: CustomScrollView(
-        slivers: [
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: ThemePicker(),
-            ),
-          ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 40)),
+        children: [
+          ThemePicker(),
 
-          const SliverToBoxAdapter(child: Divider(height: 1)),
+          SizedBox(height: 20),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 40)),
-          const ArtistDelimiterWidget(),
+          Divider(height: 1),
 
-          const DailyMixSizeSlider(),
+          SizedBox(height: 20),
+          ArtistDelimiterWidget(),
 
-          const MinSongDurSlider(),
+          DailyMixSizeSlider(),
 
-          const CacheRescanButtons(),
+          MinSongDurSlider(),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 40)),
+          CacheRescanButtons(),
 
-          const SliverToBoxAdapter(child: Divider(height: 1)),
+          SizedBox(height: 20),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 40)),
-          const AboutWidget(),
+          Divider(height: 1),
+
+          SizedBox(height: 20),
+          AboutWidget(),
+
+          SizedBox(height: 20),
+
+          Divider(height: 1),
+          SizedBox(height: 20),
+
+          Center(child: Text("Submit Your Feedback or Feature Request!")),
+          SizedBox(height: 100),
         ],
       ),
     );

@@ -10,34 +10,32 @@ class CacheRescanButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: Row(
-          children: [
-            Expanded(
-              child: ActionButton(
-                icon: Icons.cached_rounded,
-                label: 'Rescan',
-                onTap: () {
-                  context.read<LibraryCubit>().rescan();
-                  popUpNotifer(context, "Tunes Updated");
-                },
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: ActionButton(
+              icon: Icons.cached_rounded,
+              label: 'Rescan',
+              onTap: () {
+                context.read<LibraryCubit>().rescan();
+                popUpNotifer(context, "Tunes Updated");
+              },
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: ActionButton(
-                icon: Icons.delete_outline_rounded,
-                label: 'Clear cache',
-                onTap: () {
-                  context.read<LyricsCubit>().clearCache();
-                  popUpNotifer(context, "Cache has been cleared");
-                },
-              ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ActionButton(
+              icon: Icons.delete_outline_rounded,
+              label: 'Clear cache',
+              onTap: () {
+                context.read<LyricsCubit>().clearCache();
+                popUpNotifer(context, "Cache has been cleared");
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

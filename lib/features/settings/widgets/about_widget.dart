@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:tunely/core/utils/show_snackbar.dart';
 
 class AboutWidget extends StatefulWidget {
   const AboutWidget({super.key});
@@ -27,8 +27,8 @@ class _AboutWidgetState extends State<AboutWidget> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return SliverList(
-      delegate: SliverChildListDelegate([
+    return Column(
+      children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 32),
           child: Column(
@@ -47,13 +47,6 @@ class _AboutWidgetState extends State<AboutWidget> {
                 'Tunely',
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'by Abhijeet',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 8),
@@ -109,23 +102,20 @@ class _AboutWidgetState extends State<AboutWidget> {
               ),
               _AboutCard(
                 icon: Icons.code_rounded,
-                title: 'Source code',
-                value: 'GitHub',
-                trailing: const Icon(Icons.open_in_new, size: 14),
-                onTap: () => launchUrl(
-                  Uri.parse('https://github.com/abhijeetsagr-g/tunely'),
-                ),
+                title: 'Created By',
+                value: 'Zeenfic',
+                trailing: const Icon(Icons.tag_faces_sharp, size: 14),
               ),
               _AboutCard(
                 icon: Icons.favorite_rounded,
-                title: 'Powered By',
-                value: 'Deezer API and LRCLIB API',
+                title: 'Special Thanks',
+                value: 'You',
+                onTap: () => popUpNotifer(context, "Thank You Shawty"),
               ),
             ],
           ),
         ),
-        SizedBox(height: 100),
-      ]),
+      ],
     );
   }
 }

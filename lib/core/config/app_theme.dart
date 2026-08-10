@@ -11,7 +11,7 @@ abstract class AppTheme {
   // Light
   static const Color lightBg = Color(0xFFE9E3E6);
   static const Color lightSurface = Color(0xFFC3BABA);
-  static const Color lightPrimary = Color(0xFF9A8F97);
+  static const Color lightPrimary = Color.fromARGB(255, 112, 126, 163);
   static const Color lightSecondary = Color(0xFFB2B2B2);
   static const Color lightOnSurface = Color(0xFF423E41);
   static const Color lightOnSurfaceVariant = Color(0xFF736F72);
@@ -19,7 +19,7 @@ abstract class AppTheme {
   // Dark
   static const Color darkBg = Color(0xFF181617);
   static const Color darkSurface = Color(0xFF282427);
-  static const Color darkPrimary = Color(0xFF9A8F97);
+  static const Color darkPrimary = Color.fromARGB(255, 112, 126, 163);
   static const Color darkSecondary = Color(0xFF736F72);
   static const Color darkOnSurface = Color(0xFFE9E3E6);
   static const Color darkOnSurfaceVariant = Color(0xFFC3BABA);

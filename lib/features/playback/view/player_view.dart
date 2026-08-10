@@ -11,7 +11,7 @@ import 'package:tunely/features/playback/view/widget/player_album_art.dart';
 import 'package:tunely/features/playback/view/widget/player_gradient_background.dart';
 import 'package:tunely/features/playback/view/widget/seek_bar.dart';
 import 'package:tunely/features/playback/view/widget/song_info.dart';
-import 'package:tunely/features/sleep_mode/view/sleep_sheet.dart';
+import 'package:tunely/features/sleep_mode/widget/sleep_sheet.dart';
 
 class PlayerView extends StatelessWidget {
   const PlayerView({super.key});

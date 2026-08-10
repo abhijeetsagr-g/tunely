@@ -13,7 +13,7 @@ import 'package:tunely/features/shell/shell_screen.dart';
 import 'package:tunely/features/shell/view/home/widget/daily_mix_view.dart';
 import 'package:tunely/features/shell/view/home/widget/recent_view.dart';
 import 'package:tunely/features/shell/view/splash/splash_view.dart';
-import 'package:tunely/features/settings/settings_screen.dart';
+import 'package:tunely/features/settings/screen/settings_screen.dart';
 
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
