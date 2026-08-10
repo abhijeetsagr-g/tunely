@@ -97,7 +97,9 @@ abstract class TunelyInjection {
     sl.registerLazySingleton<ArtistService>(() => ArtistService());
 
     // Register Cubits/Bloc
-    sl.registerFactory<PlaybackBloc>(() => PlaybackBloc(audioHandler));
+    sl.registerFactory<PlaybackBloc>(
+      () => PlaybackBloc(audioHandler, sl<SessionRepository>()),
+    );
     sl.registerFactory<RootCubit>(() => RootCubit());
     sl.registerFactory<ManagementCubit>(
       () => ManagementCubit(sl<ManagementRepository>()),

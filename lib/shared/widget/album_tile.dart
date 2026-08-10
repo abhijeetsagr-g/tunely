@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/core/utlis/settings_arguments.dart';
+import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
 class AlbumTile extends StatelessWidget {
@@ -23,23 +23,25 @@ class AlbumTile extends StatelessWidget {
       child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         leading: AlbumArt(
-          artUri: Uri.parse("content://media/external/audio/albumart/${album.id}"),
+          artUri: Uri.parse(
+            "content://media/external/audio/albumart/${album.id}",
+          ),
           size: const Size(46, 46),
         ),
         title: Text(
           album.album,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
           album.artist ?? "Unknown Artist",
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: Colors.grey,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(color: Colors.grey),
         ),
       ),
     );

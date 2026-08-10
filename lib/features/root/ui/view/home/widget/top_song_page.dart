@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/extensions/title_case.dart';
-import 'package:tunely/core/utlis/fur_artist_name.dart';
-import 'package:tunely/core/utlis/show_snackbar.dart';
+import 'package:tunely/core/utils/fur_artist_name.dart';
+import 'package:tunely/core/utils/show_snackbar.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';

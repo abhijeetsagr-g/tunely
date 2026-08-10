@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/core/utlis/settings_arguments.dart';
+import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/features/playlist/bloc/playlist_bloc.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
@@ -34,10 +34,9 @@ class PlaylistCard extends StatelessWidget {
             onPressed: () {
               final name = controller.text.trim();
               if (name.isEmpty) return;
-              bloc.add(RenamePlaylistEvent(
-                playlistId: playlist.id,
-                newName: name,
-              ));
+              bloc.add(
+                RenamePlaylistEvent(playlistId: playlist.id, newName: name),
+              );
               Navigator.pop(context);
             },
             child: const Text('Rename'),

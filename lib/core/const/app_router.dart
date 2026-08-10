@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/core/const/app_page_router.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/core/utlis/settings_arguments.dart';
+import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/features/library/ui/view/album/album_view.dart';
 import 'package:tunely/features/library/ui/view/artist/artist_view.dart';
 import 'package:tunely/features/lyrics/view/lyrics_view.dart';

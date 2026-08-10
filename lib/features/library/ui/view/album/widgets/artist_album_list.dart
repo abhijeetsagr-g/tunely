@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
-import 'package:tunely/core/utlis/settings_arguments.dart';
+import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/widget/artist_avater.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/core/utlis/fur_duration.dart';
+import 'package:tunely/core/utils/fur_duration.dart';
 import 'package:tunely/features/lyrics/model/lrclib_search_result.dart';
 
 class LyricsSearchResultWidget extends StatelessWidget {

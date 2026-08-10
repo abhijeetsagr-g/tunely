@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
-import 'package:tunely/core/utlis/sort.dart';
+import 'package:tunely/core/utils/sort.dart';
 import 'package:tunely/features/library/ui/widget/sort_bar.dart';
 import 'package:tunely/shared/widget/album_card.dart';
 

@@ -10,27 +10,26 @@
 
 ### A1. Add `get_it` + feature injection modules
 
-- [x] Add `get_it: ^8.x` to `pubspec.yaml`
-- [x] Create `lib/core/di/injection.dart` — single `TunelyInjection.init()` that calls each feature's `init()`
-- [ ] For each feature create `lib/features/<feature>/di/<feature>_injection.dart` (constructs its own repo/service/cubit, registers with `sl`)
+- [x] Add `get_it` to `pubspec.yaml`
+- [x] Create `lib/core/di/injection.dart` — single `TunelyInjection.init()` (single-file style)
 - [x] Slim `main.dart`: only `WidgetsFlutterBinding`, Hive init, `AudioService.init`, `TunelyInjection.init()`, thin `MultiBlocProvider`
-- [x] Delete hand-wired constructors from `main.dart` (lines 62-134)
+- [x] Delete hand-wired constructors from `main.dart`
 - [x] Verify: app boots, library scans, playback works
 
 ### A2. Move session persistence out of `MyApp`
 
-- [ ] Delete the two session-saving `BlocListener`s from `my_app.dart` (lines 42-79)
-- [ ] Delete missing-song sync listener (lines 83-94); handle in `PlaybackBloc._SongUnavailableEvent` instead
-- [ ] Inject `SessionRepository` into `PlaybackBloc`
-- [ ] Add persistence to `PlaybackBloc` (queue/index/shuffle/repeat changed + pause position)
-- [ ] `my_app.dart` becomes a thin `MaterialApp`
-- [ ] Verify: queue/position/shuffle survive restart
+- [x] Delete the two session-saving `BlocListener`s from `my_app.dart`
+- [x] Missing-song sync — kept a single `BlocListener` in `MyApp` (needs app-lifetime scope + both cubits)
+- [x] Inject `SessionRepository` into `PlaybackBloc`
+- [x] Add persistence to `PlaybackBloc` (queue/index/shuffle/repeat changed + pause position + speed + missing-song)
+- [x] `my_app.dart` becomes a thin `MaterialApp`
+- [x] Verify: queue/position/shuffle survive restart
 
 ## Phase B — Cleanup
 
 ### B1. Tidy `core/utlis` → `core/utils` (fix `praser`/`avater` typos)
 
-- [ ] Rename dir to `core/utils`
+- [x] Rename dir to `core/utils`
 - [ ] Move domain helpers into their features:
   - [ ] `sort.dart`, `total_dur.dart`, `total_song_dur.dart`, `artist_praser.dart`, `tune_praser.dart` → `features/library`
   - [ ] `search_tunes.dart` → `features/search`

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/core/utlis/sort.dart';
+import 'package:tunely/core/utils/sort.dart';
 import 'package:tunely/features/library/ui/widget/sort_bar.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/song_tile.dart';

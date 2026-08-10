@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/extensions/title_case.dart';
-import 'package:tunely/core/utlis/search_tunes.dart';
-import 'package:tunely/core/utlis/show_snackbar.dart';
+import 'package:tunely/core/utils/search_tunes.dart';
+import 'package:tunely/core/utils/show_snackbar.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
@@ -77,8 +77,9 @@ class _ContentViewState extends State<ContentView> {
         .join(', ');
 
     Widget body = Scaffold(
-      backgroundColor:
-          widget.backgroundGradient != null ? Colors.transparent : null,
+      backgroundColor: widget.backgroundGradient != null
+          ? Colors.transparent
+          : null,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(

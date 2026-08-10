@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
-import 'package:tunely/core/utlis/show_snackbar.dart';
+import 'package:tunely/core/utils/show_snackbar.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playlist/view/widget/playlist_dialogs.dart';
 import 'package:tunely/shared/model/tune.dart';
@@ -51,17 +51,17 @@ class PlaylistActionRowSliver extends StatelessWidget {
                 _ActionButton(
                   onPressed: tunes.isEmpty
                       ? null
-                      : () => context
-                          .read<PlaybackBloc>()
-                          .add(PlayQueueEvent(tunes, startIndex: 0)),
+                      : () => context.read<PlaybackBloc>().add(
+                          PlayQueueEvent(tunes, startIndex: 0),
+                        ),
                   icon: Icons.play_arrow_rounded,
                 ),
                 _ActionButton(
                   onPressed: tunes.isEmpty
                       ? null
-                      : () => context
-                          .read<PlaybackBloc>()
-                          .add(ShuffleAllEvent(tunes)),
+                      : () => context.read<PlaybackBloc>().add(
+                          ShuffleAllEvent(tunes),
+                        ),
                   icon: Icons.shuffle_rounded,
                 ),
                 _ActionButton(

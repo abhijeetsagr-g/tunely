@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
+import 'package:tunely/features/session/model/queue_session_model.dart';
+import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/shared/model/tune.dart';
 
 part 'playback_event.dart';
@@ -10,9 +13,11 @@ part 'playback_state.dart';
 
 class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
   final PlaybackService _service;
+  final SessionRepository _sessionRepo;
   final List<StreamSubscription> _subscriptions = [];
 
-  PlaybackBloc(this._service) : super(const PlaybackState()) {
+  PlaybackBloc(this._service, this._sessionRepo)
+    : super(const PlaybackState()) {
     // Stream listeners — feed internal events into the bloc
     _subscriptions.addAll([
       _service.isPlaying.listen(
@@ -45,6 +50,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
             repeatMode: customState.repeatMode,
           ),
         );
+        unawaited(_persistSession());
       }),
 
       _service.onSongUnavailable.listen(
@@ -53,20 +59,22 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     ]);
 
     // Internal stream update handlers
-    on<_PlayerStateUpdatedEvent>(
-      (event, emit) => emit(state.copyWith(isPlaying: event.isPlaying)),
-    );
-    on<_PositionUpdatedEvent>(
-      (event, emit) => emit(state.copyWith(position: event.position)),
-    );
+    on<_PlayerStateUpdatedEvent>((event, emit) {
+      final wasPlaying = state.isPlaying;
+      emit(state.copyWith(isPlaying: event.isPlaying));
+      if (wasPlaying && !event.isPlaying) unawaited(_persistSession());
+    });
+    on<_PositionUpdatedEvent>((event, emit) {
+      emit(state.copyWith(position: event.position));
+    });
     on<_DurationUpdatedEvent>(
       (event, emit) => emit(state.copyWith(duration: event.duration)),
     );
     on<_ProcessingStateUpdatedEvent>(
       (event, emit) => emit(state.copyWith(status: event.status)),
     );
-    on<_SequenceStateUpdatedEvent>(
-      (event, emit) => emit(
+    on<_SequenceStateUpdatedEvent>((event, emit) {
+      emit(
         state.copyWith(
           currentItem: event.currentItem,
           queue: event.queue,
@@ -74,9 +82,9 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           shuffleEnabled: event.shuffleMode,
           repeatMode: event.repeatMode,
         ),
-      ),
-    );
-
+      );
+      unawaited(_persistSession());
+    });
     on<_BufferedPositionUpdatedEvent>(
       (event, emit) =>
           emit(state.copyWith(bufferedPosition: event.bufferedPosition)),
@@ -89,6 +97,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
           missingPaths: {...state.missingPaths, event.tune.path},
         ),
       );
+      unawaited(_persistSession());
     });
 
     // Playback control handlers
@@ -163,6 +172,7 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
     on<SetSpeedEvent>((event, emit) async {
       await _service.setSpeed(event.speed);
       emit(state.copyWith(speed: event.speed));
+      unawaited(_persistSession());
     });
 
     // restore previous session
@@ -180,6 +190,24 @@ class PlaybackBloc extends Bloc<PlaybackEvent, PlaybackState> {
       await _service.setRepeat(event.repeatMode);
       await _service.setSpeed(event.speed);
     });
+  }
+
+  Future<void> _persistSession() async {
+    final s = state;
+    if (s.queue.isEmpty) return;
+    final session = QueueSessionModel(
+      tunePaths: s.queue.map((t) => t.path).toList(),
+      currentIndex: s.currentIndex ?? 0,
+      shuffleEnabled: s.shuffleEnabled,
+      repeatMode: s.repeatMode,
+      position: s.position,
+      speed: s.speed,
+    );
+    try {
+      await _sessionRepo.save(session);
+    } catch (e) {
+      debugPrint('Failed to save session: $e');
+    }
   }
 
   @override

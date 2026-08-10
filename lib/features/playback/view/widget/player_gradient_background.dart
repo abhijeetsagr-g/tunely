@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/core/utlis/animated_gradient_background.dart';
+import 'package:tunely/core/utils/animated_gradient_background.dart';
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 

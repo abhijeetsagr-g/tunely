@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/core/utlis/settings_arguments.dart';
-import 'package:tunely/core/utlis/fur_artist_name.dart';
+import 'package:tunely/core/utils/settings_arguments.dart';
+import 'package:tunely/core/utils/fur_artist_name.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 

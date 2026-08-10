@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/core/utlis/random_texts.dart';
+import 'package:tunely/core/utils/random_texts.dart';
 import 'package:tunely/features/root/ui/view/home/widget/continue_listening_card.dart';
 import 'package:tunely/features/root/ui/view/home/widget/daily_mix.dart';
 import 'package:tunely/features/root/ui/view/home/widget/recent_list.dart';
