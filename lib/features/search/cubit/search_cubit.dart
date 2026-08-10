@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/search/model/recent_item.dart';
 import 'package:tunely/features/search/model/recent_item_data.dart';
 import 'package:tunely/features/search/model/search_result.dart';
 import 'package:tunely/features/search/repository/search_repository.dart';
+import 'package:tunely/shared/model/artist.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 part 'search_state.dart';
+part 'tune_search_entry.dart';
 
 class SearchCubit extends Cubit<SearchState> {
   Timer? _debounce;
@@ -145,25 +149,76 @@ class SearchCubit extends Cubit<SearchState> {
     emit(SearchIdle(recentItems: const []));
   }
 
-  void _runSearch(String q) {
+  List<TuneSearchEntry> _buildTuneIndex() =>
+      _library!.tunes.map(TuneSearchEntry.new).toList();
+
+  List<MapEntry<Artist, String>> _buildArtistIndex() => _library!.artists
+      .map((a) => MapEntry(a, a.artist.toLowerCase()))
+      .toList();
+
+  List<MapEntry<AlbumModel, String>> _buildAlbumIndex() =>
+      _library!.albums.map((a) => MapEntry(a, a.album.toLowerCase())).toList();
+
+  int? _score(String hay, String q) {
+    if (hay.isEmpty) return null;
+    if (hay == q) return 100;
+    if (hay.startsWith(q)) return 80;
+    if (hay.contains(' $q')) return 60;
+    if (hay.contains(q)) return 40;
+    return null;
+  }
+
+  void _runSearch(String rawQ) {
     if (_library == null) return;
 
-    final tunes = _library!.tunes
-        .where(
-          (t) =>
-              t.title.toLowerCase().contains(q) ||
-              t.artist.toLowerCase().contains(q) ||
-              t.album.toLowerCase().contains(q) ||
-              t.genre.toLowerCase().contains(q),
-        )
+    tuneIndex ??= _buildTuneIndex();
+    artistIndex ??= _buildArtistIndex();
+    albumIndex ??= _buildAlbumIndex();
+
+    final q = rawQ.toLowerCase().trim();
+    if (q.isEmpty) {
+      emit(
+        SearchLoaded(
+          query: q,
+          result: SearchResult(tunes: [], artists: [], albums: []),
+        ),
+      );
+      return;
+    }
+
+    final scoredTunes = <MapEntry<Tune, int>>[];
+    for (final e in tuneIndex!) {
+      final titleScore = _score(e.titleLc, q);
+      final artistScore = _score(e.artistLc, q);
+      final albumScore = _score(e.albumLc, q);
+      final genreScore = _score(e.genreLc, q);
+
+      int? best;
+      if (titleScore != null) best = titleScore + 20; // title weighted highest
+      if (artistScore != null && (best == null || artistScore > best)) {
+        best = artistScore;
+      }
+      if (albumScore != null && (best == null || albumScore > best)) {
+        best = albumScore;
+      }
+      if (genreScore != null) {
+        final weighted = genreScore - 10; // genre weighted lowest
+        if (best == null || weighted > best) best = weighted;
+      }
+
+      if (best != null) scoredTunes.add(MapEntry(e.tune, best));
+    }
+    scoredTunes.sort((a, b) => b.value.compareTo(a.value));
+    final tunes = scoredTunes.map((e) => e.key).toList();
+
+    final artists = artistIndex!
+        .where((e) => e.value.contains(q))
+        .map((e) => e.key)
         .toList();
 
-    final artists = _library!.artists
-        .where((a) => a.artist.toLowerCase().contains(q))
-        .toList();
-
-    final albums = _library!.albums
-        .where((a) => (a.album).toLowerCase().contains(q))
+    final albums = albumIndex!
+        .where((e) => e.value.contains(q))
+        .map((e) => e.key)
         .toList();
 
     emit(

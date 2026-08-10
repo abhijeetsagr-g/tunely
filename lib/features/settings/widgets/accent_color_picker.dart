@@ -5,7 +5,8 @@ import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 
 class AccentColorPicker extends StatelessWidget {
-  const AccentColorPicker({super.key});
+  const AccentColorPicker({super.key, this.isOnboard = false});
+  final bool isOnboard;
 
   static const _colors = [
     AppColor.mauve,
@@ -25,13 +26,15 @@ class AccentColorPicker extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Accent Color', style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: 4),
-          Text(
-            'Pick the color used for highlights across the app.',
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          const SizedBox(height: 16),
+          if (!isOnboard) ...[
+            Text('Accent Color', style: Theme.of(context).textTheme.titleSmall),
+            const SizedBox(height: 4),
+            Text(
+              'Pick the color used for highlights across the app.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 16),
+          ],
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

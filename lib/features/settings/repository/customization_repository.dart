@@ -19,7 +19,7 @@ class CustomizationRepository {
       await _prefs.setString(_keyThemeMode, mode);
 
   int get accentColor =>
-      _prefs.getInt(_keyAccentColor) ?? AppColor.purple.toARGB32();
+      _prefs.getInt(_keyAccentColor) ?? AppColor.blue.toARGB32();
   Future<void> setAccentColor(int value) async =>
       await _prefs.setInt(_keyAccentColor, value);
 }

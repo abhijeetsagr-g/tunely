@@ -4,6 +4,7 @@ import 'package:tunely/core/const/app_const.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
+import 'package:tunely/features/settings/widgets/accent_color_picker.dart';
 import 'package:tunely/features/settings/widgets/theme_picker.dart';
 
 class OnboardingView extends StatefulWidget {
@@ -290,8 +291,10 @@ class _PageContent extends StatelessWidget {
                     ),
                   ],
                   if (page.isTheme) ...[
-                    const SizedBox(height: 40),
                     const ThemePicker(),
+
+                    const SizedBox(height: 40),
+                    const AccentColorPicker(isOnboard: true),
                   ],
                 ],
               ),

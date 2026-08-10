@@ -70,8 +70,7 @@ Checklist per feature:
 - [ ] `features/playback`
 - [ ] `features/onboarding`
 
-- [ ] `features/settings`
-
+- [x] `features/settings`
 - [x] `features/search`
 - [x] `features/lyrics`
 - [x] `features/library`
