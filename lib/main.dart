@@ -2,39 +2,22 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_ce/hive.dart';
-import 'package:on_audio_query_pluse/on_audio_query.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:tunely/core/di/injection.dart';
 
-import 'package:tunely/hive_registrar.g.dart';
 import 'package:tunely/my_app.dart';
 
 import 'package:tunely/features/customization/cubit/customization_cubit.dart';
-import 'package:tunely/features/customization/repository/customization_repository.dart';
-import 'package:tunely/features/customization/service/customization_service.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/features/library/repository/library_repository.dart';
-import 'package:tunely/features/library/service/library_service.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
-import 'package:tunely/features/lyrics/model/lyrics_result.dart';
-import 'package:tunely/features/lyrics/repository/lyrics_repository.dart';
-import 'package:tunely/features/lyrics/service/lyrics_service.dart';
 import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
-import 'package:tunely/features/music_management/model/management_settings.dart';
-import 'package:tunely/features/music_management/repository/management_repository.dart';
 import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
 import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
-import 'package:tunely/features/search/repository/search_repository.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
-import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/features/sleep_mode/cubit/sleep_mode_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
-import 'package:tunely/features/stats/model/tune_stats.dart';
-import 'package:tunely/features/stats/repository/stats_repository.dart';
-import 'package:tunely/features/stats/service/stats_service.dart';
 import 'package:tunely/shared/service/artist_service.dart';
 
 void main() async {
@@ -42,11 +25,6 @@ void main() async {
 
   // Keep it portrait
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
-  // Initialize Hive
-  final dir = await getApplicationDocumentsDirectory();
-  Hive.init(dir.path);
-  Hive.registerAdapters();
 
   // Generate audio Services
   final audioHandler = await AudioService.init(
@@ -58,75 +36,23 @@ void main() async {
     ),
   );
 
-  // setup management
-  final managementBox = await Hive.openBox<ManagementSettings>(
-    'management_settings',
-  );
-  final managementRepo = ManagementRepository(managementBox);
-
-  // setup library
-  final audioQuery = OnAudioQuery();
-  final LibraryRepository libraryRepository = LibraryRepository();
-  final LibraryService libraryService = LibraryService(
-    audioQuery,
-    managementRepo,
-    libraryRepository,
-  );
-
-  // setup stats
-  final statsBox = await Hive.openBox<TuneStats>('stats_box');
-  final statsMetaBox = await Hive.openBox('stats_meta');
-  final statsRepo = StatsRepository(statsBox, statsMetaBox);
-  final stateService = StatsService(audioHandler.onTrackChanged, statsRepo);
-
-  final sessionRepo = SessionRepository();
-
-  // setup lyrics
-  final lyricsBox = await Hive.openBox<LyricsResult>('lyrics_box');
-  final lyricsRepo = LyricsRepository(box: lyricsBox);
-  final lyricsService = LyricsService(repository: lyricsRepo);
-
-  // setup customization
-  final customizationRepo = await CustomizationRepository.create();
-  final customizationService = CustomizationService(
-    query: audioQuery,
-    repo: customizationRepo,
-  );
-
-  // setup search
-  final searchRepo = SearchRepository();
-
-  // setup artist service
-  final artistService = ArtistService();
-
-  // setup onboarding
-  final onboardingRepo = await OnboardingRepository.create();
+  await TunelyInjection.init(audioHandler: audioHandler);
 
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => RootCubit()),
-        BlocProvider(create: (context) => ManagementCubit(managementRepo)),
-        BlocProvider(create: (context) => PlaybackBloc(audioHandler)),
-        BlocProvider(create: (context) => SessionCubit(sessionRepo)),
-        BlocProvider(create: (context) => StatsCubit(stateService)),
-        BlocProvider(create: (context) => SearchCubit(searchRepo)),
-        BlocProvider(
-          create: (context) =>
-              LyricsCubit(lyricsService, context.read<PlaybackBloc>()),
-        ),
-        BlocProvider(
-          create: (context) => SleepModeCubit(playbackService: audioHandler),
-        ),
-
-        BlocProvider(
-          create: (context) => LibraryCubit(service: libraryService),
-        ),
-        BlocProvider(
-          create: (context) => CustomizationCubit(customizationService),
-        ),
-        RepositoryProvider.value(value: artistService),
-        RepositoryProvider.value(value: onboardingRepo),
+        BlocProvider(create: (_) => sl<RootCubit>()),
+        BlocProvider(create: (_) => sl<ManagementCubit>()),
+        BlocProvider(create: (_) => sl<PlaybackBloc>()),
+        BlocProvider(create: (_) => sl<SessionCubit>()),
+        BlocProvider(create: (_) => sl<StatsCubit>()),
+        BlocProvider(create: (_) => sl<SearchCubit>()),
+        BlocProvider(create: (_) => sl<LyricsCubit>()),
+        BlocProvider(create: (_) => sl<SleepModeCubit>()),
+        BlocProvider(create: (_) => sl<LibraryCubit>()),
+        BlocProvider(create: (_) => sl<CustomizationCubit>()),
+        RepositoryProvider.value(value: sl<ArtistService>()),
+        RepositoryProvider.value(value: sl<OnboardingRepository>()),
       ],
       child: MyApp(),
     ),
