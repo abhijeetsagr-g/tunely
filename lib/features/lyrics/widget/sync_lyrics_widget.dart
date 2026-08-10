@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:tunely/features/lyrics/model/lyrics_result.dart';
-import 'package:tunely/features/lyrics/view/widget/lyrics_empty_state.dart';
-import 'package:tunely/features/lyrics/view/widget/synced_lyrics_list.dart';
+import 'package:tunely/features/lyrics/widget/lyrics_empty_state.dart';
+import 'package:tunely/features/lyrics/widget/synced_lyrics_list.dart';
 
 class SyncLyricsWidget extends StatelessWidget {
   const SyncLyricsWidget({super.key});

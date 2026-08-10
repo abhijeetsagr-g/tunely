@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Shown in place of [ContinueListeningCard] when there's no tune to
-/// continue (no active playback and no saved session) — a static empty
-/// state, not a loading skeleton.
 class ContinueListeningPlaceholder extends StatelessWidget {
   const ContinueListeningPlaceholder({super.key});
 

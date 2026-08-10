@@ -4,15 +4,15 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/features/library/ui/view/album/album_view.dart';
 import 'package:tunely/features/library/ui/view/artist/artist_view.dart';
-import 'package:tunely/features/lyrics/view/lyrics_view.dart';
+import 'package:tunely/features/lyrics/screen/lyrics_view.dart';
 import 'package:tunely/features/onboarding/view/onboarding_view.dart';
 import 'package:tunely/features/playback/view/player_view.dart';
 import 'package:tunely/features/playback/view/queue/queue_view.dart';
 import 'package:tunely/features/playlist/view/playlist_view.dart';
-import 'package:tunely/features/shell/shell_screen.dart';
-import 'package:tunely/features/shell/view/home/widget/daily_mix_view.dart';
-import 'package:tunely/features/shell/view/home/widget/recent_view.dart';
-import 'package:tunely/features/shell/view/splash/splash_view.dart';
+import 'package:tunely/features/shell/screen/shell_screen.dart';
+import 'package:tunely/features/shell/widget/daily_mix_view.dart';
+import 'package:tunely/features/shell/widget/recent_view.dart';
+import 'package:tunely/features/shell/screen/splash_screen.dart';
 import 'package:tunely/features/settings/screen/settings_screen.dart';
 
 class AppRouter {

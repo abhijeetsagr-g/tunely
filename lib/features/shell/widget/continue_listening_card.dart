@@ -6,7 +6,7 @@ import 'package:tunely/core/utils/extracted_gradient_container.dart';
 import 'package:tunely/core/utils/fur_artist_name.dart';
 import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/shell/view/home/widget/continue_listening_placeholder.dart';
+import 'package:tunely/features/shell/widget/continue_listening_placeholder.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 

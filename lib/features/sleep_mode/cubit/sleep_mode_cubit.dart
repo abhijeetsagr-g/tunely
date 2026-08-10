@@ -40,7 +40,8 @@ class SleepModeCubit extends Cubit<SleepModeState> {
     if (duration == null) return;
 
     final remaining = duration - position;
-    start(remaining.inSeconds.clamp(1, remaining.inSeconds));
+    final seconds = remaining.inSeconds;
+    start(seconds > 0 ? seconds : 1);
   }
 
   void _onTimerComplete() {

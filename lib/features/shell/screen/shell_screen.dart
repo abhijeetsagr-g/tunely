@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tunely/features/library/ui/view/library_view.dart';
 import 'package:tunely/features/playback/view/mini_player/mini_player.dart';
 import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
-import 'package:tunely/features/shell/view/home/home_view.dart';
-import 'package:tunely/features/shell/view/widget/bottom_nav.dart';
+import 'package:tunely/features/shell/screen/home_screen.dart';
+import 'package:tunely/features/shell/widget/bottom_nav.dart';
 import 'package:tunely/features/search/view/search_view.dart';
 
 class ShellScreen extends StatefulWidget {
