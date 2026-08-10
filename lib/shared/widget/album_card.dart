@@ -4,7 +4,7 @@ import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/core/utils/fur_artist_name.dart';
-import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
+import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
 class AlbumCard extends StatelessWidget {

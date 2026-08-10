@@ -2,27 +2,26 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:tunely/features/customization/cubit/customization_cubit.dart';
-import 'package:tunely/features/customization/service/customization_service.dart';
+import 'package:tunely/features/settings/cubit/customization_cubit.dart';
+import 'package:tunely/features/settings/service/customization_service.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:tunely/features/lyrics/service/lyrics_service.dart';
-import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
+import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/sleep_mode/cubit/sleep_mode_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/hive_registrar.g.dart';
 
-import 'package:tunely/features/customization/repository/customization_repository.dart';
+import 'package:tunely/features/settings/repository/customization_repository.dart';
 import 'package:tunely/features/library/repository/library_repository.dart';
 import 'package:tunely/features/library/service/library_service.dart';
 import 'package:tunely/features/lyrics/model/lyrics_result.dart';
 import 'package:tunely/features/lyrics/repository/lyrics_repository.dart';
-import 'package:tunely/features/music_management/model/management_settings.dart';
-import 'package:tunely/features/music_management/repository/management_repository.dart';
+import 'package:tunely/features/settings/model/management_settings.dart';
+import 'package:tunely/features/settings/repository/management_repository.dart';
 import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
 import 'package:tunely/features/search/repository/search_repository.dart';
@@ -100,7 +99,6 @@ abstract class TunelyInjection {
     sl.registerFactory<PlaybackBloc>(
       () => PlaybackBloc(audioHandler, sl<SessionRepository>()),
     );
-    sl.registerFactory<RootCubit>(() => RootCubit());
     sl.registerFactory<ManagementCubit>(
       () => ManagementCubit(sl<ManagementRepository>()),
     );

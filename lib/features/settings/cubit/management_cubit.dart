@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/features/music_management/model/management_settings.dart';
-import 'package:tunely/features/music_management/repository/management_repository.dart';
+import 'package:tunely/features/settings/model/management_settings.dart';
+import 'package:tunely/features/settings/repository/management_repository.dart';
 
 class ManagementCubit extends Cubit<ManagementSettings> {
   final ManagementRepository _repo;

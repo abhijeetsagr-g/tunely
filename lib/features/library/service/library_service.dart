@@ -5,7 +5,7 @@ import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/library/model/library_scan_result.dart';
 import 'package:tunely/features/library/repository/library_repository.dart';
 import 'package:tunely/features/library/helper/tune_parser.dart';
-import 'package:tunely/features/music_management/repository/management_repository.dart';
+import 'package:tunely/features/settings/repository/management_repository.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';
 

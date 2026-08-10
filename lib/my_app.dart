@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/const/app_router.dart';
-import 'package:tunely/features/customization/cubit/customization_cubit.dart';
+import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/features/customization/service/customization_service.dart';
+import 'package:tunely/features/settings/service/customization_service.dart';
 
 part 'customization_state.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
+import 'package:tunely/features/settings/cubit/management_cubit.dart';
 
 class MinSongDurSlider extends StatelessWidget {
   const MinSongDurSlider({super.key});

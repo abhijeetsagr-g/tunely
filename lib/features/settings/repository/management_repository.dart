@@ -1,5 +1,5 @@
 import 'package:hive_ce/hive_ce.dart';
-import 'package:tunely/features/music_management/model/management_settings.dart';
+import 'package:tunely/features/settings/model/management_settings.dart';
 
 class ManagementRepository {
   final Box<ManagementSettings> _box;

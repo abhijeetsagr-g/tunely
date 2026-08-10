@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tunely/features/customization/cubit/customization_cubit.dart';
+import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 
 class ExtractedGradientContainer extends StatefulWidget {
   const ExtractedGradientContainer({

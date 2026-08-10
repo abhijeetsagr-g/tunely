@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/root/ui/view/home/widget/top_song_page.dart';
-import 'package:tunely/features/root/ui/view/home/widget/top_songs_empty.dart';
-import 'package:tunely/features/root/ui/view/home/widget/top_songs_view.dart';
+import 'package:tunely/features/shell/view/home/widget/top_song_page.dart';
+import 'package:tunely/features/shell/view/home/widget/top_songs_empty.dart';
+import 'package:tunely/features/shell/view/home/widget/top_songs_view.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/shared/model/tune.dart';
 

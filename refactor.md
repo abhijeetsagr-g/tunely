@@ -6,7 +6,7 @@
 
 ---
 
-## Phase A — Foundations
+## Phase A — Foundations (done)
 
 ### A1. Add `get_it` + feature injection modules
 
@@ -25,7 +25,7 @@
 - [x] `my_app.dart` becomes a thin `MaterialApp`
 - [x] Verify: queue/position/shuffle survive restart
 
-## Phase B — Cleanup
+## Phase B — Cleanup (done)
 
 ### B1. Tidy `core/utlis` → `core/utils` (fix `praser`/`avater` typos)
 
@@ -39,15 +39,44 @@
 - [x] Grep-confirm zero references to `core/utlis` / old typos
 - [x] Verify: `flutter analyze` clean
 
-## Phase C — Tests
+### B2. Fix feature naming / structure
 
-### C1. Pure-logic tests
+- [x] Merge `music_management` + `customization` → `features/settings`
+  - [x] Cubits: `customization_cubit.dart`, `music_manager_cubit.dart`→`management_cubit.dart`
+  - [x] Repos: `customization_repository.dart`, `management_repository.dart`
+  - [x] Service: `customization_service.dart`; Model: `management_settings.dart`(+`.g.dart`)
+  - [x] `theme_picker.dart` moved from `shared/widget` → `settings/widgets`
+- [x] Rename `root` → `shell` (dropped the `ui/` layer)
+  - [x] `root_screen.dart` → `shell_screen.dart`, class `RootScreen` → `ShellScreen`
+  - [x] `view/home`, `view/splash`, `view/widget/bottom_nav` nested under `shell/view/`
+- [x] Delete dead `RootCubit`/`RootState` (registered in DI but never consumed)
+- [x] Delete empty vestigial `lib/ui/`
+- [x] Verify: `flutter analyze` clean
 
-- [ ] `test/core/utils/sort_test.dart` (sortTunes/sortAlbums/sortArtists: asc/desc, null track, case-insensitive)
-- [ ] `test/features/library/tune_parser_test.dart` (parser + daily-mix date-seed determinism)
-- [ ] `test/features/playback/playback_bloc_test.dart` (`bloc_test` + `mocktail`, mock `PlaybackService`)
-- [ ] `test/features/session/session_repository_test.dart` (mocked `SharedPreferences`)
-- [ ] Verify: `flutter test` green
+## Phase C — Feature-wise audit
+
+Go through each feature one at a time: check `state`/`bloc`, `repository`, `service`, `ui/`. Fix inconsistencies, then add tests for that feature before moving on.
+
+Checklist per feature:
+
+- [x] State: clean, minimal, correct transitions; no dead fields
+- [ ] Repository: consistent pattern (owns a data source), no logic leaks
+- [ ] Service: single responsibility; no duplication with other features
+- [ ] UI: reads via BlocProvider (no `sl<>` in widgets), no hand-rolled wiring
+- [ ] Tests: `bloc_test`/`mocktail` for state transitions + pure logic
+- [ ] `flutter analyze` + `flutter test` green
+
+- [ ] `features/library`
+- [ ] `features/playback`
+- [ ] `features/session`
+- [ ] `features/search`
+- [ ] `features/lyrics`
+- [ ] `features/stats`
+- [ ] `features/settings`
+- [ ] `features/shell`
+- [ ] `features/sleep_mode`
+- [ ] `features/playlist`
+- [ ] `features/onboarding`
 
 ## Phase D — Stretch (only if A-C land early)
 
@@ -63,12 +92,36 @@
 - [ ] `LyricsCubit` — depend on a playback interface, not `PlaybackBloc` directly
 - [ ] Verify: stats and lyrics still work
 
----
+## Backlog — items to fold into per-feature audits
 
-## Out of scope (for later)
+### Terminology: unify `tune` / `song` / `track`
 
-- [ ] Relocate `lib/hive_registrar.g.dart` into models/generated dir
-- [ ] Any further layer restructuring
+- [ ] Model is `Tune` (`tune.dart`, `TuneParser`, `TuneStats`, `sortTunes`, `totalTunesDurations`)
+- [ ] UI says `song` (`song_tile`, `mini_song_tile`, `song_tile_sheet`, `queue_song_tile`, `song_info`, `song_action_row`, `min_song_dur_slider`)
+- [ ] Audio layer says `track` (`onTrackChanged`)
+- [ ] App is Tunely + model is `Tune` → standardize on `tune` (mechanical, ~15 files)
+
+### Library split-brain
+
+- [ ] `library/ui/widget/{albums,artists,playlists,all_songs}_tab.dart` are the tab surfaces
+- [ ] Real screens live in `library/ui/view/{album,artist}/` (album_view, artist_view)
+- [ ] `PlaylistsTab` is a stub ("I will add this feature soon") while `features/playlist/` has a full `PlaylistBloc` + `playlist_view` used from cards/sheets. Dead tab + orphaned-but-real feature.
+
+### File-level nits
+
+- [ ] Delete dead `shared/widget/content_view.dart` (ContentView referenced nowhere)
+- [ ] `recommeded_albums.dart` typo → `recommended_albums.dart`
+- [ ] `my_search_bar.dart` → `search_bar.dart`
+- [ ] `fur_artist_name.dart`/`fur_duration.dart` → collapse into `core/utils/formatters.dart`
+- [ ] `total_song_dur.dart` → `format_total_duration.dart` (avoid clash with `total_dur.dart`)
+- [ ] Route args scattered: `AlbumViewParams` (`core/config/app_params.dart`) + `*SettingsArguments` (`core/utils/settings_arguments.dart`) → consolidate into `core/const/` (or per-feature)
+- [ ] `core/const` has 4 overlapping router files (`app_route`, `app_router`, `app_page_router`, `app_const`) → consolidate
+- [ ] `queue_widget.dart` is really a list → `queue_list.dart`
+- [ ] `search_tunes.dart` `SearchFunctions` util-class → top-level functions
+- [ ] `shared/service/artist_service.dart` is library domain logic → `features/library/service/` + fix its `RepositoryProvider` registration in `main.dart`
+- [ ] `shell` still nests `view/home` (no own cubit yet) — extract `features/home` once it gains its own state
+- [ ] `ManagementCubit`/`CustomizationCubit`/`ManagementSettings` class names — revisit during `settings` audit
 
 ## Progress notes
-<!-- append notes as you go -->
+
+- B2 done: `music_management`+`customization` → `settings`; `root` → `shell`; dead `RootCubit` deleted; `analyze` clean.

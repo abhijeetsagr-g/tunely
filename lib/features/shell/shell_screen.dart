@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:tunely/features/library/ui/view/library_view.dart';
 import 'package:tunely/features/playback/view/mini_player/mini_player.dart';
 import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
-import 'package:tunely/features/root/ui/view/home/home_view.dart';
-import 'package:tunely/features/root/ui/view/widget/bottom_nav.dart';
+import 'package:tunely/features/shell/view/home/home_view.dart';
+import 'package:tunely/features/shell/view/widget/bottom_nav.dart';
 import 'package:tunely/features/search/view/search_view.dart';
 
-class RootScreen extends StatefulWidget {
-  const RootScreen({super.key});
+class ShellScreen extends StatefulWidget {
+  const ShellScreen({super.key});
 
   @override
-  State<RootScreen> createState() => _RootScreenState();
+  State<ShellScreen> createState() => _ShellScreenState();
 }
 
-class _RootScreenState extends State<RootScreen> {
+class _ShellScreenState extends State<ShellScreen> {
   OverlayEntry? _entry;
   final _navBarKey = GlobalKey();
 

@@ -6,14 +6,13 @@ import 'package:tunely/core/di/injection.dart';
 
 import 'package:tunely/my_app.dart';
 
-import 'package:tunely/features/customization/cubit/customization_cubit.dart';
+import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
-import 'package:tunely/features/music_management/cubit/music_manager_cubit.dart';
+import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
-import 'package:tunely/features/root/cubit/root_cubit.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
 import 'package:tunely/features/session/cubit/session_cubit.dart';
 import 'package:tunely/features/sleep_mode/cubit/sleep_mode_cubit.dart';
@@ -41,7 +40,6 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => sl<RootCubit>()),
         BlocProvider(create: (_) => sl<ManagementCubit>()),
         BlocProvider(create: (_) => sl<PlaybackBloc>()),
         BlocProvider(create: (_) => sl<SessionCubit>()),

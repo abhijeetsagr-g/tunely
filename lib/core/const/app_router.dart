@@ -9,10 +9,10 @@ import 'package:tunely/features/onboarding/view/onboarding_view.dart';
 import 'package:tunely/features/playback/view/player_view.dart';
 import 'package:tunely/features/playback/view/queue/queue_view.dart';
 import 'package:tunely/features/playlist/view/playlist_view.dart';
-import 'package:tunely/features/root/ui/root_screen.dart';
-import 'package:tunely/features/root/ui/view/home/widget/daily_mix_view.dart';
-import 'package:tunely/features/root/ui/view/home/widget/recent_view.dart';
-import 'package:tunely/features/root/ui/view/splash/splash_view.dart';
+import 'package:tunely/features/shell/shell_screen.dart';
+import 'package:tunely/features/shell/view/home/widget/daily_mix_view.dart';
+import 'package:tunely/features/shell/view/home/widget/recent_view.dart';
+import 'package:tunely/features/shell/view/splash/splash_view.dart';
 import 'package:tunely/features/settings/settings_screen.dart';
 
 class AppRouter {
@@ -42,7 +42,7 @@ class AppRouter {
         return AppPageRoute(
           settings: settings,
           transition: RouteTransition.fade,
-          builder: (_) => const RootScreen(),
+          builder: (_) => const ShellScreen(),
         );
 
       case AppRoute.album:
@@ -107,7 +107,7 @@ class AppRouter {
         return AppPageRoute(
           settings: settings,
           transition: RouteTransition.fade,
-          builder: (_) => const RootScreen(),
+          builder: (_) => const ShellScreen(),
         );
     }
   }

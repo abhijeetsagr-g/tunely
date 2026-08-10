@@ -4,7 +4,7 @@ import 'package:tunely/core/const/app_const.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
-import 'package:tunely/shared/widget/theme_picker.dart';
+import 'package:tunely/features/settings/widgets/theme_picker.dart';
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
