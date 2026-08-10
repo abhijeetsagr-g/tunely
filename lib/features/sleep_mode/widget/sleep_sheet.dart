@@ -18,75 +18,153 @@ void showSleepSheet(BuildContext context) {
 class _SleepSheetContent extends StatelessWidget {
   const _SleepSheetContent();
 
+  static const _presets = <(String, int)>[
+    ("5 min", 5 * 60),
+    ("10 min", 10 * 60),
+    ("15 min", 15 * 60),
+    ("30 min", 30 * 60),
+    ("1 hr", 60 * 60),
+    ("1 hr 30 min", 90 * 60),
+    ("2 hr", 120 * 60),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SleepModeCubit>();
+    final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.only(top: 16, bottom: 24),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            "Sleep Timer",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          // Drag handle
+          Container(
+            width: 36,
+            height: 4,
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
-          const SizedBox(height: 16),
 
-          /// Quick options
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _timeButton(context, "5 min", 5 * 60),
-              _timeButton(context, "10 min", 10 * 60),
-              _timeButton(context, "15 min", 15 * 60),
-              _timeButton(context, "30 min", 30 * 60),
-              _timeButton(context, "1 hour", 60 * 60),
-              _timeButton(context, "1 hr 30 mins", 90 * 60),
-              _timeButton(context, "2 hr.. just sleep", 120 * 60),
+              Text(
+                "Sleep Timer",
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
-
           const SizedBox(height: 20),
 
-          /// Current state
           BlocBuilder<SleepModeCubit, SleepModeState>(
             builder: (context, state) {
               if (state is SleepModeOn) {
-                final minutes = state.remainingSeconds ~/ 60;
-                final seconds = state.remainingSeconds % 60;
-
-                return Column(
-                  children: [
-                    Text(
-                      "Ends in ${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}",
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(height: 10),
-                    TextButton(
-                      onPressed: () {
-                        cubit.cancel();
-                      },
-                      child: const Text("Cancel Timer"),
-                    ),
-                  ],
-                );
+                return _ActiveTimerView(state: state, cubit: cubit);
               }
-              return const Text("No timer active");
+              return _PresetPicker(cubit: cubit);
             },
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _timeButton(BuildContext context, String label, int seconds) {
-    return ElevatedButton(
-      onPressed: () {
-        context.read<SleepModeCubit>().start(seconds);
-      },
-      child: Text(label),
+class _PresetPicker extends StatelessWidget {
+  const _PresetPicker({required this.cubit});
+  final SleepModeCubit cubit;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      alignment: WrapAlignment.center,
+      children: [
+        for (final (label, seconds) in _SleepSheetContent._presets)
+          ChoiceChip(
+            label: Text(label),
+            selected: false,
+            onSelected: (_) => cubit.start(seconds),
+          ),
+        // Nice-to-have: ends the timer when the current track finishes
+        ActionChip(
+          avatar: const Icon(Icons.music_note, size: 16),
+          label: const Text("End of song"),
+          onPressed: () => cubit.startEndOfTrack(),
+        ),
+      ],
+    );
+  }
+}
+
+class _ActiveTimerView extends StatelessWidget {
+  const _ActiveTimerView({required this.state, required this.cubit});
+  final SleepModeOn state;
+  final SleepModeCubit cubit;
+
+  @override
+  Widget build(BuildContext context) {
+    final minutes = state.remainingSeconds ~/ 60;
+    final seconds = state.remainingSeconds % 60;
+    final progress = state.totalSeconds == 0
+        ? 0.0
+        : state.remainingSeconds / state.totalSeconds;
+    final endTime = TimeOfDay.fromDateTime(
+      DateTime.now().add(Duration(seconds: state.remainingSeconds)),
+    );
+
+    return Column(
+      children: [
+        SizedBox(
+          width: 96,
+          height: 96,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                width: 96,
+                height: 96,
+                child: CircularProgressIndicator(
+                  value: progress.clamp(0.0, 1.0),
+                  strokeWidth: 6,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).dividerColor.withValues(alpha: 0.3),
+                ),
+              ),
+              Text(
+                "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}",
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          "Music stops at ${endTime.format(context)}",
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 16),
+        OutlinedButton.icon(
+          onPressed: cubit.cancel,
+          icon: const Icon(Icons.close, size: 18),
+          label: const Text("Cancel Timer"),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Theme.of(context).colorScheme.error,
+            side: BorderSide(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      ],
     );
   }
 }

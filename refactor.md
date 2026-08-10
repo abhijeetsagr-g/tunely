@@ -66,17 +66,18 @@ Checklist per feature:
 - [ ] Tests: `bloc_test`/`mocktail` for state transitions + pure logic
 - [ ] `flutter analyze` + `flutter test` green
 
-- [ ] `features/library`
-- [ ] `features/playback`
-- [x] `features/session`
-- [ ] `features/search`
-- [ ] `features/lyrics`
-- [x] `features/stats`
-- [ ] `features/settings`
-- [ ] `features/shell`
-- [ ] `features/sleep_mode`
 - [ ] `features/playlist`
+- [ ] `features/playback`
+- [ ] `features/library`
+- [ ] `features/search`
 - [ ] `features/onboarding`
+- [ ] `features/lyrics`
+
+- [x] `features/sleep_mode`
+- [x] `features/session`
+- [x] `features/shell`
+- [x] `features/stats`
+- [x] `features/settings`
 
 ### Session audit notes (done)
 
@@ -95,6 +96,13 @@ Checklist per feature:
 - [ ] Deferred: `liked` is dead UI surface (model field + `isLiked`/`toggleLike`/`StatsLoaded.liked`); keep for a future Liked screen
 - [ ] Deferred (D2): `StatsService` still takes raw `audioHandler.onTrackChanged` stream; subscription never cancelled (bounded — singleton)
 - [ ] Tests to add: `_mostPlayed` order/limit, `_recent` path mapping, repo `toggleLike`/`clearAll`, service play-count dedup + recency
+
+### Settings audit notes (done)
+
+- [x] State/model/service/repo left as-is (reviewed, correct)
+- [x] **UI: `settings_screen.dart` → `ListView`** — the `CustomScrollView` used nothing but `SliverToBoxAdapter`/`SliverList` (zero lazy-loading benefit); stripped the sliver wrappers from `artist_delimiter_widget`, `cache_rescan_buttons`, `daily_mix_size_slider`, `min_song_dur_slider`, `about_widget`
+- [x] About cards updated (`Created By`/`Special Thanks`); `popUpNotifer` import added, dead `url_launcher` import removed
+- [x] `flutter analyze` clean
 
 ## Phase D — Stretch (only if A-C land early)
 

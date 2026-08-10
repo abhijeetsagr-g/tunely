@@ -13,12 +13,14 @@ class SleepModeCubit extends Cubit<SleepModeState> {
 
   Timer? _timer;
   int _remaining = 0;
+  int _total = 0;
 
   void start(int seconds) {
     _timer?.cancel();
     _remaining = seconds;
+    _total = seconds;
 
-    emit(SleepModeOn(_remaining));
+    emit(SleepModeOn(remainingSeconds: _remaining, totalSeconds: _total));
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _remaining--;
@@ -26,15 +28,26 @@ class SleepModeCubit extends Cubit<SleepModeState> {
       if (_remaining <= 0) {
         _onTimerComplete();
       } else {
-        emit(SleepModeOn(_remaining));
+        emit(SleepModeOn(remainingSeconds: _remaining, totalSeconds: _total));
       }
     });
+  }
+
+  Future<void> startEndOfTrack() async {
+    final duration = await _playbackService.durationStream.first;
+    final position = await _playbackService.positionStream.first;
+
+    if (duration == null) return;
+
+    final remaining = duration - position;
+    start(remaining.inSeconds.clamp(1, remaining.inSeconds));
   }
 
   void _onTimerComplete() {
     _playbackService.stop();
     _timer?.cancel();
     _timer = null;
+    _total = 0;
     emit(SleepModeOff());
   }
 
@@ -42,6 +55,7 @@ class SleepModeCubit extends Cubit<SleepModeState> {
   void cancel() {
     _timer?.cancel();
     _timer = null;
+    _total = 0;
     emit(SleepModeOff());
   }
 

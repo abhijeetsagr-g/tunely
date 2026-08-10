@@ -1,11 +1,19 @@
 part of 'sleep_mode_cubit.dart';
 
-abstract class SleepModeState {}
+sealed class SleepModeState {
+  const SleepModeState();
+}
 
-class SleepModeOff extends SleepModeState {}
+class SleepModeOff extends SleepModeState {
+  const SleepModeOff();
+}
 
 class SleepModeOn extends SleepModeState {
-  final int remainingSeconds;
+  const SleepModeOn({
+    required this.remainingSeconds,
+    required this.totalSeconds,
+  });
 
-  SleepModeOn(this.remainingSeconds);
+  final int remainingSeconds;
+  final int totalSeconds;
 }
