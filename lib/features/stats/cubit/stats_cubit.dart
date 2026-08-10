@@ -65,8 +65,16 @@ class StatsCubit extends Cubit<StatsState> {
   bool isLiked(String path) => _repo.get(path).isLiked;
   int playCount(String path) => _repo.get(path).playCount;
 
-  void clearAll() {
-    _repo.clearAll();
+  void clearPlayCounts() {
+    _repo.clearPlayCounts();
+  }
+
+  void clearLikes() {
+    _repo.clearLikes();
+  }
+
+  void clearRecent() {
+    _repo.clearRecentOrder();
   }
 
   @override

@@ -63,7 +63,7 @@ class TopSongsView extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              context.read<StatsCubit>().clearAll();
+              context.read<StatsCubit>().clearPlayCounts();
               Navigator.of(ctx).pop();
             },
             child: const Text('Clear All'),

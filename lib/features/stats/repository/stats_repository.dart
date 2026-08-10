@@ -35,12 +35,24 @@ class StatsRepository {
     _meta.put('recent_order', jsonEncode(order));
   }
 
-  void clearAll() {
+  void clearPlayCounts() {
     for (final stats in _box.values) {
       stats.playCount = 0;
       stats.lastPlayed = null;
       stats.save();
     }
+  }
+
+  void clearLikes() {
+    for (final stats in _box.values) {
+      if (stats.isLiked) {
+        stats.isLiked = false;
+        stats.save();
+      }
+    }
+  }
+
+  void clearRecentOrder() {
     saveRecentOrder([]);
   }
 }

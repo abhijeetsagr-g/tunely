@@ -81,7 +81,7 @@ Checklist per feature:
 ### Stats audit notes (done)
 
 - [x] Decoupled `StatsCubit.load` from splash — cubit now listens to `LibraryCubit` (also fixes stale lists after rescan)
-- [x] `clearAll()` now clears `recent_order` too (was leaving stale recency)
+- [x] Split `clearAll()` into specific clears: `clearPlayCounts()`, `clearLikes()`, `clearRecent()` (recent/playCount/likes now independent)
 - [x] Removed unused `StatsCubit` import from `splash_view.dart`
 - [ ] Deferred: `liked` is dead UI surface (model field + `isLiked`/`toggleLike`/`StatsLoaded.liked`); keep for a future Liked screen
 - [ ] Deferred (D2): `StatsService` still takes raw `audioHandler.onTrackChanged` stream; subscription never cancelled (bounded — singleton)
