@@ -41,9 +41,7 @@ class AudioEngine {
 
   Future<void> load(List<Tune> tunes, int initialIndex) async {
     await _player.setAudioSources(
-      tunes
-          .map((t) => AudioSource.uri(Uri.parse(t.path), tag: t))
-          .toList(),
+      tunes.map((t) => AudioSource.uri(Uri.parse(t.path), tag: t)).toList(),
       preload: true,
       initialIndex: initialIndex,
       initialPosition: Duration.zero,
