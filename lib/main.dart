@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/di/injection.dart';
+import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 
 import 'package:tunely/my_app.dart';
 
@@ -48,6 +49,8 @@ void main() async {
         BlocProvider(create: (_) => sl<SleepModeCubit>()),
         BlocProvider(create: (_) => sl<LibraryCubit>()),
         BlocProvider(create: (_) => sl<CustomizationCubit>()),
+        BlocProvider(create: (_) => sl<PlaylistCubit>()),
+
         RepositoryProvider.value(value: sl<ArtistService>()),
         RepositoryProvider.value(value: sl<OnboardingRepository>()),
         RepositoryProvider.value(value: sl<SessionRepository>()),

@@ -10,6 +10,7 @@ import 'package:tunely/features/lyrics/service/lyrics_service.dart';
 import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/search/cubit/search_cubit.dart';
+import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/features/sleep_mode/cubit/sleep_mode_cubit.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/hive_registrar.g.dart';
@@ -23,6 +24,8 @@ import 'package:tunely/features/settings/model/management_settings.dart';
 import 'package:tunely/features/settings/repository/management_repository.dart';
 import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
 import 'package:tunely/features/playback/service/playback_service.dart';
+import 'package:tunely/features/playlist/model/playlist.dart';
+import 'package:tunely/features/playlist/repository/playlist_repository.dart';
 import 'package:tunely/features/search/repository/search_repository.dart';
 import 'package:tunely/features/session/repository/session_repository.dart';
 import 'package:tunely/features/stats/model/tune_stats.dart';
@@ -45,6 +48,7 @@ abstract class TunelyInjection {
     final statsBox = await Hive.openBox<TuneStats>('stats_box');
     final statsMetaBox = await Hive.openBox('stats_meta');
     final lyricsBox = await Hive.openBox<LyricsResult>('lyrics_box');
+    final playlistBox = await Hive.openBox<Playlist>('playlist_box');
 
     // LazySingleton Repos
     sl.registerLazySingleton<OnAudioQuery>(() => OnAudioQuery());
@@ -64,6 +68,10 @@ abstract class TunelyInjection {
 
     sl.registerLazySingleton<LyricsRepository>(
       () => LyricsRepository(box: lyricsBox),
+    );
+
+    sl.registerLazySingleton<PlaylistRepository>(
+      () => PlaylistRepository(playlistBox),
     );
 
     final customizationRepo = await CustomizationRepository.create();
@@ -115,6 +123,12 @@ abstract class TunelyInjection {
     );
     sl.registerLazySingleton<LibraryCubit>(
       () => LibraryCubit(service: sl<LibraryService>()),
+    );
+    sl.registerLazySingleton<PlaylistCubit>(
+      () => PlaylistCubit(
+        repo: sl<PlaylistRepository>(),
+        library: sl<LibraryCubit>(),
+      ),
     );
     sl.registerLazySingleton<CustomizationCubit>(
       () => CustomizationCubit(sl<CustomizationService>()),

@@ -50,7 +50,7 @@ class _ArtistViewState extends State<ArtistView> {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             leading: IconButton(
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.keyboard_arrow_down),
+              icon: const Icon(Icons.keyboard_arrow_left),
             ),
           ),
           SliverToBoxAdapter(

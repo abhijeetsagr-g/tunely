@@ -20,15 +20,13 @@ class ManagementSettingsAdapter extends TypeAdapter<ManagementSettings> {
       artistDelimiters: fields[0] == null
           ? const ['/', ',', ';', '&', '+']
           : (fields[0] as List).cast<String>(),
-      minDurationMs: fields[1] == null ? 10000 : (fields[1] as num).toInt(),
+      minDurationMs: fields[1] == null ? 5000 : (fields[1] as num).toInt(),
       excludedFolders: fields[2] == null
           ? const []
           : (fields[2] as List).cast<String>(),
       dailyMixSize: fields[3] == null ? 10 : (fields[3] as num).toInt(),
-      dailyMixTunePaths: fields[4] == null
-          ? null
-          : (fields[4] as List).cast<String>(),
-      dailyMixDateSeed: fields[5] == null ? null : (fields[5] as num).toInt(),
+      dailyMixTunePaths: (fields[4] as List?)?.cast<String>(),
+      dailyMixDateSeed: (fields[5] as num?)?.toInt(),
     );
   }
 

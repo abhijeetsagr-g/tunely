@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/features/library/helper/sort.dart';
-import 'package:tunely/features/library/ui/widget/sort_bar.dart';
+import 'package:tunely/features/library/widget/sort_bar.dart';
 import 'package:tunely/shared/widget/album_card.dart';
 
 class AlbumsTab extends StatelessWidget {

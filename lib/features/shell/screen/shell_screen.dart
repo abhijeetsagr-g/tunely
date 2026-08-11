@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/features/library/ui/view/library_view.dart';
+import 'package:tunely/features/library/screen/library_view.dart';
 import 'package:tunely/features/playback/mini_player/mini_player.dart';
 import 'package:tunely/features/playback/mini_player/mini_player_state.dart';
 import 'package:tunely/features/shell/screen/home_screen.dart';

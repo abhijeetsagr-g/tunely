@@ -37,6 +37,8 @@ class MiniPlayerObserver extends NavigatorObserver {
       case AppRoute.lyrics:
       case AppRoute.splash:
       case AppRoute.queue:
+      case AppRoute.createPlaylist:
+      case AppRoute.editPlaylist:
         miniPlayerVisible.value = false;
         break;
 

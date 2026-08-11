@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:tunely/core/const/app_page_router.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utils/settings_arguments.dart';
-import 'package:tunely/features/library/ui/view/album/album_view.dart';
-import 'package:tunely/features/library/ui/view/artist/artist_view.dart';
+import 'package:tunely/features/library/screen/album_view.dart';
+import 'package:tunely/features/library/screen/artist_view.dart';
 import 'package:tunely/features/lyrics/screen/lyrics_view.dart';
 import 'package:tunely/features/onboarding/screen/onboarding_view.dart';
 import 'package:tunely/features/playback/screen/player_view.dart';
 import 'package:tunely/features/playback/screen/queue_view.dart';
-import 'package:tunely/features/playlist/view/playlist_view.dart';
+import 'package:tunely/features/playlist/screen/create_playlist_view.dart';
+import 'package:tunely/features/playlist/screen/detailed_playlist_view.dart';
+import 'package:tunely/features/playlist/screen/edit_playlist_view.dart';
 import 'package:tunely/features/shell/screen/shell_screen.dart';
 import 'package:tunely/features/shell/widget/daily_mix_view.dart';
 import 'package:tunely/features/shell/widget/recent_view.dart';
@@ -21,7 +23,7 @@ class AppRouter {
       case AppRoute.splash:
         return AppPageRoute(
           settings: settings,
-          transition: RouteTransition.fade,
+          transition: RouteTransition.scale,
           builder: (_) => const SplashView(),
         );
 
@@ -64,15 +66,30 @@ class AppRouter {
         final artist = settings.arguments as ArtistSettingsArguments;
         return AppPageRoute(
           settings: settings,
-          transition: RouteTransition.slide,
+          transition: RouteTransition.fade,
           builder: (_) => ArtistView(artist: artist.artist),
         );
 
       case AppRoute.playlist:
-        final playlist = settings.arguments as PlaylistSettingsArguments;
+        final arg = settings.arguments as PlaylistSettingsArguments;
         return AppPageRoute(
           settings: settings,
-          builder: (context) => PlaylistView(playlist: playlist.playlist),
+          transition: RouteTransition.slide,
+          builder: (_) => DetailedPlaylistView(playlist: arg.playlist),
+        );
+
+      case AppRoute.createPlaylist:
+        final arg = settings.arguments as CreatePlaylistSettingsArguments;
+        return AppPageRoute(
+          settings: settings,
+          builder: (_) => CreatePlaylistView(tunes: arg.tunes),
+        );
+
+      case AppRoute.editPlaylist:
+        final arg = settings.arguments as PlaylistSettingsArguments;
+        return AppPageRoute(
+          settings: settings,
+          builder: (_) => EditPlaylistView(playlist: arg.playlist),
         );
 
       case AppRoute.lyrics:

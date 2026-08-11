@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/features/library/helper/sort.dart';
-import 'package:tunely/features/library/ui/widget/sort_bar.dart';
+import 'package:tunely/features/library/widget/sort_bar.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/widget/artist_card.dart';
 

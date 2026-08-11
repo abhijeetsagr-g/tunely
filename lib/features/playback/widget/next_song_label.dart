@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
+import 'package:tunely/shared/model/tune.dart';
 
 class NextSongLabel extends StatelessWidget {
   const NextSongLabel({super.key});
@@ -16,10 +18,20 @@ class NextSongLabel extends StatelessWidget {
         final currentIndex = state.currentIndex ?? 0;
         final nextIndex = currentIndex + 1;
         final hasNext = nextIndex < state.queue.length;
-        final next = hasNext ? state.queue.elementAt(nextIndex) : null;
+
+        Tune? next = hasNext ? state.queue.elementAt(nextIndex) : null;
+        String label = next != null ? next.title.toTitleCase() : "End Of Queue";
+
+        if (!hasNext) {
+          if (state.repeatMode == LoopMode.all && state.queue.isNotEmpty) {
+            label = state.queue.first.title.toTitleCase();
+          } else if (state.repeatMode == LoopMode.one) {
+            label = state.currentItem?.title.toTitleCase() ?? "";
+          }
+        }
 
         return Text(
-          next != null ? next.title.toTitleCase() : "End Of Queue",
+          label,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,

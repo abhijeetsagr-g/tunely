@@ -5,6 +5,7 @@
 import 'package:hive_ce/hive_ce.dart';
 import 'package:tunely/features/lyrics/model/lyrics_line.dart';
 import 'package:tunely/features/lyrics/model/lyrics_result.dart';
+import 'package:tunely/features/playlist/model/playlist.dart';
 import 'package:tunely/features/settings/model/management_settings.dart';
 import 'package:tunely/features/stats/model/tune_stats.dart';
 
@@ -13,6 +14,7 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(LyricsLineAdapter());
     registerAdapter(LyricsResultAdapter());
     registerAdapter(ManagementSettingsAdapter());
+    registerAdapter(PlaylistAdapter());
     registerAdapter(TuneStatsAdapter());
   }
 }
@@ -22,6 +24,7 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
     registerAdapter(LyricsLineAdapter());
     registerAdapter(LyricsResultAdapter());
     registerAdapter(ManagementSettingsAdapter());
+    registerAdapter(PlaylistAdapter());
     registerAdapter(TuneStatsAdapter());
   }
 }

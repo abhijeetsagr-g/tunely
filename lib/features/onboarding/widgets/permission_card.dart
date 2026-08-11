@@ -18,7 +18,7 @@ class PermissionCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Material(
-      color: scheme.surfaceContainerHighest,
+      color: !granted ? Colors.redAccent : Color(0xFF4CAF50),
       borderRadius: BorderRadius.circular(16),
       clipBehavior: Clip.antiAlias,
       child: Padding(
@@ -50,11 +50,7 @@ class _GrantedState extends StatelessWidget {
       key: const ValueKey('granted'),
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(
-          Icons.check_circle_rounded,
-          color: Color(0xFF4CAF50),
-          size: 44,
-        ),
+        const Icon(Icons.check_circle_rounded, size: 44),
         const SizedBox(height: 12),
         Text(
           'Access granted',

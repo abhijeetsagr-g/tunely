@@ -1,41 +1,46 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tune_stats.dart';
+part of 'playlist.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TuneStatsAdapter extends TypeAdapter<TuneStats> {
+class PlaylistAdapter extends TypeAdapter<Playlist> {
   @override
-  final typeId = 5;
+  final typeId = 6;
 
   @override
-  TuneStats read(BinaryReader reader) {
+  Playlist read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TuneStats(
-      tuneId: fields[0] as String,
-      playCount: fields[1] == null ? 0 : (fields[1] as num).toInt(),
-      lastPlayed: fields[2] as DateTime?,
-      isLiked: fields[3] == null ? false : fields[3] as bool,
+    return Playlist(
+      name: fields[0] as String,
+      description: fields[1] as String?,
+      createdAt: fields[2] as DateTime,
+      updatedAt: fields[3] as DateTime,
+      songPaths: fields[4] == null
+          ? const []
+          : (fields[4] as List).cast<String>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, TuneStats obj) {
+  void write(BinaryWriter writer, Playlist obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.tuneId)
+      ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.playCount)
+      ..write(obj.description)
       ..writeByte(2)
-      ..write(obj.lastPlayed)
+      ..write(obj.createdAt)
       ..writeByte(3)
-      ..write(obj.isLiked);
+      ..write(obj.updatedAt)
+      ..writeByte(4)
+      ..write(obj.songPaths);
   }
 
   @override
@@ -44,7 +49,7 @@ class TuneStatsAdapter extends TypeAdapter<TuneStats> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TuneStatsAdapter &&
+      other is PlaylistAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

@@ -13,12 +13,14 @@ class SongTile extends StatelessWidget {
     required this.index,
     this.onTap,
     this.trailing,
+    this.dontPlay = false,
   });
 
   final List<Tune> tunes;
   final int index;
   final VoidCallback? onTap;
   final Widget? trailing;
+  final bool dontPlay;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +72,7 @@ class SongTile extends StatelessWidget {
             onTap: () {
               if (missing) return;
               onTap?.call();
+              if (dontPlay) return;
               playback.add(PlayQueueEvent(tunes, startIndex: index));
             },
             child: ClipRRect(

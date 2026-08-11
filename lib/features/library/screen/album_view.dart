@@ -6,7 +6,7 @@ import 'package:tunely/core/utils/animated_gradient_background.dart';
 import 'package:tunely/features/library/helper/total_song_dur.dart';
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/features/library/ui/view/album/widgets/artist_album_list.dart';
+import 'package:tunely/features/library/widget/artist_album_list.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 import 'package:tunely/shared/widget/tune_sliver_list.dart';
 import 'package:tunely/shared/widget/song_action_row.dart';
@@ -66,7 +66,7 @@ class _AlbumViewState extends State<AlbumView> {
                 surfaceTintColor: Colors.transparent,
                 leading: IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.keyboard_arrow_down),
+                  icon: const Icon(Icons.keyboard_arrow_left),
                 ),
               ),
 

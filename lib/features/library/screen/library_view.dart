@@ -5,11 +5,11 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/library/helper/sort.dart';
 import 'package:tunely/features/library/helper/total_dur.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
-import 'package:tunely/features/library/ui/widget/all_songs/all_songs_tab.dart';
-import 'package:tunely/features/library/ui/widget/albums/albums_tab.dart';
-import 'package:tunely/features/library/ui/widget/artists/artists_tab.dart';
-import 'package:tunely/features/library/ui/widget/playlists/playlists_tab.dart';
-import 'package:tunely/features/library/ui/widget/section_card.dart';
+import 'package:tunely/features/library/widget/all_songs_tab.dart';
+import 'package:tunely/features/library/widget/albums_tab.dart';
+import 'package:tunely/features/library/widget/artists_tab.dart';
+import 'package:tunely/features/library/widget/playlists_tab.dart';
+import 'package:tunely/features/library/widget/section_card.dart';
 import 'package:tunely/features/playback/mini_player/mini_player_state.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';
@@ -142,7 +142,7 @@ class _LibraryViewState extends State<LibraryView>
               onHideSinglesChanged: (hide) =>
                   setState(() => _artistHideSingles = hide),
             ),
-            _ => const PlaylistsTab(),
+            _ => PlaylistsTab(tunes: tunes),
           },
         ),
         ValueListenableBuilder<double>(

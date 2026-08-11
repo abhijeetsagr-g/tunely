@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
+import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utils/fur_duration.dart';
 import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
@@ -120,7 +121,7 @@ class _SongTileSheet extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        tune.title,
+                        tune.title.toTitleCase(),
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                           letterSpacing: -0.2,
