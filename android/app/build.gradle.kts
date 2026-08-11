@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.abhijeetsagr.tunely"
+    namespace = "com.zeenfic.tunely"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -14,7 +14,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.abhijeetsagr.tunely"
+        applicationId = "com.zeenfic.tunely"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
