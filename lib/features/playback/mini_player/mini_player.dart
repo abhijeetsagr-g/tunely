@@ -5,7 +5,7 @@ import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utils/fur_artist_name.dart';
 import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
+import 'package:tunely/features/playback/mini_player/mini_player_state.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
 class MiniPlayer extends StatefulWidget {

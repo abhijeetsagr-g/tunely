@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
+import 'package:tunely/features/playback/mini_player/mini_player_state.dart';
 
 void popUpNotifer(BuildContext context, String message) {
   const double notificationHeight = 48.0;

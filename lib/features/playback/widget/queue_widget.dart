@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/playback/view/queue/widget/queue_song_tile.dart';
+import 'package:tunely/features/playback/widget/queue_song_tile.dart';
 
 class QueueWidget extends StatelessWidget {
   const QueueWidget({super.key});

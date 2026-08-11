@@ -46,7 +46,7 @@ class PlayerAlbumArt extends StatelessWidget {
                     key: ValueKey(tune?.songId),
                     artUri: tune?.artUri,
                     size: Size(artSize, artSize),
-                    borderRadius: state.isPlaying ? 16 : 2,
+                    borderRadius: !state.isPlaying ? 2 : 8,
                   ),
                 ),
               ),

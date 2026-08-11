@@ -10,7 +10,7 @@ import 'package:tunely/features/library/ui/widget/albums/albums_tab.dart';
 import 'package:tunely/features/library/ui/widget/artists/artists_tab.dart';
 import 'package:tunely/features/library/ui/widget/playlists/playlists_tab.dart';
 import 'package:tunely/features/library/ui/widget/section_card.dart';
-import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
+import 'package:tunely/features/playback/mini_player/mini_player_state.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/action_button.dart';

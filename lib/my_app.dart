@@ -7,7 +7,7 @@ import 'package:tunely/core/const/app_router.dart';
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/playback/view/mini_player/mini_player_state.dart';
+import 'package:tunely/features/playback/mini_player/mini_player_state.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

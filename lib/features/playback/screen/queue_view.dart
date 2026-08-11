@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/playback/view/queue/widget/queue_widget.dart';
-import 'package:tunely/features/playback/view/widget/control_button.dart';
-import 'package:tunely/features/playback/view/widget/player_gradient_background.dart';
+import 'package:tunely/features/playback/widget/queue_widget.dart';
+import 'package:tunely/features/playback/widget/control_button.dart';
+import 'package:tunely/features/playback/widget/player_gradient_background.dart';
 
 class QueueView extends StatelessWidget {
   const QueueView({super.key});

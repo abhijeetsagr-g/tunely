@@ -5,12 +5,12 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
-import 'package:tunely/features/playback/view/widget/control_button.dart';
-import 'package:tunely/features/playback/view/widget/next_song_label.dart';
-import 'package:tunely/features/playback/view/widget/player_album_art.dart';
-import 'package:tunely/features/playback/view/widget/player_gradient_background.dart';
-import 'package:tunely/features/playback/view/widget/seek_bar.dart';
-import 'package:tunely/features/playback/view/widget/song_info.dart';
+import 'package:tunely/features/playback/widget/control_button.dart';
+import 'package:tunely/features/playback/widget/next_song_label.dart';
+import 'package:tunely/features/playback/widget/player_album_art.dart';
+import 'package:tunely/features/playback/widget/player_gradient_background.dart';
+import 'package:tunely/features/playback/widget/seek_bar.dart';
+import 'package:tunely/features/playback/widget/song_info.dart';
 import 'package:tunely/features/sleep_mode/widget/sleep_sheet.dart';
 
 class PlayerView extends StatelessWidget {
