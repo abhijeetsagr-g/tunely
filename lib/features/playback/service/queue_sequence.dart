@@ -75,9 +75,6 @@ class QueueSequence {
     }
   }
 
-  /// Reserves the physical slot for a new source inserted right after the
-  /// currently playing one, keeping the effective order intact. Returns null
-  /// when the current source is no longer part of the effective order.
   int? reserveInsertAfterCurrent(
     int currentPhysical, {
     required int physicalLength,

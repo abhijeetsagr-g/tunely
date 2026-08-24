@@ -1293,14 +1293,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  wave_slider_flutter:
-    dependency: "direct main"
-    description:
-      name: wave_slider_flutter
-      sha256: "2a33d0eb595a921e1da186dc6347cde16391d63d0052843ac7583ae4a601cb9b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.4"
   web:
     dependency: transitive
     description:
