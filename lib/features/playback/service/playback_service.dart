@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:tunely/features/playback/service/audio_engine.dart';
 import 'package:tunely/features/playback/service/missing_song_handler.dart';
-import 'package:tunely/features/playback/service/queue_sequence.dart';
+import 'package:tunely/features/playback/service/tunely_shuffle_order.dart';
 import 'package:tunely/shared/model/tune.dart';
 
 class CustomSequenceState {
@@ -24,8 +24,9 @@ class CustomSequenceState {
 
 class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   final _engine = AudioEngine();
-  final _sequence = QueueSequence();
   late final MissingSongHandler _missingSongHandler;
+
+  TunelyShuffleOrder get _order => _engine.shuffleOrder;
 
   int? _lastEmittedIndex;
   bool _isSwappingQueue = false;
@@ -47,7 +48,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   PlaybackService() {
     _missingSongHandler = MissingSongHandler(
       _engine,
-      _sequence,
       onUnavailable: _unavailableController.add,
       onAdvanced: _emitCustomSequence,
     );
@@ -72,19 +72,21 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
     final seqState = _engine.sequenceState;
     if (seqState == null) return;
 
-    final physical = seqState.sequence;
     final physicalIndex = seqState.currentIndex;
     if (physicalIndex == null) return;
-    if (physicalIndex >= physical.length) return;
 
-    // Safety: sync _shuffleIndices if it got out of sync with physical
-    _sequence.sync(physical.length);
+    final shuffled = seqState.shuffleModeEnabled;
+    final effectiveSources = seqState.effectiveSequence;
+    if (physicalIndex >= effectiveSources.length) return;
 
-    final physicalTunes = physical.map((s) => s.tag as Tune).toList();
-    final effectiveQueue = _sequence.effectiveQueue(physicalTunes);
-    final effectiveIndex = _sequence.effectiveIndexOf(physicalIndex);
+    final effectiveIndex = shuffled
+        ? _engine.shuffleIndices.indexOf(physicalIndex)
+        : physicalIndex;
+    if (effectiveIndex < 0 || effectiveIndex >= effectiveSources.length) return;
 
-    if (effectiveIndex < 0 || effectiveIndex >= effectiveQueue.length) return;
+    final effectiveQueue = effectiveSources
+        .map((s) => s.tag as Tune)
+        .toList(growable: false);
 
     // Update audio_service (lock screen, OS controls)
     queue.add(effectiveQueue.map((t) => t.toMediaItem()).toList());
@@ -100,7 +102,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       CustomSequenceState(
         queue: effectiveQueue,
         currentIndex: effectiveIndex,
-        shuffleEnabled: _sequence.isShuffleEnabled,
+        shuffleEnabled: shuffled,
         repeatMode: seqState.loopMode,
       ),
     );
@@ -134,7 +136,7 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
       updatePosition: _engine.position,
       bufferedPosition: _engine.bufferedPosition,
       queueIndex: _engine.currentIndex,
-      shuffleMode: _sequence.isShuffleEnabled
+      shuffleMode: _engine.shuffleModeEnabled
           ? AudioServiceShuffleMode.all
           : AudioServiceShuffleMode.none,
       repeatMode: switch (_engine.loopMode) {
@@ -159,7 +161,6 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
     try {
       await _engine.load(tunes, startIndex);
-      _sequence.prime(tunes.length, startIndex);
       _isSwappingQueue = false;
       if (autoPlay) await _engine.play();
     } on PlayerException catch (e) {
@@ -193,96 +194,54 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   @override
   Future<void> skipToNext() async {
-    if (!_sequence.isShuffleEnabled) {
-      if (_engine.hasNext) return _engine.seekToNext();
-      await _engine.seek(Duration.zero);
-      return _engine.pause();
-    }
-    final ci = _engine.currentIndex;
-    if (ci == null) return;
-    final effectiveIndex = _sequence.effectiveIndexOf(ci);
-    if (effectiveIndex == -1) return;
-
-    final next = _sequence.nextPhysical(effectiveIndex);
-    if (next != null) {
-      await _engine.seekIndex(Duration.zero, next);
-    } else if (_engine.loopMode == LoopMode.all) {
-      await _engine.seekIndex(Duration.zero, _sequence.first);
-    } else {
-      await _engine.seek(Duration.zero);
-      await _engine.pause();
-    }
+    if (_engine.hasNext) return _engine.seekToNext();
+    await _engine.seek(Duration.zero);
+    await _engine.pause();
   }
 
   @override
   Future<void> skipToPrevious() async {
     if (_engine.position.inSeconds > 3) return _engine.seek(Duration.zero);
 
-    if (!_sequence.isShuffleEnabled) return _engine.seekToPrevious();
-
-    final ci = _engine.currentIndex;
-    if (ci == null) return;
-    final effectiveIndex = _sequence.effectiveIndexOf(ci);
-    if (effectiveIndex == -1) return;
-
-    final prev = _sequence.previousPhysical(effectiveIndex);
-    if (prev != null) {
-      await _engine.seekIndex(Duration.zero, prev);
-    } else if (_engine.loopMode == LoopMode.all) {
-      await _engine.seekIndex(Duration.zero, _sequence.last);
-    } else {
-      await _engine.seek(Duration.zero);
-    }
+    if (_engine.hasPrevious) return _engine.seekToPrevious();
+    await _engine.seek(Duration.zero);
   }
 
   // Shuffle
   Future<void> setShuffle(bool enabled) async {
-    final len = _engine.sequenceState?.sequence.length ?? 0;
+    if (enabled == _engine.shuffleModeEnabled) return;
     if (enabled) {
-      _sequence.enable(len, _engine.currentIndex ?? 0);
+      await _engine.setShuffleModeEnabled(true);
+      // Reshuffle with the current item at the head of the play order.
+      await _engine.shuffle();
     } else {
-      _sequence.disable(len);
+      _order.cancelPin();
+      await _engine.setShuffleModeEnabled(false);
     }
     _emitCustomSequence();
   }
 
   // Queue Management
   Future<void> addToQueue(Tune tune) async {
-    final newIndex = _engine.sequenceState?.sequence.length ?? 0;
     _missingSongHandler.markAvailable(tune);
-    if (_sequence.isShuffleEnabled) {
-      _sequence.addAtRandom(newIndex);
-    } else {
-      _sequence.add(newIndex);
-    }
+    _order.cancelPin(); // random insert position
     await _engine.add(tune);
   }
 
   Future<void> addManyToQueue(List<Tune> tunes) async {
-    final start = _engine.sequenceState?.sequence.length ?? 0;
+    _order.cancelPin();
     for (final t in tunes) {
       _missingSongHandler.markAvailable(t);
-    }
-    for (int i = 0; i < tunes.length; i++) {
-      if (_sequence.isShuffleEnabled) {
-        _sequence.addAtRandom(start + i);
-      } else {
-        _sequence.add(start + i);
-      }
     }
     await _engine.addAll(tunes);
   }
 
+  /// Removes the item at [index] in the *effective* queue order.
   @override
   Future<void> removeQueueItemAt(int index) async {
-    if (_sequence.isShuffleEnabled) {
-      final physicalIndex = _sequence.at(index);
-      if (physicalIndex == null) return;
-      _sequence.removeAtEffective(index);
-      await _engine.removeAt(physicalIndex);
-    } else {
-      await _engine.removeAt(index);
-    }
+    final physical = _effectiveToPhysical(index);
+    if (physical == null) return;
+    await _engine.removeAt(physical);
   }
 
   @override
@@ -292,41 +251,48 @@ class PlaybackService extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   Future<void> playAfterThis(Tune tune) async {
+    final ci = _engine.currentIndex;
+    if (ci == null) return;
     _missingSongHandler.markAvailable(tune);
-    if (_sequence.isShuffleEnabled) {
-      final ci = _engine.currentIndex;
-      if (ci == null) return;
-      final target = _sequence.reserveInsertAfterCurrent(
-        ci,
-        physicalLength: _engine.sequenceState?.sequence.length ?? 0,
-      );
-      if (target == null) return;
-      await _engine.insert(tune, target);
-    } else {
-      final ci = _engine.currentIndex;
-      await _engine.insert(tune, (ci ?? 0) + 1);
+
+    if (_engine.shuffleModeEnabled) {
+      final inv = _engine.shuffleIndices.indexOf(ci);
+      if (inv != -1) _order.pinNextInsert(inv + 1);
     }
+    await _engine.insert(tune, ci + 1);
   }
 
   // Reorder
+  /// Moves the item at effective position [oldIndex] to [newIndex].
+  ///
+  /// Expressed as a single physical no-op move whose shuffle-order insert is
+  /// pinned to the target effective slot, so playback is never interrupted.
   Future<void> moveQueueItem(int oldIndex, int newIndex) async {
-    if (_sequence.isShuffleEnabled) {
-      _sequence.move(oldIndex, newIndex);
-      _emitCustomSequence();
-    } else {
-      await _engine.move(oldIndex, newIndex);
-    }
+    if (!_engine.shuffleModeEnabled) return _engine.move(oldIndex, newIndex);
+
+    final indices = _engine.shuffleIndices;
+    if (oldIndex < 0 || oldIndex >= indices.length) return;
+
+    _order.cancelPin();
+    final physical = indices[oldIndex];
+    // The dragged entry leaves a gap first; compensate for it.
+    _order.pinNextInsert(newIndex > oldIndex ? newIndex - 1 : newIndex);
+    await _engine.move(physical, physical);
   }
 
   @override
   Future<void> skipToQueueItem(int index) async {
-    if (_sequence.isShuffleEnabled) {
-      final physical = _sequence.at(index);
-      if (physical == null) return;
-      await _engine.seekIndex(Duration.zero, physical);
-    } else {
-      await _engine.seekIndex(Duration.zero, index);
-    }
+    final physical = _effectiveToPhysical(index);
+    if (physical == null) return;
+    await _engine.seekIndex(Duration.zero, physical);
+  }
+
+  /// Maps an effective queue position to its physical playlist index.
+  int? _effectiveToPhysical(int index) {
+    if (!_engine.shuffleModeEnabled) return index;
+    final indices = _engine.shuffleIndices;
+    if (index < 0 || index >= indices.length) return null;
+    return indices[index];
   }
 
   // Repeat / Speed

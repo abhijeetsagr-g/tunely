@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:just_audio/just_audio.dart';
+import 'package:tunely/features/playback/service/tunely_shuffle_order.dart';
 import 'package:tunely/shared/model/tune.dart';
 
 class AudioEngine {
   final AudioPlayer _player = AudioPlayer();
+  final TunelyShuffleOrder shuffleOrder = TunelyShuffleOrder();
 
   AudioEngine() {
     _player.processingStateStream.listen((state) {
@@ -33,11 +35,16 @@ class AudioEngine {
   ProcessingState get processingState => _player.processingState;
   int? get currentIndex => _player.currentIndex;
   bool get hasNext => _player.hasNext;
+  bool get hasPrevious => _player.hasPrevious;
   bool get playing => _player.playing;
   Duration get position => _player.position;
   Duration get bufferedPosition => _player.bufferedPosition;
   LoopMode get loopMode => _player.loopMode;
   double get speed => _player.speed;
+  bool get shuffleModeEnabled => _player.shuffleModeEnabled;
+
+  /// Physical -> effective position mapping while shuffle is enabled.
+  List<int> get shuffleIndices => _player.shuffleIndices;
 
   Future<void> load(List<Tune> tunes, int initialIndex) async {
     await _player.setAudioSources(
@@ -45,6 +52,7 @@ class AudioEngine {
       preload: true,
       initialIndex: initialIndex,
       initialPosition: Duration.zero,
+      shuffleOrder: shuffleOrder,
     );
   }
 
@@ -58,6 +66,12 @@ class AudioEngine {
       _player.seek(position, index: index);
   Future<void> setLoopMode(LoopMode mode) => _player.setLoopMode(mode);
   Future<void> setSpeed(double speed) => _player.setSpeed(speed);
+  Future<void> setShuffleModeEnabled(bool enabled) =>
+      _player.setShuffleModeEnabled(enabled);
+
+  /// Reshuffles the play order with the current item at its head and syncs
+  /// the platform player.
+  Future<void> shuffle() => _player.shuffle();
 
   Future<void> add(Tune tune) =>
       _player.addAudioSource(AudioSource.uri(Uri.parse(tune.path), tag: tune));

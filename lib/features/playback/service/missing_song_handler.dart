@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:tunely/features/playback/service/audio_engine.dart';
-import 'package:tunely/features/playback/service/queue_sequence.dart';
 import 'package:tunely/shared/model/tune.dart';
 
 /// Recovers from a source that could not be loaded or played (deleted file,
@@ -11,7 +10,6 @@ import 'package:tunely/shared/model/tune.dart';
 /// the bloc, and advances to the next track.
 class MissingSongHandler {
   final AudioEngine _engine;
-  final QueueSequence _sequence;
   final void Function(Tune) _onUnavailable;
   final void Function() _onAdvanced;
 
@@ -20,8 +18,7 @@ class MissingSongHandler {
   Tune? _pendingFailedTune;
 
   MissingSongHandler(
-    this._engine,
-    this._sequence, {
+    this._engine, {
     required void Function(Tune) onUnavailable,
     required void Function() onAdvanced,
   }) : _onUnavailable = onUnavailable,
@@ -77,13 +74,9 @@ class MissingSongHandler {
   Future<void> _handleFailedTune(Tune tune, int physicalIndex) async {
     _onUnavailable(tune);
 
-    final effectiveIndex = _sequence.isShuffleEnabled
-        ? _sequence.effectiveIndexOf(physicalIndex)
-        : physicalIndex;
-
-    if (_sequence.isShuffleEnabled && effectiveIndex != -1) {
-      _sequence.removeAtEffective(effectiveIndex);
-    }
+    final shuffled = _engine.shuffleModeEnabled;
+    final indices = _engine.shuffleIndices;
+    final effectiveIndex = shuffled ? indices.indexOf(physicalIndex) : -1;
 
     try {
       await _engine.removeAt(physicalIndex);
@@ -100,22 +93,22 @@ class MissingSongHandler {
   ) async {
     final sequence = _engine.sequenceState?.sequence;
 
-    if (_sequence.isShuffleEnabled) {
-      if (_sequence.isEmpty) {
+    if (_engine.shuffleModeEnabled) {
+      final indices = _engine.shuffleIndices;
+      if (indices.isEmpty) {
         await _engine.stop();
         return;
       }
-      int nextPhysical;
-      if (effectiveIndex >= 0 && effectiveIndex < _sequence.length) {
-        nextPhysical = _sequence.at(effectiveIndex)!;
+      // The successor now occupies the position the failed item held.
+      if (effectiveIndex >= 0 && effectiveIndex < indices.length) {
+        await _engine.seekIndex(Duration.zero, indices[effectiveIndex]);
       } else if (_engine.loopMode == LoopMode.all) {
-        nextPhysical = _sequence.first;
+        await _engine.seekIndex(Duration.zero, indices.first);
       } else {
         await _engine.seek(Duration.zero);
         await _engine.pause();
         return;
       }
-      await _engine.seekIndex(Duration.zero, nextPhysical);
     } else {
       if (sequence != null && failedPhysicalIndex < sequence.length) {
         await _engine.seekIndex(Duration.zero, failedPhysicalIndex);

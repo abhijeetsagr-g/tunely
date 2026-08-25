@@ -2,7 +2,7 @@ name: tunely
 description: "Offline Music Player."
 publish_to: "none"
 
-version: 1.0.1-beta
+version: 1.0.2-beta
 
 environment:
   sdk: ^3.11.0-296.2.beta
