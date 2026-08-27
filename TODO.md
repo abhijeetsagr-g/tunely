@@ -10,20 +10,27 @@
   - [ ] Hide Songs [Never Add to Queue if Song is not played directly, keep it greyed everywhere else]
   - [ ] Delete Songs [Integrate Refresh List From The Song]
 
-- [ ] Like/favourite List
-  - [ ] Songs [Show The List on Playlist View; Show The List on Home View]
-  - [ ] Album [Show The List on Home View]
-  - [ ] Aritst [Show The List on Home View]
-
 - [ ] Download All Lyrics
   - [ ] A Progress Pop Up [Skip, Cancel]
   - [ ] A Button on Onboarding
   - [ ] A Button on Settings
 
-- [ ] Landscape Mode For Player
-- [ ] New Logo
+- [x] New Logo
 
 ## Bugs
 
-- [ ] Shuffle Mode On Natural Progression
-- [ ] Remove some lines from random_texts; add some more
+- [x] Shuffle Mode On Natural Progression
+- [x] Remove some lines from random_texts; add some more
+
+---
+
+## Later Update
+
+> 1.2.0
+
+- [ ] Like/favourite List
+  - [ ] Songs [Show The List on Playlist View; Show The List on Home View]
+  - [ ] Album [Show The List on Home View]
+  - [ ] Aritst [Show The List on Home View]
+
+- [ ] Landscape Mode For Player

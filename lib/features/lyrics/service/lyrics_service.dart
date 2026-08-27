@@ -121,6 +121,11 @@ class LyricsService {
     }
   }
 
+  bool hasLyrics(Tune tune) {
+    final key = tune.songId?.toString() ?? tune.path;
+    return _repository.exists(key);
+  }
+
   Future<void> clearCache() => _repository.clear();
 
   // Save offset for a song

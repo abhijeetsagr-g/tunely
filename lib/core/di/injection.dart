@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 import 'package:tunely/features/settings/service/customization_service.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
+import 'package:tunely/features/lyrics/cubit/lyrics_batch_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:tunely/features/lyrics/service/lyrics_service.dart';
 import 'package:tunely/features/settings/cubit/management_cubit.dart';
@@ -117,6 +118,9 @@ abstract class TunelyInjection {
     );
     sl.registerLazySingleton<LyricsCubit>(
       () => LyricsCubit(sl<LyricsService>(), sl<PlaybackBloc>()),
+    );
+    sl.registerLazySingleton<LyricsBatchCubit>(
+      () => LyricsBatchCubit(sl<LyricsService>()),
     );
     sl.registerLazySingleton<SleepModeCubit>(
       () => SleepModeCubit(playbackService: audioHandler),

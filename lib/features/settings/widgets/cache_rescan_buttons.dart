@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/utils/show_snackbar.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
+import 'package:tunely/features/lyrics/widget/batch_download_dialog.dart';
 import 'package:tunely/shared/widget/action_button.dart';
 
 class CacheRescanButtons extends StatelessWidget {
@@ -12,26 +13,46 @@ class CacheRescanButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: ActionButton(
-              icon: Icons.cached_rounded,
-              label: 'Rescan',
-              onTap: () {
-                context.read<LibraryCubit>().rescan();
-                popUpNotifer(context, "Tunes Updated");
-              },
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: ActionButton(
+                  icon: Icons.cached_rounded,
+                  label: 'Rescan',
+                  onTap: () {
+                    context.read<LibraryCubit>().rescan();
+                    popUpNotifer(context, "Tunes Updated");
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ActionButton(
+                  icon: Icons.delete_outline_rounded,
+                  label: 'Clear cache',
+                  onTap: () {
+                    context.read<LyricsCubit>().clearCache();
+                    popUpNotifer(context, "Cache has been cleared");
+                  },
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
             child: ActionButton(
-              icon: Icons.delete_outline_rounded,
-              label: 'Clear cache',
+              icon: Icons.download_rounded,
+              label: 'Download all lyrics',
               onTap: () {
-                context.read<LyricsCubit>().clearCache();
-                popUpNotifer(context, "Cache has been cleared");
+                final libraryState = context.read<LibraryCubit>().state;
+                if (libraryState is! LibraryLoaded) {
+                  popUpNotifer(context, "Library not loaded yet");
+                  return;
+                }
+                showBatchDownloadDialog(context, libraryState.tunes);
               },
             ),
           ),

@@ -9,6 +9,7 @@ import 'package:tunely/my_app.dart';
 
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
+import 'package:tunely/features/lyrics/cubit/lyrics_batch_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/features/onboarding/repository/onboarding_repository.dart';
@@ -46,6 +47,7 @@ void main() async {
         BlocProvider(create: (_) => sl<StatsCubit>()),
         BlocProvider(create: (_) => sl<SearchCubit>()),
         BlocProvider(create: (_) => sl<LyricsCubit>()),
+        BlocProvider(create: (_) => sl<LyricsBatchCubit>()),
         BlocProvider(create: (_) => sl<SleepModeCubit>()),
         BlocProvider(create: (_) => sl<LibraryCubit>()),
         BlocProvider(create: (_) => sl<CustomizationCubit>()),
