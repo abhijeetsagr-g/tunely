@@ -69,9 +69,21 @@ class AudioEngine {
   Future<void> setShuffleModeEnabled(bool enabled) =>
       _player.setShuffleModeEnabled(enabled);
 
-  /// Reshuffles the play order with the current item at its head and syncs
-  /// the platform player.
-  Future<void> shuffle() => _player.shuffle();
+  Future<void> shuffle() async {
+    await _player.shuffle();
+
+    final ci = _player.currentIndex;
+    if (ci == null) return;
+
+    final effective = _player.effectiveIndices.indexOf(ci);
+    if (effective < 0) return;
+
+    // Remove + reinsert the current item at the same effective slot,
+    // preserving the order while forcing the platform to sync it.
+    shuffleOrder.pinNextInsert(effective);
+    await _player.moveAudioSource(ci, ci);
+    shuffleOrder.cancelPin();
+  }
 
   Future<void> add(Tune tune) =>
       _player.addAudioSource(AudioSource.uri(Uri.parse(tune.path), tag: tune));
