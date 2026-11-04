@@ -87,7 +87,7 @@ class _TopSongsSectionState extends State<TopSongsSection> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: _allTopSongsCard(
-                        topSongs,
+                        state.mostPlayed,
                         state.mostPlayed.length,
                       ),
                     );
@@ -96,7 +96,7 @@ class _TopSongsSectionState extends State<TopSongsSection> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: TopSongWidget(
                       tune: topSongs[i],
-                      queue: topSongs,
+                      queue: state.mostPlayed,
                       index: i,
                     ),
                   );
