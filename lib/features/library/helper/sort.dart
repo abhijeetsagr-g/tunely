@@ -17,9 +17,9 @@ abstract class Sort {
     final sorted = [...tunes];
     sorted.sort((a, b) {
       final cmp = switch (type) {
-        TuneSortType.name => a.title
-            .toLowerCase()
-            .compareTo(b.title.toLowerCase()),
+        TuneSortType.name => a.title.toLowerCase().compareTo(
+          b.title.toLowerCase(),
+        ),
         TuneSortType.dateAdded => a.dateAdded.compareTo(b.dateAdded),
         TuneSortType.duration => a.duration.compareTo(b.duration),
       };
@@ -37,12 +37,13 @@ abstract class Sort {
     final sorted = [...albums];
     sorted.sort((a, b) {
       final cmp = switch (type) {
-        AlbumSort.name => a.album
-            .toLowerCase()
-            .compareTo(b.album.toLowerCase()),
+        AlbumSort.name => a.album.toLowerCase().compareTo(
+          b.album.toLowerCase(),
+        ),
         AlbumSort.songCount => a.numOfSongs.compareTo(b.numOfSongs),
-        AlbumSort.duration => (durations?[a.id] ?? Duration.zero)
-            .compareTo(durations?[b.id] ?? Duration.zero),
+        AlbumSort.duration => (durations?[a.id] ?? Duration.zero).compareTo(
+          durations?[b.id] ?? Duration.zero,
+        ),
       };
       return ascending ? cmp : -cmp;
     });
@@ -57,9 +58,9 @@ abstract class Sort {
     final sorted = [...artists];
     sorted.sort((a, b) {
       final cmp = switch (type) {
-        ArtistSort.name => a.artist
-            .toLowerCase()
-            .compareTo(b.artist.toLowerCase()),
+        ArtistSort.name => a.artist.toLowerCase().compareTo(
+          b.artist.toLowerCase(),
+        ),
         ArtistSort.songCount => a.tunes.length.compareTo(b.tunes.length),
       };
       return ascending ? cmp : -cmp;

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/di/injection.dart';
+import 'package:tunely/features/library/cubit/library_sort_cubit.dart';
 import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 
 import 'package:tunely/my_app.dart';
@@ -42,6 +43,7 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => sl<LibrarySortCubit>()),
         BlocProvider(create: (_) => sl<ManagementCubit>()),
         BlocProvider(create: (_) => sl<PlaybackBloc>()),
         BlocProvider(create: (_) => sl<StatsCubit>()),

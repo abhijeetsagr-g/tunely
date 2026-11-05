@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
-import 'package:tunely/features/library/helper/sort.dart';
 import 'package:tunely/features/library/helper/total_dur.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
+import 'package:tunely/features/library/cubit/library_sort_cubit.dart';
 import 'package:tunely/features/library/widget/all_songs_tab.dart';
 import 'package:tunely/features/library/widget/albums_tab.dart';
 import 'package:tunely/features/library/widget/artists_tab.dart';
@@ -25,14 +25,6 @@ class LibraryView extends StatefulWidget {
 class _LibraryViewState extends State<LibraryView>
     with AutomaticKeepAliveClientMixin {
   int _selectedIndex = 0;
-  TuneSortType _tuneSortType = TuneSortType.name;
-  bool _tuneSortAscending = true;
-  AlbumSort _albumSortType = AlbumSort.songCount;
-  bool _albumSortAscending = true;
-  bool _albumHideSingles = true;
-  ArtistSort _artistSortType = ArtistSort.name;
-  bool _artistSortAscending = true;
-  bool _artistHideSingles = true;
 
   @override
   bool get wantKeepAlive => true;
@@ -107,40 +99,44 @@ class _LibraryViewState extends State<LibraryView>
     List<AlbumModel> albums,
     List<Artist> artists,
   ) {
+    final sort = context.watch<LibrarySortCubit>().state;
+    final sortCubit = context.read<LibrarySortCubit>();
+
     return Column(
       children: [
         Expanded(
           child: switch (_selectedIndex) {
             0 => AllSongsTab(
               tunes: tunes,
-              sortType: _tuneSortType,
-              ascending: _tuneSortAscending,
-              onSortChanged: (type) => setState(() => _tuneSortType = type),
+              sortType: sort.tuneSortType,
+              ascending: sort.tuneSortAsc,
+              onSortChanged: (type) =>
+                  sortCubit.setTuneSort(type, sort.tuneSortAsc),
               onDirectionChanged: (ascending) =>
-                  setState(() => _tuneSortAscending = ascending),
+                  sortCubit.setTuneSort(sort.tuneSortType, ascending),
             ),
             1 => AlbumsTab(
               albums: albums,
               durations: totalDurationBy(tunes, (tune) => tune.albumId),
-              sortType: _albumSortType,
-              ascending: _albumSortAscending,
-              onSortChanged: (type) => setState(() => _albumSortType = type),
+              sortType: sort.albumSort,
+              ascending: sort.albumSortAsc,
+              onSortChanged: (type) =>
+                  sortCubit.setAlbumSort(type, sort.albumSortAsc),
               onDirectionChanged: (ascending) =>
-                  setState(() => _albumSortAscending = ascending),
-              hideSingles: _albumHideSingles,
-              onHideSinglesChanged: (hide) =>
-                  setState(() => _albumHideSingles = hide),
+                  sortCubit.setAlbumSort(sort.albumSort, ascending),
+              hideSingles: sort.albumHideSingles,
+              onHideSinglesChanged: sortCubit.setAlbumHideSingles,
             ),
             2 => ArtistsTab(
               artists: artists,
-              sortType: _artistSortType,
-              ascending: _artistSortAscending,
-              onSortChanged: (type) => setState(() => _artistSortType = type),
+              sortType: sort.artistSort,
+              ascending: sort.artistSortAsc,
+              onSortChanged: (type) =>
+                  sortCubit.setArtistSort(type, sort.artistSortAsc),
               onDirectionChanged: (ascending) =>
-                  setState(() => _artistSortAscending = ascending),
-              hideSingles: _artistHideSingles,
-              onHideSinglesChanged: (hide) =>
-                  setState(() => _artistHideSingles = hide),
+                  sortCubit.setArtistSort(sort.artistSort, ascending),
+              hideSingles: sort.artistHideSingles,
+              onHideSinglesChanged: sortCubit.setArtistHideSingles,
             ),
             _ => PlaylistsTab(tunes: tunes),
           },

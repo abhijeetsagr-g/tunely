@@ -2,9 +2,11 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tunely/features/library/repository/library_sort_repository.dart';
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 import 'package:tunely/features/settings/service/customization_service.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
+import 'package:tunely/features/library/cubit/library_sort_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_batch_cubit.dart';
 import 'package:tunely/features/lyrics/cubit/lyrics_cubit.dart';
 import 'package:tunely/features/lyrics/service/lyrics_service.dart';
@@ -78,6 +80,9 @@ abstract class TunelyInjection {
     final customizationRepo = await CustomizationRepository.create();
     sl.registerLazySingleton<CustomizationRepository>(() => customizationRepo);
 
+    final librarySortRepo = await LibrarySortRepo.create();
+    sl.registerLazySingleton<LibrarySortRepo>(() => librarySortRepo);
+
     final onboardingRepo = await OnboardingRepository.create();
     sl.registerLazySingleton<OnboardingRepository>(() => onboardingRepo);
 
@@ -127,6 +132,9 @@ abstract class TunelyInjection {
     );
     sl.registerLazySingleton<LibraryCubit>(
       () => LibraryCubit(service: sl<LibraryService>()),
+    );
+    sl.registerLazySingleton<LibrarySortCubit>(
+      () => LibrarySortCubit(sl<LibrarySortRepo>()),
     );
     sl.registerLazySingleton<PlaylistCubit>(
       () => PlaylistCubit(
