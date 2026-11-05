@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/const/app_router.dart';
+import 'package:tunely/core/utils/app_navigator.dart';
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
@@ -52,6 +53,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ],
 
       child: MaterialApp(
+        navigatorKey: rootNavigatorKey,
         navigatorObservers: [MiniPlayerObserver()],
         onGenerateRoute: AppRouter.onGenerateRoute,
         initialRoute: AppRoute.splash,

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
+import 'package:tunely/core/errors/app_error.dart';
 import 'package:tunely/features/library/service/library_service.dart';
 import 'package:tunely/shared/model/artist.dart';
 import 'package:tunely/shared/model/tune.dart';
@@ -38,8 +39,10 @@ class LibraryCubit extends Cubit<LibraryState> {
           recommendedAlbums: _pickRandomAlbums(result.albums, result.tunes),
         ),
       );
-    } catch (e) {
-      emit(LibraryError(e.toString()));
+    } catch (e, st) {
+      emit(
+        LibraryError(AppError.from(e, st, origin: 'LibraryCubit.initialLoad')),
+      );
     }
   }
 

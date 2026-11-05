@@ -30,20 +30,19 @@ class LibraryLoaded extends LibraryState {
     List<GenreModel>? genres,
     List<Tune>? dailyMix,
     List<AlbumModel>? recommendedAlbums,
-  }) =>
-      LibraryLoaded(
-        tunes: tunes ?? this.tunes,
-        artists: artists ?? this.artists,
-        albums: albums ?? this.albums,
-        genres: genres ?? this.genres,
-        dailyMix: dailyMix ?? this.dailyMix,
-        recommendedAlbums: recommendedAlbums ?? this.recommendedAlbums,
-      );
+  }) => LibraryLoaded(
+    tunes: tunes ?? this.tunes,
+    artists: artists ?? this.artists,
+    albums: albums ?? this.albums,
+    genres: genres ?? this.genres,
+    dailyMix: dailyMix ?? this.dailyMix,
+    recommendedAlbums: recommendedAlbums ?? this.recommendedAlbums,
+  );
 }
 
 class LibraryError extends LibraryState {
-  final String message;
-  LibraryError(this.message);
+  final AppError error;
+  LibraryError(this.error);
 }
 
 class LibraryPermissionDenied extends LibraryState {}

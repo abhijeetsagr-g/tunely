@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
+import 'package:tunely/core/utils/error_dialog.dart';
 import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/features/library/widget/playlist_tile.dart';
 import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
@@ -46,8 +47,21 @@ class _PlaylistsTabState extends State<PlaylistsTab> {
           PlaylistsLoading() => const Center(
             child: CircularProgressIndicator(),
           ),
-          PlaylistsError(:final message) => Center(
-            child: Text('Error: $message'),
+          PlaylistsError(:final error) => Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('Error: ${error.message}'),
+                TextButton(
+                  onPressed: () => showErrorDialog(
+                    context,
+                    error: error,
+                    allowDismiss: true,
+                  ),
+                  child: const Text('View details'),
+                ),
+              ],
+            ),
           ),
           PlaylistsLoaded(:final playlists) => RefreshIndicator(
             onRefresh: () => context.read<PlaylistCubit>().loadPlaylists(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:tunely/core/const/app_route.dart';
+import 'package:tunely/core/utils/error_dialog.dart';
 import 'package:tunely/features/library/helper/total_dur.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/library/cubit/library_sort_cubit.dart';
@@ -61,7 +62,7 @@ class _LibraryViewState extends State<LibraryView>
               LibraryPermissionDenied() => const Center(
                 child: Text("Storage permission denied."),
               ),
-              LibraryError(:final message) => Center(
+              LibraryError(:final error) => Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -69,9 +70,17 @@ class _LibraryViewState extends State<LibraryView>
                     children: [
                       Center(
                         child: Text(
-                          "Error: $message",
+                          "Error: ${error.message}",
                           textAlign: TextAlign.center,
                         ),
+                      ),
+                      TextButton(
+                        onPressed: () => showErrorDialog(
+                          context,
+                          error: error,
+                          allowDismiss: true,
+                        ),
+                        child: const Text('View details'),
                       ),
                       ActionButton(
                         icon: Icons.cached_rounded,

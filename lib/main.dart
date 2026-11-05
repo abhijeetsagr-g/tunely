@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/di/injection.dart';
+import 'package:tunely/core/errors/error_reporter.dart';
 import 'package:tunely/features/library/cubit/library_sort_cubit.dart';
 import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 
@@ -24,6 +25,7 @@ import 'package:tunely/shared/service/artist_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  installGlobalErrorHandlers();
 
   // Keep it portrait
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

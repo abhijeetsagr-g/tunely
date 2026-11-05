@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tunely/core/errors/app_error.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playlist/model/playlist.dart';
 import 'package:tunely/features/playlist/model/playlist_detail.dart';
@@ -41,8 +42,12 @@ class PlaylistCubit extends Cubit<PlaylistState> {
     emit(PlaylistsLoading());
     try {
       emit(PlaylistsLoaded(playlists: _repo.getAll(), detail: detail));
-    } catch (e) {
-      emit(PlaylistsError(e.toString()));
+    } catch (e, st) {
+      emit(
+        PlaylistsError(
+          AppError.from(e, st, origin: 'PlaylistCubit.loadPlaylists'),
+        ),
+      );
     }
   }
 
@@ -61,11 +66,18 @@ class PlaylistCubit extends Cubit<PlaylistState> {
           detail: PlaylistDetail(playlist: playlist, tunes: tunes),
         ),
       );
-    } catch (e) {
+    } catch (e, st) {
       emit(
         PlaylistsLoaded(
           playlists: _repo.getAll(),
-          detail: PlaylistDetail(playlist: playlist, error: e.toString()),
+          detail: PlaylistDetail(
+            playlist: playlist,
+            error: AppError.from(
+              e,
+              st,
+              origin: 'PlaylistCubit.loadPlaylistDetail',
+            ),
+          ),
         ),
       );
     }

@@ -1,4 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tunely/core/errors/app_error.dart';
+import 'package:tunely/core/utils/error_dialog.dart';
 import 'package:tunely/features/settings/widgets/about_widget.dart';
 import 'package:tunely/features/settings/widgets/accent_color_picker.dart';
 import 'package:tunely/features/settings/widgets/artist_delimiter_widget.dart';

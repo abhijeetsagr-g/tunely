@@ -42,12 +42,12 @@ class _SplashViewState extends State<SplashView> {
 
     // Load saved session
     final session = await sessionRepository.load();
+    final libraryState = library.state;
 
     if (session != null &&
         session.tunePaths.isNotEmpty &&
-        library.state is LibraryLoaded) {
+        libraryState is LibraryLoaded) {
       // Resolve paths → Tune objects from loaded library
-      final libraryState = library.state as LibraryLoaded;
       final allTunes = libraryState.tunes;
 
       final tuneMap = {for (final t in allTunes) t.path: t};
@@ -73,10 +73,11 @@ class _SplashViewState extends State<SplashView> {
     if (!mounted) return;
 
     // Prefetch artist images in background (don't block navigation)
-    final artistNames = (library.state as LibraryLoaded).artists.map(
-      (a) => a.artist,
-    );
-    context.read<ArtistService>().preFetch(artistNames);
+    final loadedLibrary = library.state;
+    if (loadedLibrary is LibraryLoaded) {
+      final artistNames = loadedLibrary.artists.map((a) => a.artist);
+      context.read<ArtistService>().preFetch(artistNames);
+    }
 
     Navigator.pushReplacementNamed(context, AppRoute.root);
   }

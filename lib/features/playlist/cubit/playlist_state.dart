@@ -15,6 +15,6 @@ class PlaylistsLoaded extends PlaylistState {
 }
 
 class PlaylistsError extends PlaylistState {
-  final String message;
-  PlaylistsError(this.message);
+  final AppError error;
+  PlaylistsError(this.error);
 }
