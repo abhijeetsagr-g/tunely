@@ -6,7 +6,7 @@ import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/features/playlist/model/playlist.dart';
 import 'package:tunely/features/playlist/widgets/field_with_inner_counter.dart';
-import 'package:tunely/features/playlist/widgets/playlist_song_list.dart';
+import 'package:tunely/features/playlist/widgets/playlist_song_list/playlist_song_list.dart';
 
 class EditPlaylistView extends StatefulWidget {
   const EditPlaylistView({super.key, required this.playlist});
@@ -20,10 +20,12 @@ class EditPlaylistView extends StatefulWidget {
 class _EditPlaylistViewState extends State<EditPlaylistView> {
   late final TextEditingController _nameController;
   late final TextEditingController _desController;
-  final Set<int> _selectedSongIds = {};
+
+  /// Selected song paths, in playlist order.
+  List<String> _selectedPaths = [];
 
   bool get _canSubmit =>
-      _nameController.text.trim().isNotEmpty || _selectedSongIds.isNotEmpty;
+      _nameController.text.trim().isNotEmpty || _selectedPaths.isNotEmpty;
 
   @override
   void initState() {
@@ -36,23 +38,19 @@ class _EditPlaylistViewState extends State<EditPlaylistView> {
     _desController.addListener(_onChanged);
 
     final library = context.read<LibraryCubit>().state;
-    if (library is LibraryLoaded) {
-      final paths = widget.playlist.songPaths.toSet();
-      _selectedSongIds.addAll({
-        for (final t in library.tunes)
-          if (t.songId != null && paths.contains(t.path)) t.songId!,
-      });
-    }
+    final available = library is LibraryLoaded
+        ? {for (final t in library.tunes) t.path}
+        : const <String>{};
+    _selectedPaths = [
+      for (final path in widget.playlist.songPaths)
+        if (available.isEmpty || available.contains(path)) path,
+    ];
   }
 
   void _onChanged() => setState(() {});
 
-  void _onSelectionChanged(Set<int> songIds) {
-    setState(() {
-      _selectedSongIds
-        ..clear()
-        ..addAll(songIds);
-    });
+  void _onSelectionChanged(List<String> paths) {
+    setState(() => _selectedPaths = List.of(paths));
   }
 
   void _confirmDelete() {
@@ -100,17 +98,8 @@ class _EditPlaylistViewState extends State<EditPlaylistView> {
         ? _defaultName
         : _nameController.text.trim();
     final description = _desController.text.trim();
-    final paths = widget.playlist.songPaths.toSet();
-
-    final library = context.read<LibraryCubit>().state;
-    final newPaths = library is LibraryLoaded
-        ? library.tunes
-              .where(
-                (t) => t.songId != null && _selectedSongIds.contains(t.songId),
-              )
-              .map((t) => t.path)
-              .toList()
-        : const <String>[];
+    final originalPaths = List<String>.of(widget.playlist.songPaths);
+    final newPaths = List<String>.of(_selectedPaths);
 
     final cubit = context.read<PlaylistCubit>();
     if (name != widget.playlist.name) {
@@ -122,7 +111,7 @@ class _EditPlaylistViewState extends State<EditPlaylistView> {
         description.isEmpty ? null : description,
       );
     }
-    if (!setEquals(newPaths.toSet(), paths)) {
+    if (!listEquals(newPaths, originalPaths)) {
       await cubit.reorderSongs(widget.playlist, newPaths);
     }
     if (!mounted) return;
@@ -173,35 +162,34 @@ class _EditPlaylistViewState extends State<EditPlaylistView> {
                         ],
                       ),
                       SliverPadding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        sliver: SliverToBoxAdapter(
+                          child: Column(
+                            children: [
+                              FieldWithInnerCounter(
+                                controller: _nameController,
+                                hint: 'Playlist name',
+                                icon: Icons.queue_music_rounded,
+                                maxLength: 100,
+                              ),
+                              const SizedBox(height: 16),
+                              FieldWithInnerCounter(
+                                controller: _desController,
+                                hint: 'Description',
+                                icon: Icons.notes_rounded,
+                                maxLength: 300,
+                                minLines: 2,
+                                maxLines: 4,
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+                          ),
                         ),
-                        sliver: SliverList(
-                          delegate: SliverChildListDelegate([
-                            FieldWithInnerCounter(
-                              controller: _nameController,
-                              hint: 'Playlist name',
-                              icon: Icons.queue_music_rounded,
-                              maxLength: 100,
-                            ),
-                            const SizedBox(height: 16),
-                            FieldWithInnerCounter(
-                              controller: _desController,
-                              hint: 'Description',
-                              icon: Icons.notes_rounded,
-                              maxLength: 300,
-                              minLines: 2,
-                              maxLines: 4,
-                            ),
-                            const SizedBox(height: 16),
-                            PlaylistSongList(
-                              tunes: libraryState.tunes,
-                              initialSelected: _selectedSongIds,
-                              onSelectionChanged: _onSelectionChanged,
-                            ),
-                          ]),
-                        ),
+                      ),
+                      PlaylistSongList(
+                        tunes: libraryState.tunes,
+                        initialSelected: _selectedPaths,
+                        onSelectionChanged: _onSelectionChanged,
                       ),
                     ],
                   )

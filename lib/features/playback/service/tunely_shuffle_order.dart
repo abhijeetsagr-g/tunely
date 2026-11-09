@@ -12,8 +12,6 @@ class TunelyShuffleOrder extends DefaultShuffleOrder {
 
   TunelyShuffleOrder();
 
-  /// Pins the effective position of the next single-item insert. The value
-  /// is clamped when consumed, so positions past the end append.
   void pinNextInsert(int effectivePosition) {
     _pinnedPosition = effectivePosition < 0 ? 0 : effectivePosition;
   }

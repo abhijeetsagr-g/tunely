@@ -33,8 +33,9 @@ class SongTile extends StatelessWidget {
             curr.missingPaths.contains(tune.path)) {
           return true;
         }
-        if (prev.currentItem?.path != curr.currentItem?.path) return true;
+        final wasCurrent = prev.currentItem?.path == tune.path;
         final isCurrent = curr.currentItem?.path == tune.path;
+        if (wasCurrent != isCurrent) return true;
         if (!isCurrent) return false;
         return prev.position != curr.position || prev.duration != curr.duration;
       },

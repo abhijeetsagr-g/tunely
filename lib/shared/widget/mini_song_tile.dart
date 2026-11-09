@@ -24,7 +24,8 @@ class MiniSongTile extends StatelessWidget {
 
     return BlocBuilder<PlaybackBloc, PlaybackState>(
       buildWhen: (prev, curr) =>
-          prev.currentItem?.path != curr.currentItem?.path ||
+          (prev.currentItem?.path == tune.path) !=
+              (curr.currentItem?.path == tune.path) ||
           prev.missingPaths.contains(tune.path) !=
               curr.missingPaths.contains(tune.path),
       builder: (context, state) {

@@ -26,10 +26,13 @@ class PlaylistCubit extends Cubit<PlaylistState> {
     }
     _librarySub = library.stream.listen((state) {
       if (state is! LibraryLoaded) return;
+      // Several LibraryCubit operations (daily mix refresh, recommended
+      // albums, etc.) re-emit LibraryLoaded with the same tune list. Only
+      // re-resolve the open playlist when the songs actually changed.
+      if (identical(state.tunes, _tunes)) return;
       _tunes = state.tunes;
-      if (_currentDetail.playlist != null) {
-        loadPlaylistDetail(_currentDetail.playlist!);
-      }
+      final playlist = _currentDetail.playlist;
+      if (playlist != null) loadPlaylistDetail(playlist);
     });
   }
 
@@ -37,46 +40,46 @@ class PlaylistCubit extends Cubit<PlaylistState> {
       ? (state as PlaylistsLoaded).detail
       : const PlaylistDetail();
 
+  /// Emits a single loaded state. Never emits an intermediate loading state,
+  /// so mutations do not flash a spinner over the list.
+  void _emitLoaded({PlaylistDetail? detail}) {
+    if (isClosed) return;
+    emit(
+      PlaylistsLoaded(
+        playlists: _repo.getAll(),
+        detail: detail ?? _currentDetail,
+      ),
+    );
+  }
+
+  void _emitError(Object error, StackTrace stack, String origin) {
+    if (isClosed) return;
+    emit(PlaylistsError(AppError.from(error, stack, origin: origin)));
+  }
+
   Future<void> loadPlaylists() async {
-    final detail = _currentDetail;
-    emit(PlaylistsLoading());
     try {
-      emit(PlaylistsLoaded(playlists: _repo.getAll(), detail: detail));
+      _emitLoaded();
     } catch (e, st) {
-      emit(
-        PlaylistsError(
-          AppError.from(e, st, origin: 'PlaylistCubit.loadPlaylists'),
-        ),
-      );
+      _emitError(e, st, 'PlaylistCubit.loadPlaylists');
     }
   }
 
   Future<void> loadPlaylistDetail(Playlist playlist) async {
-    emit(
-      PlaylistsLoaded(
-        playlists: _repo.getAll(),
-        detail: PlaylistDetail(playlist: playlist, isLoading: true),
-      ),
-    );
+    _emitLoaded(detail: PlaylistDetail(playlist: playlist, isLoading: true));
     try {
       final tunes = await _resolveAndPrune(playlist);
-      emit(
-        PlaylistsLoaded(
-          playlists: _repo.getAll(),
-          detail: PlaylistDetail(playlist: playlist, tunes: tunes),
-        ),
+      _emitLoaded(
+        detail: PlaylistDetail(playlist: playlist, tunes: tunes),
       );
     } catch (e, st) {
-      emit(
-        PlaylistsLoaded(
-          playlists: _repo.getAll(),
-          detail: PlaylistDetail(
-            playlist: playlist,
-            error: AppError.from(
-              e,
-              st,
-              origin: 'PlaylistCubit.loadPlaylistDetail',
-            ),
+      _emitLoaded(
+        detail: PlaylistDetail(
+          playlist: playlist,
+          error: AppError.from(
+            e,
+            st,
+            origin: 'PlaylistCubit.loadPlaylistDetail',
           ),
         ),
       );
@@ -88,50 +91,104 @@ class PlaylistCubit extends Cubit<PlaylistState> {
     String? description,
     List<String> songPaths = const [],
   }) async {
-    await _repo.create(
-      name: name,
-      description: description,
-      songPaths: songPaths,
-    );
-    await loadPlaylists();
+    try {
+      await _repo.create(
+        name: name,
+        description: description,
+        songPaths: songPaths,
+      );
+    } catch (e, st) {
+      _emitError(e, st, 'PlaylistCubit.createPlaylist');
+      return;
+    }
+    _emitLoaded();
   }
 
   Future<void> renamePlaylist(Playlist playlist, String name) async {
-    await _repo.rename(playlist, name);
-    await loadPlaylists();
+    // The repository mutates synchronously, so the new name/order is visible
+    // before the disk write completes (optimistic UI).
+    final pending = _repo.rename(playlist, name);
+    _emitLoaded();
+    await _persist(pending, 'PlaylistCubit.renamePlaylist');
   }
 
   Future<void> deletePlaylist(Playlist playlist) async {
-    await _repo.delete(playlist);
-    await loadPlaylists();
+    final deletingCurrent = _currentDetail.playlist?.key == playlist.key;
+    try {
+      await _repo.delete(playlist);
+    } catch (e, st) {
+      _emitError(e, st, 'PlaylistCubit.deletePlaylist');
+      return;
+    }
+    if (deletingCurrent) {
+      _emitLoaded(detail: const PlaylistDetail());
+    } else {
+      _emitLoaded();
+    }
   }
 
   Future<void> setDescription(Playlist playlist, String? description) async {
-    await _repo.setDescription(playlist, description);
-    await loadPlaylists();
+    final pending = _repo.setDescription(playlist, description);
+    _emitLoaded();
+    await _persist(pending, 'PlaylistCubit.setDescription');
   }
 
   Future<void> addSongs(Playlist playlist, List<String> paths) async {
     if (paths.isEmpty) return;
-    await _repo.addSongs(playlist, paths);
+    try {
+      await _repo.addSongs(playlist, paths);
+    } catch (e, st) {
+      _emitError(e, st, 'PlaylistCubit.addSongs');
+      return;
+    }
     await _refreshFor(playlist);
   }
 
   Future<void> removeSong(Playlist playlist, String path) async {
-    await _repo.removeSong(playlist, path);
+    try {
+      await _repo.removeSong(playlist, path);
+    } catch (e, st) {
+      _emitError(e, st, 'PlaylistCubit.removeSong');
+      return;
+    }
     await _refreshFor(playlist);
   }
 
   Future<void> reorderSongs(Playlist playlist, List<String> paths) async {
-    await _repo.reorderSongs(playlist, paths);
+    try {
+      await _repo.reorderSongs(playlist, paths);
+    } catch (e, st) {
+      _emitError(e, st, 'PlaylistCubit.reorderSongs');
+      return;
+    }
     await _refreshFor(playlist);
   }
 
   Future<void> _refreshFor(Playlist playlist) async {
-    if (_currentDetail.playlist?.key == playlist.key) {
-      await loadPlaylistDetail(playlist);
-    } else {
-      await loadPlaylists();
+    if (_currentDetail.playlist?.key != playlist.key) {
+      _emitLoaded();
+      return;
+    }
+    try {
+      final tunes = await _resolveAndPrune(playlist);
+      _emitLoaded(
+        detail: PlaylistDetail(playlist: playlist, tunes: tunes),
+      );
+    } catch (e, st) {
+      _emitLoaded(
+        detail: PlaylistDetail(
+          playlist: playlist,
+          error: AppError.from(e, st, origin: 'PlaylistCubit.refreshPlaylist'),
+        ),
+      );
+    }
+  }
+
+  Future<void> _persist(Future<void> pending, String origin) async {
+    try {
+      await pending;
+    } catch (e, st) {
+      _emitError(e, st, origin);
     }
   }
 
@@ -148,7 +205,7 @@ class PlaylistCubit extends Cubit<PlaylistState> {
       }
     }
     if (stale.isNotEmpty) {
-      await _repo.reorderSongs(playlist, resolved.map((t) => t.path).toList());
+      await _repo.pruneMissing(playlist, resolved.map((t) => t.path).toList());
     }
     return resolved;
   }

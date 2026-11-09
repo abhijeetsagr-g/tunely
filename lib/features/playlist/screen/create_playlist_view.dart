@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/features/playlist/widgets/field_with_inner_counter.dart';
-import 'package:tunely/features/playlist/widgets/playlist_song_list.dart';
+import 'package:tunely/features/playlist/widgets/playlist_song_list/playlist_song_list.dart';
 import 'package:tunely/shared/model/tune.dart';
 
 class CreatePlaylistView extends StatefulWidget {
@@ -17,7 +17,9 @@ class CreatePlaylistView extends StatefulWidget {
 class _CreatePlaylistViewState extends State<CreatePlaylistView> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController desController = TextEditingController();
-  final Set<String> _selectedPaths = {};
+
+  /// Selected song paths, in playlist order.
+  List<String> _selectedPaths = [];
 
   bool get _canSubmit =>
       titleController.text.trim().isNotEmpty || _selectedPaths.isNotEmpty;
@@ -31,16 +33,8 @@ class _CreatePlaylistViewState extends State<CreatePlaylistView> {
 
   void _onChanged() => setState(() {});
 
-  void _onSelectionChanged(Set<int> songIds) {
-    final byId = {
-      for (final t in widget.tunes)
-        if (t.songId != null) t.songId!: t.path,
-    };
-    setState(() {
-      _selectedPaths
-        ..clear()
-        ..addAll(songIds.map((id) => byId[id]).whereType<String>());
-    });
+  void _onSelectionChanged(List<String> paths) {
+    setState(() => _selectedPaths = List.of(paths));
   }
 
   String get _defaultName {
@@ -97,31 +91,33 @@ class _CreatePlaylistViewState extends State<CreatePlaylistView> {
 
             // Content
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  FieldWithInnerCounter(
-                    controller: titleController,
-                    hint: 'Playlist name',
-                    icon: Icons.queue_music_rounded,
-                    maxLength: 100,
-                  ),
-                  const SizedBox(height: 16),
-                  FieldWithInnerCounter(
-                    controller: desController,
-                    hint: 'Description',
-                    icon: Icons.notes_rounded,
-                    maxLength: 300,
-                    minLines: 2,
-                    maxLines: 4,
-                  ),
-                  const SizedBox(height: 16),
-                  PlaylistSongList(
-                    tunes: widget.tunes,
-                    onSelectionChanged: _onSelectionChanged,
-                  ),
-                ]),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    FieldWithInnerCounter(
+                      controller: titleController,
+                      hint: 'Playlist name',
+                      icon: Icons.queue_music_rounded,
+                      maxLength: 100,
+                    ),
+                    const SizedBox(height: 16),
+                    FieldWithInnerCounter(
+                      controller: desController,
+                      hint: 'Description',
+                      icon: Icons.notes_rounded,
+                      maxLength: 300,
+                      minLines: 2,
+                      maxLines: 4,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
+            ),
+            PlaylistSongList(
+              tunes: widget.tunes,
+              onSelectionChanged: _onSelectionChanged,
             ),
           ],
         ),
