@@ -18,24 +18,26 @@ class OnboardingPageIndicator extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Padding(
-      padding: const EdgeInsets.only(top: 24),
+      padding: const EdgeInsets.only(top: 12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(pageCount, (index) {
           final selected = index == currentPage;
           return GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () => onDotTap(index),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeOutCubic,
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: selected ? 24 : 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: selected
-                    ? scheme.primary
-                    : scheme.onSurfaceVariant.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(4),
+            child: Padding(
+              // bigger touch target without a bigger dot
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOutCubic,
+                width: selected ? 28 : 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: selected ? scheme.primary : scheme.outlineVariant,
+                  borderRadius: BorderRadius.circular(4),
+                ),
               ),
             ),
           );

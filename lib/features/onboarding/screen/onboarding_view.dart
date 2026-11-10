@@ -89,6 +89,18 @@ class _OnboardingViewState extends State<OnboardingView> {
     );
   }
 
+  int get _permissionIndex => _pages.indexWhere((p) => p.isPermission);
+  void _onPrimaryPressed() {
+    if (!_isLast) {
+      _goTo(_currentPage + 1);
+    } else if (!_permissionGranted) {
+      _goTo(_permissionIndex); // send them back instead of a dead button
+    } else {
+      _finish();
+    }
+  }
+
+  // Replace build()
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,11 +112,27 @@ class _OnboardingViewState extends State<OnboardingView> {
                 controller: _controller,
                 itemCount: _pages.length,
                 onPageChanged: (index) => setState(() => _currentPage = index),
-                itemBuilder: (context, index) => OnboardingPageContent(
-                  page: _pages[index],
-                  requestingPermission: _requestingPermission,
-                  permissionGranted: _permissionGranted,
-                  onGrantPermission: _grantPermission,
+                itemBuilder: (context, index) => AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    final page = _controller.hasClients
+                        ? (_controller.page ?? _currentPage.toDouble())
+                        : _currentPage.toDouble();
+                    final delta = (page - index).clamp(-1.0, 1.0);
+                    return Opacity(
+                      opacity: 1 - delta.abs() * 0.6,
+                      child: Transform.translate(
+                        offset: Offset(delta * -48, 0), // parallax
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: OnboardingPageContent(
+                    page: _pages[index],
+                    requestingPermission: _requestingPermission,
+                    permissionGranted: _permissionGranted,
+                    onGrantPermission: _grantPermission,
+                  ),
                 ),
               ),
             ),
@@ -114,11 +142,11 @@ class _OnboardingViewState extends State<OnboardingView> {
               onDotTap: _goTo,
             ),
             _BottomBar(
-              isLast: _isLast,
-              canFinish: _permissionGranted,
+              label: !_isLast
+                  ? 'Next'
+                  : (_permissionGranted ? 'Get Started' : 'Allow music access'),
               onBack: _currentPage > 0 ? () => _goTo(_currentPage - 1) : null,
-              onNext: () => _goTo(_currentPage + 1),
-              onFinish: _finish,
+              onPrimary: _onPrimaryPressed,
             ),
           ],
         ),
@@ -129,40 +157,60 @@ class _OnboardingViewState extends State<OnboardingView> {
 
 class _BottomBar extends StatelessWidget {
   const _BottomBar({
-    required this.isLast,
-    required this.canFinish,
+    required this.label,
     required this.onBack,
-    required this.onNext,
-    required this.onFinish,
+    required this.onPrimary,
   });
 
-  final bool isLast;
-  final bool canFinish;
+  final String label;
   final VoidCallback? onBack;
-  final VoidCallback onNext;
-  final VoidCallback onFinish;
+  final VoidCallback onPrimary;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
       child: Row(
         children: [
-          if (onBack != null)
-            IconButton(
-              onPressed: onBack,
-              icon: const Icon(Icons.arrow_back_rounded),
-            ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOutCubic,
+            child: onBack == null
+                ? const SizedBox.shrink()
+                : Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: IconButton.filledTonal(
+                      onPressed: onBack,
+                      iconSize: 24,
+                      style: IconButton.styleFrom(
+                        minimumSize: const Size(56, 56),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                      icon: const Icon(Icons.arrow_back_rounded),
+                    ),
+                  ),
+          ),
           Expanded(
             child: FilledButton(
-              onPressed: isLast ? (canFinish ? onFinish : null) : onNext,
+              onPressed: onPrimary,
               style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(52),
+                minimumSize: const Size.fromHeight(56),
+                backgroundColor: scheme.primary,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(18),
                 ),
+                textStyle: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
-              child: Text(isLast ? 'Get Started' : 'Next'),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: Text(label, key: ValueKey(label)),
+              ),
             ),
           ),
         ],
