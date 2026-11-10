@@ -100,7 +100,6 @@ class _OnboardingViewState extends State<OnboardingView> {
     }
   }
 
-  // Replace build()
   @override
   Widget build(BuildContext context) {
     return Scaffold(
