@@ -18,6 +18,7 @@ class PlayerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<PlaybackBloc>();
     final size = MediaQuery.sizeOf(context);
     final isWide = size.width > 600 && size.height > 600;
 
@@ -40,11 +41,24 @@ class PlayerView extends StatelessWidget {
                     children: [
                       _PlayerAppBar(),
                       Expanded(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: PlayerAlbumArt(),
+                        child: GestureDetector(
+                          onHorizontalDragEnd: (details) {
+                            if (details.primaryVelocity == null) return;
+
+                            if (details.primaryVelocity! > 0) {
+                              bloc.add(SkipToPreviousEvent());
+                            } else if (details.primaryVelocity! < 0) {
+                              bloc.add(SkipToNextEvent());
+                            }
+                          },
+
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: PlayerAlbumArt(),
+                          ),
                         ),
                       ),
+
                       SizedBox(height: size.height * 0.025),
                       SongInfo(),
                       SizedBox(height: size.height * 0.025),
