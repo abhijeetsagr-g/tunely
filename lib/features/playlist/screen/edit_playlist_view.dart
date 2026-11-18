@@ -5,7 +5,7 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
 import 'package:tunely/features/playlist/model/playlist.dart';
-import 'package:tunely/features/playlist/widgets/field_with_inner_counter.dart';
+import 'package:tunely/features/playlist/widgets/playlist_song_list/field_with_inner_counter.dart';
 import 'package:tunely/features/playlist/widgets/playlist_song_list/playlist_song_list.dart';
 
 class EditPlaylistView extends StatefulWidget {

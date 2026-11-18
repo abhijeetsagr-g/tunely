@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playlist/cubit/playlist_cubit.dart';
-import 'package:tunely/features/playlist/widgets/field_with_inner_counter.dart';
+import 'package:tunely/features/playlist/widgets/playlist_song_list/field_with_inner_counter.dart';
 import 'package:tunely/features/playlist/widgets/playlist_song_list/playlist_song_list.dart';
 import 'package:tunely/shared/model/tune.dart';
 
