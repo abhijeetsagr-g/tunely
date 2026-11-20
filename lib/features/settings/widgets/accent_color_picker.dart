@@ -41,11 +41,7 @@ class AccentColorPicker extends StatelessWidget {
             children: [
               DynamicColorBuilder(
                 builder: (light, dark) {
-                  final dyn = Theme.of(context).brightness == Brightness.dark
-                      ? dark
-                      : light;
-
-                  if (dyn == null) {
+                  if (light == null) {
                     const fallbackColor = AppColor.mauve;
                     return _ColorDot(
                       color: fallbackColor,
@@ -55,7 +51,7 @@ class AccentColorPicker extends StatelessWidget {
                   }
 
                   return _ColorDot(
-                    color: dyn.primary,
+                    color: light.primary,
                     selected: useDynamic,
                     icon: Icons.wallpaper_rounded,
                     onTap: () => cubit.setUseDynamic(true),

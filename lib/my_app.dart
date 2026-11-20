@@ -54,13 +54,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       ],
       child: DynamicColorBuilder(
         builder: (lightDynamic, darkDynamic) {
-          // Fall back to the saved accent if dynamic is off or unsupported.
-          final lightAccent = theme.useDynamic && lightDynamic != null
-              ? lightDynamic.primary
-              : theme.accentColor;
-          final darkAccent = theme.useDynamic && darkDynamic != null
-              ? darkDynamic.primary
-              : theme.accentColor;
+          final dynamicAccent = theme.useDynamic ? lightDynamic?.primary : null;
+
+          final accent = dynamicAccent ?? theme.accentColor;
 
           return MaterialApp(
             navigatorKey: rootNavigatorKey,
@@ -69,8 +65,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             initialRoute: AppRoute.splash,
             debugShowCheckedModeBanner: false,
             themeMode: theme.themeMode,
-            theme: AppTheme.light(accent: lightAccent),
-            darkTheme: AppTheme.dark(accent: darkAccent),
+            theme: AppTheme.light(accent: accent),
+            darkTheme: AppTheme.dark(accent: accent),
           );
         },
       ),
