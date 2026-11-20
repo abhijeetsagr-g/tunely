@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:hive_ce/hive.dart';
@@ -19,10 +20,17 @@ class StatsRepository {
     _box.put(stats.tuneId, stats);
   }
 
+  /// Forces pending writes to disk so a crash cannot lose the last play.
+  Future<void> flush() async {
+    await _box.flush();
+    await _meta.flush();
+  }
+
   void toggleLike(String id) {
     final stats = get(id);
     stats.isLiked = !stats.isLiked;
     save(stats);
+    unawaited(flush());
   }
 
   List<String> getRecentOrder() {
@@ -41,6 +49,7 @@ class StatsRepository {
       stats.lastPlayed = null;
       stats.save();
     }
+    unawaited(flush());
   }
 
   void clearLikes() {
@@ -50,9 +59,11 @@ class StatsRepository {
         stats.save();
       }
     }
+    unawaited(flush());
   }
 
   void clearRecentOrder() {
     saveRecentOrder([]);
+    unawaited(flush());
   }
 }

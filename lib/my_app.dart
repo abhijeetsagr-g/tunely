@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,9 +36,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final theme = context.watch<CustomizationCubit>().state;
+
     return MultiBlocListener(
       listeners: [
-        // Sync songs that failed to load with the library so they disappear
         BlocListener<PlaybackBloc, PlaybackState>(
           listenWhen: (prev, curr) =>
               !setEquals(prev.missingPaths, curr.missingPaths),
@@ -51,16 +52,27 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           },
         ),
       ],
+      child: DynamicColorBuilder(
+        builder: (lightDynamic, darkDynamic) {
+          // Fall back to the saved accent if dynamic is off or unsupported.
+          final lightAccent = theme.useDynamic && lightDynamic != null
+              ? lightDynamic.primary
+              : theme.accentColor;
+          final darkAccent = theme.useDynamic && darkDynamic != null
+              ? darkDynamic.primary
+              : theme.accentColor;
 
-      child: MaterialApp(
-        navigatorKey: rootNavigatorKey,
-        navigatorObservers: [MiniPlayerObserver()],
-        onGenerateRoute: AppRouter.onGenerateRoute,
-        initialRoute: AppRoute.splash,
-        debugShowCheckedModeBanner: false,
-        themeMode: theme.themeMode,
-        theme: AppTheme.light(accent: theme.accentColor),
-        darkTheme: AppTheme.dark(accent: theme.accentColor),
+          return MaterialApp(
+            navigatorKey: rootNavigatorKey,
+            navigatorObservers: [MiniPlayerObserver()],
+            onGenerateRoute: AppRouter.onGenerateRoute,
+            initialRoute: AppRoute.splash,
+            debugShowCheckedModeBanner: false,
+            themeMode: theme.themeMode,
+            theme: AppTheme.light(accent: lightAccent),
+            darkTheme: AppTheme.dark(accent: darkAccent),
+          );
+        },
       ),
     );
   }

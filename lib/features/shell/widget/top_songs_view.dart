@@ -28,6 +28,7 @@ class TopSongsView extends StatelessWidget {
                 actions: [
                   if (tunes.isNotEmpty)
                     IconButton(
+                      color: Theme.of(context).primaryColor,
                       icon: const Icon(Icons.delete_sweep),
                       tooltip: 'Clear all',
                       onPressed: () => _confirmClear(context),

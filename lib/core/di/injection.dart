@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
@@ -95,7 +96,14 @@ abstract class TunelyInjection {
       ),
     );
     sl.registerLazySingleton<StatsService>(
-      () => StatsService(audioHandler.onTrackChanged, sl<StatsRepository>()),
+      () => StatsService(
+        trackChanges: audioHandler.mediaItem
+            .where((item) => item != null)
+            .cast<MediaItem>(),
+        positions: audioHandler.positionStream,
+        playing: audioHandler.isPlaying,
+        repo: sl<StatsRepository>(),
+      ),
     );
     sl.registerLazySingleton<LyricsService>(
       () => LyricsService(repository: sl<LyricsRepository>()),

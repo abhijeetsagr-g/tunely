@@ -30,6 +30,8 @@ void main() async {
   // Keep it portrait
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
   // Generate audio Services
   final audioHandler = await AudioService.init(
     builder: () => PlaybackService(),

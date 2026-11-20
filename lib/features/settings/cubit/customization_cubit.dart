@@ -13,6 +13,7 @@ class CustomizationCubit extends Cubit<CustomizationState> {
         CustomizationState(
           themeMode: _colorCustomizer.getTheme(),
           accentColor: _colorCustomizer.getAccentColor(),
+          useDynamic: false,
         ),
       );
 
@@ -21,10 +22,10 @@ class CustomizationCubit extends Cubit<CustomizationState> {
     emit(state.copyWith(themeMode: mode));
   }
 
-  Future<void> setAccentColor(Color color) async {
-    await _colorCustomizer.setAccentColor(color);
-    emit(state.copyWith(accentColor: color));
-  }
+  void setAccentColor(Color color) =>
+      emit(state.copyWith(accentColor: color, useDynamic: false));
+
+  void setUseDynamic(bool value) => emit(state.copyWith(useDynamic: value));
 
   Future<Color?> extractColors(
     int? songId, {

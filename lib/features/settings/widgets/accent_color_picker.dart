@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/config/app_color.dart';
@@ -9,7 +10,6 @@ class AccentColorPicker extends StatelessWidget {
   final bool isOnboard;
 
   static const _colors = [
-    AppColor.mauve,
     AppColor.red,
     AppColor.blue,
     AppColor.teal,
@@ -19,6 +19,7 @@ class AccentColorPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.watch<CustomizationCubit>();
+    final useDynamic = cubit.state.useDynamic;
     final selected = cubit.state.accentColor;
 
     return Padding(
@@ -38,10 +39,33 @@ class AccentColorPicker extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              DynamicColorBuilder(
+                builder: (light, dark) {
+                  final dyn = Theme.of(context).brightness == Brightness.dark
+                      ? dark
+                      : light;
+
+                  if (dyn == null) {
+                    const fallbackColor = AppColor.mauve;
+                    return _ColorDot(
+                      color: fallbackColor,
+                      selected: !useDynamic && fallbackColor == selected,
+                      onTap: () => cubit.setAccentColor(fallbackColor),
+                    );
+                  }
+
+                  return _ColorDot(
+                    color: dyn.primary,
+                    selected: useDynamic,
+                    icon: Icons.wallpaper_rounded,
+                    onTap: () => cubit.setUseDynamic(true),
+                  );
+                },
+              ),
               for (final color in _colors)
                 _ColorDot(
                   color: color,
-                  selected: color == selected,
+                  selected: !useDynamic && color == selected,
                   onTap: () => cubit.setAccentColor(color),
                 ),
             ],
@@ -57,15 +81,21 @@ class _ColorDot extends StatelessWidget {
     required this.color,
     required this.selected,
     required this.onTap,
+    this.icon,
   });
 
   final Color color;
   final bool selected;
   final VoidCallback onTap;
 
+  final IconData? icon;
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final iconColor = color.computeLuminance() > 0.5
+        ? Colors.black87
+        : Colors.white;
 
     return InkWell(
       onTap: onTap,
@@ -73,23 +103,17 @@ class _ColorDot extends StatelessWidget {
       child: AnimatedContainer(
         duration: AppTheme.expandDuration,
         curve: AppTheme.enter,
-        width: 52,
-        height: 52,
+        width: 48,
+        height: 48,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
-          border: selected
-              ? Border.all(color: scheme.onSurface, width: 3)
-              : Border.all(color: Colors.transparent, width: 3),
+          border: Border.all(
+            color: selected ? scheme.onSurface : Colors.transparent,
+            width: 3,
+          ),
         ),
-        child: Icon(
-          Icons.check_rounded,
-          color: selected
-              ? color.computeLuminance() > 0.5
-                    ? Colors.black87
-                    : Colors.white
-              : Colors.transparent,
-        ),
+        child: Icon(selected ? Icons.check_rounded : icon, color: iconColor),
       ),
     );
   }

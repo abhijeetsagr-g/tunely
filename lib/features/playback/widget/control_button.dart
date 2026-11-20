@@ -45,6 +45,7 @@ class ControlButtons extends StatelessWidget {
           prev.queue != curr.queue ||
           prev.shuffleEnabled != curr.shuffleEnabled ||
           prev.repeatMode != curr.repeatMode,
+
       builder: (context, state) {
         final bloc = context.read<PlaybackBloc>();
 
