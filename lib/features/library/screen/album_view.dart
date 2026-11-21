@@ -92,17 +92,13 @@ class _AlbumViewState extends State<AlbumView> {
                           children: [
                             Text(
                               widget.album.album.toTitleCase(),
-                              style: Theme.of(context).textTheme.headlineMedium
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: -0.5,
-                                    fontSize: 20,
-                                  ),
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(letterSpacing: -0.5),
                             ),
                             Text(
                               widget.album.artist?.toTitleCase() ??
                                   "Unknown Artist",
-                              style: Theme.of(context).textTheme.labelLarge,
+                              style: Theme.of(context).textTheme.labelMedium,
                             ),
                             Text(
                               "${totalTunesDurations(totalDuration)} | ${widget.album.numOfSongs} Tunes",
@@ -123,7 +119,7 @@ class _AlbumViewState extends State<AlbumView> {
 
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                   child: InkWell(
                     onTap: () =>
                         setState(() => _artistsExpanded = !_artistsExpanded),
@@ -131,11 +127,12 @@ class _AlbumViewState extends State<AlbumView> {
                       children: [
                         Expanded(
                           child: Text(
-                            "Artists in this Album",
+                            "In This Album",
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
+
                         Icon(
                           _artistsExpanded
                               ? Icons.keyboard_arrow_up

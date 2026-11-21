@@ -18,12 +18,7 @@ void popUpNotifer(BuildContext context, String message) {
             const Color(0xFF323232),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Text(
-            message,
-            style:
-                Theme.of(context).snackBarTheme.contentTextStyle ??
-                const TextStyle(color: Colors.white),
-          ),
+          child: Text(message, style: Theme.of(context).textTheme.labelSmall),
         ),
       ),
     ),

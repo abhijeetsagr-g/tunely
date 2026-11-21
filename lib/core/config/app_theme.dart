@@ -43,6 +43,7 @@ abstract class AppTheme {
       onSurfaceVariant: darkOnSurfaceVariant,
     ),
     fontFamily: font,
+    textTheme: _textTheme(darkOnSurface),
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     iconTheme: IconThemeData(color: darkOnSurface),
@@ -68,6 +69,7 @@ abstract class AppTheme {
       onSurfaceVariant: lightOnSurfaceVariant,
     ),
     fontFamily: font,
+    textTheme: _textTheme(lightOnSurface),
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     iconTheme: IconThemeData(color: lightOnSurface),
@@ -90,6 +92,80 @@ abstract class AppTheme {
       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
       overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
       trackShape: const RoundedRectSliderTrackShape(),
+    );
+  }
+
+  /// App-wide type scale. Sizes follow Material 3; weights are set once here
+  /// instead of being repeated as `copyWith(fontWeight: ...)` in widgets.
+  static TextTheme _textTheme(Color onSurface) {
+    final TextTheme base = Typography.material2021().black;
+
+    TextStyle? style(
+      TextStyle? textStyle, {
+      required double fontSize,
+      FontWeight fontWeight = FontWeight.w400,
+    }) => textStyle?.copyWith(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: onSurface,
+    );
+
+    return TextTheme(
+      // Page titles: Library, Search, Tunely
+      headlineLarge: style(
+        base.headlineLarge,
+        fontSize: 30,
+        fontWeight: FontWeight.w700,
+      ),
+      headlineMedium: style(
+        base.headlineMedium,
+        fontSize: 26,
+        fontWeight: FontWeight.w700,
+      ),
+      headlineSmall: style(
+        base.headlineSmall,
+        fontSize: 22,
+        fontWeight: FontWeight.w600,
+      ),
+
+      // Album title, player song title, section headers (Top Songs, Daily Mix)
+      titleLarge: style(
+        base.titleLarge,
+        fontSize: 14,
+        fontWeight: FontWeight.bold,
+      ),
+      // Song row titles
+      titleMedium: style(
+        base.titleMedium,
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+      ),
+      // Mini player title, settings section titles
+      titleSmall: style(
+        base.titleSmall,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+
+      // Lyrics lines
+      bodyLarge: style(base.bodyLarge, fontSize: 18),
+
+      // Artist names under songs
+      bodyMedium: style(base.bodyMedium, fontSize: 14),
+
+      // Timestamps, plays count, descriptions
+      bodySmall: style(base.bodySmall, fontSize: 12),
+
+      // Buttons, chips (Name / Date Added / Duration)
+      labelLarge: style(
+        base.labelLarge,
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+      ),
+
+      // Nav bar labels
+      labelMedium: style(base.labelMedium, fontSize: 12),
+      labelSmall: style(base.labelSmall, fontSize: 10),
     );
   }
 }

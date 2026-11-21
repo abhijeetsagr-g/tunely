@@ -105,16 +105,16 @@ class SongTile extends StatelessWidget {
                       opacity: missing ? 0.35 : 1,
                       child: AlbumArt(
                         artUri: tune.artUri,
-                        size: Size(46, 46),
+                        size: Size(50, 50),
                         borderRadius: !isCurrent ? 2 : 8,
                       ),
                     ),
+
                     title: Text(
                       tune.title.toTitleCase(),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: missing
                             ? Colors.grey
                             : isCurrent
@@ -122,12 +122,13 @@ class SongTile extends StatelessWidget {
                             : null,
                       ),
                     ),
+
                     subtitle: Text(
                       tune.artists.join(" • "),
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(
                         context,
-                      ).textTheme.labelLarge?.copyWith(color: Colors.grey),
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                     ),
                     trailing:
                         trailing ??

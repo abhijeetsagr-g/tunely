@@ -67,6 +67,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             themeMode: theme.themeMode,
             theme: AppTheme.light(accent: accent),
             darkTheme: AppTheme.dark(accent: accent),
+            builder: (context, child) {
+              final mq = MediaQuery.of(context);
+              return MediaQuery(
+                data: mq.copyWith(
+                  textScaler: mq.textScaler.clamp(
+                    minScaleFactor: 0.9,
+                    maxScaleFactor: 1.15,
+                  ),
+                ),
+                child: child!,
+              );
+            },
           );
         },
       ),
