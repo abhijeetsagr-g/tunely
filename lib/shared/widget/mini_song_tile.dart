@@ -75,8 +75,7 @@ class MiniSongTile extends StatelessWidget {
                         tune.title.toTitleCase(),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: missing
                               ? Colors.grey
                               : isCurrent
@@ -90,7 +89,7 @@ class MiniSongTile extends StatelessWidget {
                         maxLines: 1,
                         style: Theme.of(
                           context,
-                        ).textTheme.labelSmall?.copyWith(color: Colors.grey),
+                        ).textTheme.titleSmall?.copyWith(color: Colors.grey),
                       ),
                     ],
                   ),

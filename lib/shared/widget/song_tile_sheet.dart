@@ -123,7 +123,6 @@ class _SongTileSheet extends StatelessWidget {
                       Text(
                         tune.title.toTitleCase(),
                         style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
                           letterSpacing: -0.2,
                         ),
                         maxLines: 2,
@@ -132,7 +131,7 @@ class _SongTileSheet extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         tune.artist,
-                        style: theme.textTheme.bodyMedium?.copyWith(
+                        style: theme.textTheme.titleSmall?.copyWith(
                           color: colors.onSurfaceVariant,
                         ),
                         maxLines: 1,

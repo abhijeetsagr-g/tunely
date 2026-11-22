@@ -37,7 +37,7 @@ class NextSongLabel extends StatelessWidget {
           textAlign: TextAlign.center,
           style: Theme.of(
             context,
-          ).textTheme.bodySmall?.copyWith(color: Colors.grey),
+          ).textTheme.labelLarge?.copyWith(color: Colors.grey),
         );
       },
     );

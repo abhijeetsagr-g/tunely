@@ -25,9 +25,7 @@ class SongInfo extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 4),
             ConstrainedBox(
@@ -58,7 +56,7 @@ class SongInfo extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(
                             context,
-                          ).textTheme.labelLarge?.copyWith(color: Colors.grey),
+                          ).textTheme.titleMedium?.copyWith(color: Colors.grey),
                         ),
                       ),
                       if (i < tune.artists.length - 1)
@@ -66,7 +64,7 @@ class SongInfo extends StatelessWidget {
                           ' • ',
                           style: Theme.of(
                             context,
-                          ).textTheme.labelLarge?.copyWith(color: Colors.grey),
+                          ).textTheme.titleSmall?.copyWith(color: Colors.grey),
                         ),
                     ],
                   ],

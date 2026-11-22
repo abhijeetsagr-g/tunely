@@ -28,12 +28,12 @@ class PlaylistSongTile extends StatelessWidget {
         tune.title.toTitleCase(),
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
-        style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+        style: theme.textTheme.titleMedium,
       ),
       subtitle: Text(
         tune.artists.join(" • "),
         overflow: TextOverflow.ellipsis,
-        style: theme.textTheme.labelLarge?.copyWith(color: Colors.grey),
+        style: theme.textTheme.titleSmall?.copyWith(color: Colors.grey),
       ),
       trailing: trailing,
     );

@@ -74,8 +74,7 @@ class QueueSongTile extends StatelessWidget {
             tune.title.toTitleCase(),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
+            style: theme.textTheme.titleMedium?.copyWith(
               color: missing ? Colors.grey : null,
             ),
           ),
@@ -85,7 +84,7 @@ class QueueSongTile extends StatelessWidget {
               tune.artist,
             ),
             overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.labelLarge?.copyWith(color: Colors.grey),
+            style: theme.textTheme.titleSmall?.copyWith(color: Colors.grey),
           ),
           trailing: Icon(
             Icons.drag_handle_rounded,

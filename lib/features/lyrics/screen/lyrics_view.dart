@@ -39,6 +39,7 @@ class LyricsView extends StatelessWidget {
                                 "Unknown Song",
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleMedium,
                           );
                         },
                       ),

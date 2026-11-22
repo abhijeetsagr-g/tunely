@@ -147,9 +147,7 @@ class _EditPlaylistViewState extends State<EditPlaylistView> {
                         ),
                         title: Text(
                           'Edit Playlist',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: theme.textTheme.headlineLarge,
                         ),
                         actions: [
                           IconButton(

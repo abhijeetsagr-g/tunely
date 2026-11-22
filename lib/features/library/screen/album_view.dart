@@ -98,7 +98,7 @@ class _AlbumViewState extends State<AlbumView> {
                             Text(
                               widget.album.artist?.toTitleCase() ??
                                   "Unknown Artist",
-                              style: Theme.of(context).textTheme.labelMedium,
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
                             Text(
                               "${totalTunesDurations(totalDuration)} | ${widget.album.numOfSongs} Tunes",

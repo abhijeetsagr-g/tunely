@@ -56,9 +56,7 @@ class _TopSongsSectionState extends State<TopSongsSection> {
                 children: [
                   Text(
                     'Top Songs',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   TextButton.icon(
                     style: TextButton.styleFrom(foregroundColor: Colors.grey),

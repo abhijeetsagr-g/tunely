@@ -24,8 +24,7 @@ class SectionHeader extends StatelessWidget {
         children: [
           Text(
             title,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
+            style: theme.textTheme.titleLarge?.copyWith(
               letterSpacing: 0.2,
             ),
           ),

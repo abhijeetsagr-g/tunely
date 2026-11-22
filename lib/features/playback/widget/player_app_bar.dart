@@ -41,7 +41,7 @@ class PlayerAppBar extends StatelessWidget {
                 child: Center(
                   child: Text(
                     state.currentItem?.album ?? "Album Name",
-                    style: Theme.of(context).textTheme.labelLarge,
+                    style: Theme.of(context).textTheme.titleLarge,
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

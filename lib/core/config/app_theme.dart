@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 abstract class AppTheme {
-  static const String font = "NunitoSans";
   static const Color white = Color(0xFFFFFFFF);
   static const Color primary = Color(0xFF8070A4);
 
@@ -42,7 +41,7 @@ abstract class AppTheme {
       onSurface: darkOnSurface,
       onSurfaceVariant: darkOnSurfaceVariant,
     ),
-    fontFamily: font,
+
     textTheme: _textTheme(darkOnSurface),
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
@@ -68,7 +67,6 @@ abstract class AppTheme {
       onSurface: lightOnSurface,
       onSurfaceVariant: lightOnSurfaceVariant,
     ),
-    fontFamily: font,
     textTheme: _textTheme(lightOnSurface),
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
@@ -95,8 +93,7 @@ abstract class AppTheme {
     );
   }
 
-  /// App-wide type scale. Sizes follow Material 3; weights are set once here
-  /// instead of being repeated as `copyWith(fontWeight: ...)` in widgets.
+  /// App-wide type scale.
   static TextTheme _textTheme(Color onSurface) {
     final TextTheme base = Typography.material2021().black;
 
@@ -111,41 +108,29 @@ abstract class AppTheme {
     );
 
     return TextTheme(
-      // Page titles: Library, Search, Tunely
+      // Page titles: Library, Search, Tunely, Settings
       headlineLarge: style(
         base.headlineLarge,
-        fontSize: 30,
-        fontWeight: FontWeight.w700,
-      ),
-      headlineMedium: style(
-        base.headlineMedium,
-        fontSize: 26,
-        fontWeight: FontWeight.w700,
-      ),
-      headlineSmall: style(
-        base.headlineSmall,
         fontSize: 22,
+        fontWeight: FontWeight.bold,
+      ),
+
+      // Album title, section headers (Top Songs, Daily Mix)
+      titleLarge: style(
+        base.titleLarge,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+
+      // Song titles
+      titleMedium: style(
+        base.titleMedium,
+        fontSize: 14,
         fontWeight: FontWeight.w600,
       ),
 
-      // Album title, player song title, section headers (Top Songs, Daily Mix)
-      titleLarge: style(
-        base.titleLarge,
-        fontSize: 14,
-        fontWeight: FontWeight.bold,
-      ),
-      // Song row titles
-      titleMedium: style(
-        base.titleMedium,
-        fontSize: 15,
-        fontWeight: FontWeight.w600,
-      ),
-      // Mini player title, settings section titles
-      titleSmall: style(
-        base.titleSmall,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-      ),
+      // Song Artists/Album Etc
+      titleSmall: style(base.titleSmall, fontSize: 12),
 
       // Lyrics lines
       bodyLarge: style(base.bodyLarge, fontSize: 18),
@@ -159,13 +144,12 @@ abstract class AppTheme {
       // Buttons, chips (Name / Date Added / Duration)
       labelLarge: style(
         base.labelLarge,
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: FontWeight.w500,
       ),
 
       // Nav bar labels
-      labelMedium: style(base.labelMedium, fontSize: 12),
-      labelSmall: style(base.labelSmall, fontSize: 10),
+      labelMedium: style(base.labelMedium, fontSize: 11),
     );
   }
 }

@@ -56,16 +56,14 @@ class _SongPickerState extends State<SongPicker> {
             tune.title.toTitleCase(),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           subtitle: Text(
             tune.artists.join(" • "),
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context)
                 .textTheme
-                .labelLarge
+                .titleSmall
                 ?.copyWith(color: Colors.grey),
           ),
         );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
+import 'package:tunely/features/shell/widget/show_all.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
 
 class DailyMixWidget extends StatefulWidget {
@@ -28,9 +29,7 @@ class _DailyMixWidgetState extends State<DailyMixWidget> {
                 padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
                 child: Text(
                   "Daily Mix",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
             ),
@@ -47,15 +46,9 @@ class _DailyMixWidgetState extends State<DailyMixWidget> {
                 itemBuilder: (context, i) {
                   final lastIndex = dailyMix.length < 5 ? dailyMix.length : 5;
                   if (i == lastIndex) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: ListTile(
-                        title: Text("Don't think twice, just play"),
-                        trailing: const Icon(Icons.arrow_circle_right_outlined),
-                        onTap: () => Navigator.of(
-                          context,
-                        ).pushNamed(AppRoute.dailyMix),
-                      ),
+                    return ShowAllToPage(
+                      appRoute: AppRoute.dailyMix,
+                      description: 'See what you have today!',
                     );
                   }
                   return SongTile(tunes: dailyMix, index: i);

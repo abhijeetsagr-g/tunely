@@ -73,17 +73,14 @@ class _ArtistViewState extends State<ArtistView> {
                       children: [
                         Text(
                           widget.artist.artist.toTitleCase(),
-                          style: Theme.of(context).textTheme.headlineMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: -0.5,
-                                fontSize: 20,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge?.copyWith(letterSpacing: -0.5),
                         ),
 
                         Text(
                           "${widget.artist.tunes.length} Tunes",
-                          style: Theme.of(context).textTheme.labelSmall,
+                          style: Theme.of(context).textTheme.titleSmall,
                         ),
                       ],
                     ),
@@ -140,9 +137,7 @@ class _ArtistViewState extends State<ArtistView> {
                   Expanded(
                     child: Text(
                       group.album.toTitleCase(),
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ),
                   Text(

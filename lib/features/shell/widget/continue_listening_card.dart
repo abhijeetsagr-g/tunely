@@ -72,10 +72,8 @@ class _TopRow extends StatelessWidget {
                 tune.title.toTitleCase(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Colors.white,
-                  fontSize: 15,
                 ),
               ),
               Text(
@@ -85,7 +83,7 @@ class _TopRow extends StatelessWidget {
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: cs.onPrimaryContainer.withAlpha(120),
                 ),
               ),

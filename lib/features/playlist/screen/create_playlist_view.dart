@@ -83,9 +83,7 @@ class _CreatePlaylistViewState extends State<CreatePlaylistView> {
               ),
               title: Text(
                 "Create Playlist",
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: theme.textTheme.headlineLarge,
               ),
             ),
 

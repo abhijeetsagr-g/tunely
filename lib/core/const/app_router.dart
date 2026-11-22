@@ -13,7 +13,7 @@ import 'package:tunely/features/playlist/screen/detailed_playlist_view.dart';
 import 'package:tunely/features/playlist/screen/edit_playlist_view.dart';
 import 'package:tunely/features/shell/screen/shell_screen.dart';
 import 'package:tunely/features/shell/widget/daily_mix_view.dart';
-import 'package:tunely/features/shell/widget/recent_view.dart';
+import 'package:tunely/features/shell/widget/recently_played_view.dart';
 import 'package:tunely/features/shell/screen/splash_screen.dart';
 import 'package:tunely/features/settings/screen/settings_screen.dart';
 
@@ -109,7 +109,7 @@ class AppRouter {
       case AppRoute.dailyMix:
         return AppPageRoute(
           settings: settings,
-          transition: RouteTransition.fade,
+          transition: RouteTransition.scale,
           builder: (_) => const DailyMixView(),
         );
 
@@ -117,7 +117,7 @@ class AppRouter {
         return AppPageRoute(
           settings: settings,
           transition: RouteTransition.fade,
-          builder: (_) => const RecentView(),
+          builder: (_) => const RecentlyPlayedView(),
         );
 
       default:

@@ -128,7 +128,7 @@ class SongTile extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(
                         context,
-                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                      ).textTheme.titleSmall?.copyWith(color: Colors.grey),
                     ),
                     trailing:
                         trailing ??

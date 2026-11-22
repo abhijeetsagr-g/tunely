@@ -81,7 +81,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                             tune?.title.toTitleCase() ?? "No Song Playing",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
 
                           Text(
@@ -94,7 +94,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: Theme.of(context).textTheme.titleSmall,
                           ),
                         ],
                       ),

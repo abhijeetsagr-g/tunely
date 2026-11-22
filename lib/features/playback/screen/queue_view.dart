@@ -54,7 +54,7 @@ class _QueueAppBar extends StatelessWidget {
               child: Center(
                 child: Text(
                   state.currentItem?.title.toTitleCase() ?? "Unknown Title",
-                  style: Theme.of(context).textTheme.labelLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

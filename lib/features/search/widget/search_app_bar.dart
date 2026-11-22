@@ -33,8 +33,7 @@ class SearchAppBar extends StatelessWidget {
               children: [
                 Text(
                   'Search',
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
+                  style: theme.textTheme.headlineLarge?.copyWith(
                     letterSpacing: -0.5,
                   ),
                 ),

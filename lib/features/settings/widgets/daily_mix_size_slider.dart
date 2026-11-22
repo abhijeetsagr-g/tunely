@@ -21,7 +21,7 @@ class DailyMixSizeSlider extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('Daily mix size', style: theme.textTheme.titleSmall),
+              Text('Daily mix size', style: theme.textTheme.titleLarge),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(

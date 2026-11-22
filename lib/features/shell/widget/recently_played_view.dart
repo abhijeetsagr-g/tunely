@@ -6,8 +6,8 @@ import 'package:tunely/shared/widget/album_carousel.dart';
 import 'package:tunely/shared/widget/song_action_row.dart';
 import 'package:tunely/shared/widget/tune_sliver_list.dart';
 
-class RecentView extends StatelessWidget {
-  const RecentView({super.key});
+class RecentlyPlayedView extends StatelessWidget {
+  const RecentlyPlayedView({super.key});
 
   @override
   Widget build(BuildContext context) {

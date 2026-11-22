@@ -19,7 +19,7 @@ class ArtistDelimiterWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('Artist Delimiters', style: theme.textTheme.titleSmall),
+              Text('Artist Delimiters', style: theme.textTheme.titleLarge),
               const Spacer(),
               if (!listEquals(delimiters, const ['/', ',', ';', '&', '+']))
                 TextButton(

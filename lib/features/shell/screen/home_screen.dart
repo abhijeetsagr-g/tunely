@@ -3,7 +3,7 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/utils/random_texts.dart';
 import 'package:tunely/features/shell/widget/continue_listening_card.dart';
 import 'package:tunely/features/shell/widget/daily_mix.dart';
-import 'package:tunely/features/shell/widget/recent_list.dart';
+import 'package:tunely/features/shell/widget/recently_played_widget.dart';
 import 'package:tunely/features/shell/widget/recommeded_albums.dart';
 import 'package:tunely/features/shell/widget/top_songs_section.dart';
 
@@ -35,9 +35,7 @@ class _HomeViewState extends State<HomeView>
       title: Text.rich(
         TextSpan(
           text: "Tunely\n",
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.headlineLarge,
           children: [
             TextSpan(
               text: _message,
@@ -69,7 +67,7 @@ class _HomeViewState extends State<HomeView>
         SliverToBoxAdapter(child: const TopSongsSection()),
         const DailyMixWidget(),
         const RecommendedAlbums(),
-        const RecentList(),
+        const RecentlyPlayedWidget(),
         SliverToBoxAdapter(child: const SizedBox(height: 100)),
       ],
     );

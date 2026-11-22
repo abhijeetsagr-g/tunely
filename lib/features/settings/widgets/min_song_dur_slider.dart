@@ -34,7 +34,7 @@ class MinSongDurSlider extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text('Minimum song duration', style: theme.textTheme.titleSmall),
+              Text('Minimum song duration', style: theme.textTheme.titleLarge),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(

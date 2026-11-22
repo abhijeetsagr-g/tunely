@@ -28,7 +28,7 @@ class AccentColorPicker extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!isOnboard) ...[
-            Text('Accent Color', style: Theme.of(context).textTheme.titleSmall),
+            Text('Accent Color', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 4),
             Text(
               'Pick the color used for highlights across the app.',

@@ -38,8 +38,7 @@ class _LibraryViewState extends State<LibraryView>
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           'Library',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w800,
+          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
             letterSpacing: -0.5,
           ),
         ),
