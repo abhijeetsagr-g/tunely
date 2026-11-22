@@ -67,7 +67,26 @@ class _MiniPlayerState extends State<MiniPlayer> {
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 child: Row(
                   children: [
-                    AlbumArt(artUri: tune?.artUri, size: Size(48, 48)),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      switchInCurve: Curves.easeOut,
+                      switchOutCurve: Curves.easeIn,
+                      transitionBuilder: (child, animation) => FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(
+                          scale: Tween<double>(
+                            begin: 0.9,
+                            end: 1,
+                          ).animate(animation),
+                          child: child,
+                        ),
+                      ),
+                      child: AlbumArt(
+                        key: ValueKey(tune?.path),
+                        artUri: tune?.artUri,
+                        size: Size(48, 48),
+                      ),
+                    ),
 
                     const SizedBox(width: 12),
 
@@ -79,6 +98,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                         children: [
                           Text(
                             tune?.title.toTitleCase() ?? "No Song Playing",
+                            key: ValueKey(tune?.path),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium,
@@ -92,6 +112,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                                   .artistDelimiters,
                               tune?.artist ?? "No Song Found",
                             ),
+                            key: ValueKey('${tune?.path}-artist'),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleSmall,
@@ -101,10 +122,24 @@ class _MiniPlayerState extends State<MiniPlayer> {
                     ),
 
                     IconButton(
-                      icon: Icon(
-                        state.isPlaying
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
+                      icon: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 180),
+                        transitionBuilder: (child, animation) => FadeTransition(
+                          opacity: animation,
+                          child: ScaleTransition(
+                            scale: Tween<double>(
+                              begin: 0.8,
+                              end: 1,
+                            ).animate(animation),
+                            child: child,
+                          ),
+                        ),
+                        child: Icon(
+                          state.isPlaying
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                          key: ValueKey(state.isPlaying),
+                        ),
                       ),
                       onPressed: () {
                         bloc.add(state.isPlaying ? PauseEvent() : PlayEvent());

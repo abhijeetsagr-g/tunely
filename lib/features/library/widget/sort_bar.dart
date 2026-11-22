@@ -77,18 +77,18 @@ class SortBar<T> extends StatelessWidget {
             ),
             constraints: const BoxConstraints.tightFor(width: 36, height: 36),
             padding: EdgeInsets.zero,
-            icon: Icon(
-              ascending
-                  ? Icons.arrow_upward_rounded
-                  : Icons.arrow_downward_rounded,
-              size: 20,
-              color: scheme.onSurfaceVariant,
+            icon: AnimatedRotation(
+              turns: ascending ? 0 : 0.5,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOutCubic,
+              child: Icon(
+                Icons.arrow_upward_rounded,
+                size: 20,
+                color: scheme.onSurfaceVariant,
+              ),
             ),
           ),
-          if (trailing != null) ...[
-            const SizedBox(width: 8),
-            trailing!,
-          ],
+          if (trailing != null) ...[const SizedBox(width: 8), trailing!],
         ],
       ),
     );

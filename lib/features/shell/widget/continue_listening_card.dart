@@ -9,6 +9,7 @@ import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/shell/widget/continue_listening_placeholder.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
+import 'package:tunely/shared/widget/pressable_scale.dart';
 
 class ContinueListeningCard extends StatelessWidget {
   const ContinueListeningCard({super.key});
@@ -68,23 +69,31 @@ class _TopRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                tune.title.toTitleCase(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: Text(
+                  tune.title.toTitleCase(),
+                  key: ValueKey(tune.path),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(color: Colors.white),
                 ),
               ),
-              Text(
-                formatArtistName(
-                  context.read<ManagementCubit>().state.artistDelimiters,
-                  tune.artist,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: cs.onPrimaryContainer.withAlpha(120),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: Text(
+                  formatArtistName(
+                    context.read<ManagementCubit>().state.artistDelimiters,
+                    tune.artist,
+                  ),
+                  key: ValueKey('${tune.path}-artist'),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: cs.onPrimaryContainer.withAlpha(120),
+                  ),
                 ),
               ),
             ],
@@ -104,7 +113,8 @@ class _PlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return GestureDetector(
+    return PressableScale(
+      scale: 0.92,
       onTap: () => isPlaying
           ? Navigator.pushNamed(context, AppRoute.player)
           : context.read<PlaybackBloc>().add(PlayEvent()),
@@ -112,9 +122,20 @@ class _PlayButton extends StatelessWidget {
         width: 44,
         height: 44,
         decoration: BoxDecoration(color: cs.primary, shape: BoxShape.circle),
-        child: Icon(
-          isPlaying ? Icons.open_in_full_rounded : Icons.play_arrow_rounded,
-          color: cs.onPrimary,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 180),
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.8, end: 1).animate(animation),
+              child: child,
+            ),
+          ),
+          child: Icon(
+            isPlaying ? Icons.open_in_full_rounded : Icons.play_arrow_rounded,
+            key: ValueKey(isPlaying),
+            color: cs.onPrimary,
+          ),
         ),
       ),
     );

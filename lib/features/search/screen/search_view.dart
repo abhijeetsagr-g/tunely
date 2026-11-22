@@ -7,6 +7,7 @@ import 'package:tunely/features/search/widget/search_empty_state.dart';
 import 'package:tunely/features/search/widget/search_filter_chips.dart';
 import 'package:tunely/features/search/widget/search_recent_section.dart';
 import 'package:tunely/features/search/widget/search_result_sections.dart';
+import 'package:tunely/shared/widget/fade_in_sliver.dart';
 
 class SearchView extends StatefulWidget {
   const SearchView({super.key});
@@ -28,6 +29,9 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
+        final bodyKey = _bodyKey(state);
+        final body = _buildBody(context, state);
+
         return CustomScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           slivers: [
@@ -39,11 +43,25 @@ class _SearchViewState extends State<SearchView> {
                 context.read<SearchCubit>().clear();
               },
             ),
-            ..._buildBody(context, state),
+            for (var i = 0; i < body.length; i++)
+              FadeInSliver(key: ValueKey('$bodyKey-$i'), sliver: body[i]),
           ],
         );
       },
     );
+  }
+
+  String _bodyKey(SearchState state) {
+    return switch (state) {
+      SearchIdle(:final recentItems) =>
+        recentItems.isEmpty ? 'idle-empty' : 'idle-recent',
+      SearchLoaded(:final result)
+          when result.tunes.isEmpty &&
+              result.albums.isEmpty &&
+              result.artists.isEmpty =>
+        'loaded-empty',
+      SearchLoaded(:final filterMode) => 'loaded-${filterMode.name}',
+    };
   }
 
   List<Widget> _buildBody(BuildContext context, SearchState state) {

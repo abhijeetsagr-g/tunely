@@ -43,8 +43,8 @@ abstract class AppTheme {
     ),
 
     textTheme: _textTheme(darkOnSurface),
-    splashColor: Colors.transparent,
-    highlightColor: Colors.transparent,
+    splashColor: accent.withAlpha(20),
+    highlightColor: accent.withAlpha(10),
     iconTheme: IconThemeData(color: darkOnSurface),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       selectedIconTheme: IconThemeData(color: accent),
@@ -68,8 +68,8 @@ abstract class AppTheme {
       onSurfaceVariant: lightOnSurfaceVariant,
     ),
     textTheme: _textTheme(lightOnSurface),
-    splashColor: Colors.transparent,
-    highlightColor: Colors.transparent,
+    splashColor: accent.withAlpha(20),
+    highlightColor: accent.withAlpha(10),
     iconTheme: IconThemeData(color: lightOnSurface),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       selectedIconTheme: IconThemeData(color: accent),

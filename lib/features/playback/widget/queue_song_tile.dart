@@ -8,10 +8,16 @@ import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
 class QueueSongTile extends StatelessWidget {
-  const QueueSongTile({super.key, required this.tune, required this.index});
+  const QueueSongTile({
+    super.key,
+    required this.tune,
+    required this.index,
+    this.reorderIndex,
+  });
 
   final Tune tune;
   final int index;
+  final int? reorderIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -58,39 +64,38 @@ class QueueSongTile extends StatelessWidget {
         ),
       ),
 
-      child: InkWell(
-        onTap: () {
-          if (missing) return;
-          context.read<PlaybackBloc>().add(SkipToQueueItemEvent(index));
-        },
-        child: ListTile(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          enabled: !missing,
-          leading: Opacity(
-            opacity: missing ? 0.35 : 1,
-            child: AlbumArt(artUri: tune.artUri, size: const Size(46, 46)),
-          ),
-          title: Text(
-            tune.title.toTitleCase(),
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: missing ? Colors.grey : null,
-            ),
-          ),
-          subtitle: Text(
-            formatArtistName(
-              context.read<ManagementCubit>().state.artistDelimiters,
-              tune.artist,
-            ),
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.titleSmall?.copyWith(color: Colors.grey),
-          ),
-          trailing: Icon(
-            Icons.drag_handle_rounded,
-            color: theme.colorScheme.onSurfaceVariant,
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        enabled: !missing,
+        leading: Opacity(
+          opacity: missing ? 0.35 : 1,
+          child: AlbumArt(artUri: tune.artUri, size: const Size(46, 46)),
+        ),
+        title: Text(
+          tune.title.toTitleCase(),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: missing ? Colors.grey : null,
           ),
         ),
+        subtitle: Text(
+          formatArtistName(
+            context.read<ManagementCubit>().state.artistDelimiters,
+            tune.artist,
+          ),
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.titleSmall?.copyWith(color: Colors.grey),
+        ),
+        trailing: reorderIndex == null
+            ? null
+            : ReorderableDragStartListener(
+                index: reorderIndex!,
+                child: Icon(
+                  Icons.drag_handle_rounded,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
       ),
     );
   }

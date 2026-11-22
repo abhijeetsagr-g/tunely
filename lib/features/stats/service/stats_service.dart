@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:tunely/features/stats/repository/stats_repository.dart';
 
 /// Records a play once the listener has actually spent time on a track.
@@ -41,7 +40,6 @@ class StatsService {
     _lastPosition = Duration.zero;
     _listened = Duration.zero;
     _counted = false;
-    debugPrint('[stats] tracking: "${item.title}" id=${item.id}');
   }
 
   void _handlePosition(Duration position) {

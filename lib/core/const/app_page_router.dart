@@ -8,14 +8,14 @@ class AppPageRoute<T> extends PageRouteBuilder<T> {
     required WidgetBuilder builder,
     RouteTransition transition = RouteTransition.slide,
   }) : super(
-         transitionDuration: const Duration(milliseconds: 500),
-         reverseTransitionDuration: const Duration(milliseconds: 400),
+         transitionDuration: const Duration(milliseconds: 320),
+         reverseTransitionDuration: const Duration(milliseconds: 260),
          pageBuilder: (context, _, _) => builder(context),
          transitionsBuilder: (context, animation, secondaryAnimation, child) {
            final curved = CurvedAnimation(
              parent: animation,
-             curve: Curves.easeOutQuint,
-             reverseCurve: Curves.easeInQuint,
+             curve: Curves.easeOutCubic,
+             reverseCurve: Curves.easeInCubic,
            );
 
            return switch (transition) {
@@ -24,8 +24,8 @@ class AppPageRoute<T> extends PageRouteBuilder<T> {
                    .animate(
                      CurvedAnimation(
                        parent: animation,
-                       curve: Curves.easeOutExpo,
-                       reverseCurve: Curves.easeInExpo,
+                       curve: Curves.easeOutCubic,
+                       reverseCurve: Curves.easeInCubic,
                      ),
                    ),
                child: child,

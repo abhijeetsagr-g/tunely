@@ -14,7 +14,9 @@ class ControlButtons extends StatelessWidget {
     bool isActive = false,
     bool isDisabled = false,
   }) {
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      curve: Curves.easeOut,
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
         color: isActive
@@ -24,13 +26,26 @@ class ControlButtons extends StatelessWidget {
       ),
       child: IconButton(
         iconSize: iconSize,
-        icon: Icon(
-          icon,
-          color: isDisabled
-              ? Theme.of(context).iconTheme.color?.withAlpha(30)
-              : isActive
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).iconTheme.color,
+        icon: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 150),
+          switchInCurve: Curves.easeOut,
+          switchOutCurve: Curves.easeIn,
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.85, end: 1).animate(animation),
+              child: child,
+            ),
+          ),
+          child: Icon(
+            icon,
+            key: ValueKey(icon),
+            color: isDisabled
+                ? Theme.of(context).iconTheme.color?.withAlpha(30)
+                : isActive
+                ? Theme.of(context).primaryColor
+                : Theme.of(context).iconTheme.color,
+          ),
         ),
         onPressed: onPressed,
       ),

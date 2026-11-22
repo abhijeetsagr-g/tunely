@@ -50,6 +50,7 @@ class QueueWidget extends StatelessWidget {
             _SectionLabel(label: 'Upcoming'),
             Expanded(
               child: ReorderableListView(
+                buildDefaultDragHandles: false,
                 padding: const EdgeInsets.only(bottom: 24),
                 onReorderItem: (oldIndex, newIndex) {
                   final offset = nextIndex + 1;
@@ -66,6 +67,7 @@ class QueueWidget extends StatelessWidget {
                         key: ValueKey(t.path),
                         tune: tunes[nextIndex + 1 + i],
                         index: nextIndex + 1 + i,
+                        reorderIndex: i,
                       ),
                     )
                     .toList(),

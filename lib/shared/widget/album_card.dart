@@ -6,6 +6,7 @@ import 'package:tunely/core/utils/settings_arguments.dart';
 import 'package:tunely/core/utils/fur_artist_name.dart';
 import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/shared/widget/album_art.dart';
+import 'package:tunely/shared/widget/pressable_scale.dart';
 
 class AlbumCard extends StatelessWidget {
   const AlbumCard({
@@ -20,7 +21,7 @@ class AlbumCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return PressableScale(
       onTap: () {
         onTap?.call();
         Navigator.pushNamed(

@@ -38,9 +38,9 @@ class _LibraryViewState extends State<LibraryView>
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           'Library',
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-            letterSpacing: -0.5,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineLarge?.copyWith(letterSpacing: -0.5),
         ),
         actions: [
           IconButton(
@@ -113,41 +113,59 @@ class _LibraryViewState extends State<LibraryView>
     return Column(
       children: [
         Expanded(
-          child: switch (_selectedIndex) {
-            0 => AllSongsTab(
-              tunes: tunes,
-              sortType: sort.tuneSortType,
-              ascending: sort.tuneSortAsc,
-              onSortChanged: (type) =>
-                  sortCubit.setTuneSort(type, sort.tuneSortAsc),
-              onDirectionChanged: (ascending) =>
-                  sortCubit.setTuneSort(sort.tuneSortType, ascending),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 220),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0, 0.02),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
             ),
-            1 => AlbumsTab(
-              albums: albums,
-              durations: totalDurationBy(tunes, (tune) => tune.albumId),
-              sortType: sort.albumSort,
-              ascending: sort.albumSortAsc,
-              onSortChanged: (type) =>
-                  sortCubit.setAlbumSort(type, sort.albumSortAsc),
-              onDirectionChanged: (ascending) =>
-                  sortCubit.setAlbumSort(sort.albumSort, ascending),
-              hideSingles: sort.albumHideSingles,
-              onHideSinglesChanged: sortCubit.setAlbumHideSingles,
+            child: KeyedSubtree(
+              key: ValueKey(_selectedIndex),
+              child: switch (_selectedIndex) {
+                0 => AllSongsTab(
+                  tunes: tunes,
+                  sortType: sort.tuneSortType,
+                  ascending: sort.tuneSortAsc,
+                  onSortChanged: (type) =>
+                      sortCubit.setTuneSort(type, sort.tuneSortAsc),
+                  onDirectionChanged: (ascending) =>
+                      sortCubit.setTuneSort(sort.tuneSortType, ascending),
+                ),
+                1 => AlbumsTab(
+                  albums: albums,
+                  durations: totalDurationBy(tunes, (tune) => tune.albumId),
+                  sortType: sort.albumSort,
+                  ascending: sort.albumSortAsc,
+                  onSortChanged: (type) =>
+                      sortCubit.setAlbumSort(type, sort.albumSortAsc),
+                  onDirectionChanged: (ascending) =>
+                      sortCubit.setAlbumSort(sort.albumSort, ascending),
+                  hideSingles: sort.albumHideSingles,
+                  onHideSinglesChanged: sortCubit.setAlbumHideSingles,
+                ),
+                2 => ArtistsTab(
+                  artists: artists,
+                  sortType: sort.artistSort,
+                  ascending: sort.artistSortAsc,
+                  onSortChanged: (type) =>
+                      sortCubit.setArtistSort(type, sort.artistSortAsc),
+                  onDirectionChanged: (ascending) =>
+                      sortCubit.setArtistSort(sort.artistSort, ascending),
+                  hideSingles: sort.artistHideSingles,
+                  onHideSinglesChanged: sortCubit.setArtistHideSingles,
+                ),
+                _ => PlaylistsTab(tunes: tunes),
+              },
             ),
-            2 => ArtistsTab(
-              artists: artists,
-              sortType: sort.artistSort,
-              ascending: sort.artistSortAsc,
-              onSortChanged: (type) =>
-                  sortCubit.setArtistSort(type, sort.artistSortAsc),
-              onDirectionChanged: (ascending) =>
-                  sortCubit.setArtistSort(sort.artistSort, ascending),
-              hideSingles: sort.artistHideSingles,
-              onHideSinglesChanged: sortCubit.setArtistHideSingles,
-            ),
-            _ => PlaylistsTab(tunes: tunes),
-          },
+          ),
         ),
         ValueListenableBuilder<double>(
           valueListenable: miniPlayerHeight,

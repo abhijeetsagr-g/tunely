@@ -4,6 +4,7 @@ import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
+import 'package:tunely/shared/widget/pressable_scale.dart';
 import 'package:tunely/shared/widget/song_tile_sheet.dart';
 
 class SongTile extends StatelessWidget {
@@ -69,78 +70,81 @@ class SongTile extends StatelessWidget {
               color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
           ),
-          child: InkWell(
-            onTap: () {
-              if (missing) return;
-              onTap?.call();
-              if (dontPlay) return;
-              playback.add(PlayQueueEvent(tunes, startIndex: index));
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Stack(
-                children: [
-                  // Progress fill
-                  if (isCurrent)
-                    Positioned.fill(
-                      child: FractionallySizedBox(
-                        alignment: Alignment.centerLeft,
-                        widthFactor: progress,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.primary.withValues(alpha: 0.12),
+          child: PressableScale(
+            child: InkWell(
+              onTap: () {
+                if (missing) return;
+                onTap?.call();
+                if (dontPlay) return;
+                playback.add(PlayQueueEvent(tunes, startIndex: index));
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Stack(
+                  children: [
+                    // Progress fill
+                    if (isCurrent)
+                      Positioned.fill(
+                        child: FractionallySizedBox(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: progress,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.12),
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    enabled: !missing,
-                    leading: Opacity(
-                      opacity: missing ? 0.35 : 1,
-                      child: AlbumArt(
-                        artUri: tune.artUri,
-                        size: Size(50, 50),
-                        borderRadius: !isCurrent ? 2 : 8,
+                    ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ),
-
-                    title: Text(
-                      tune.title.toTitleCase(),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: missing
-                            ? Colors.grey
-                            : isCurrent
-                            ? Theme.of(context).colorScheme.primary
-                            : null,
-                      ),
-                    ),
-
-                    subtitle: Text(
-                      tune.artists.join(" • "),
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleSmall?.copyWith(color: Colors.grey),
-                    ),
-                    trailing:
-                        trailing ??
-                        IconButton(
-                          icon: const Icon(
-                            Icons.more_horiz,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () => showSongTileSheet(context, tune),
+                      enabled: !missing,
+                      leading: Opacity(
+                        opacity: missing ? 0.35 : 1,
+                        child: AlbumArt(
+                          artUri: tune.artUri,
+                          size: Size(50, 50),
+                          borderRadius: !isCurrent ? 2 : 8,
                         ),
-                  ),
-                ],
+                      ),
+
+                      title: Text(
+                        tune.title.toTitleCase(),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: missing
+                                  ? Colors.grey
+                                  : isCurrent
+                                  ? Theme.of(context).colorScheme.primary
+                                  : null,
+                            ),
+                      ),
+
+                      subtitle: Text(
+                        tune.artists.join(" • "),
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleSmall?.copyWith(color: Colors.grey),
+                      ),
+                      trailing:
+                          trailing ??
+                          IconButton(
+                            icon: const Icon(
+                              Icons.more_horiz,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () => showSongTileSheet(context, tune),
+                          ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
