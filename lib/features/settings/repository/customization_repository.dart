@@ -4,6 +4,7 @@ import 'package:tunely/core/config/app_color.dart';
 class CustomizationRepository {
   final _keyThemeMode = 'theme_mode';
   final _keyAccentColor = 'accent_color';
+  final _keyFontFamily = 'font_family';
 
   final SharedPreferences _prefs;
   CustomizationRepository(this._prefs);
@@ -20,6 +21,11 @@ class CustomizationRepository {
 
   int get accentColor =>
       _prefs.getInt(_keyAccentColor) ?? AppColor.blue.toARGB32();
+
   Future<void> setAccentColor(int value) async =>
       await _prefs.setInt(_keyAccentColor, value);
+
+  String get fontModel => _prefs.getString(_keyFontFamily) ?? 'system';
+  Future<void> setFont(String font) async =>
+      await _prefs.setString(_keyFontFamily, font);
 }

@@ -65,9 +65,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             initialRoute: AppRoute.splash,
             debugShowCheckedModeBanner: false,
             themeMode: theme.themeMode,
-            theme: AppTheme.light(accent: accent),
-            darkTheme: AppTheme.dark(accent: accent),
+            theme: AppTheme.light(accent: accent, fontName: theme.fontModel),
+            darkTheme: AppTheme.dark(accent: accent, fontName: theme.fontModel),
             themeAnimationCurve: AppTheme.enter,
+
             themeAnimationDuration: AppTheme.enterDuration,
             builder: (context, child) {
               // Clamp Text To Match My sizes;

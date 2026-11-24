@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/features/settings/model/font_model.dart';
 
 abstract class AppTheme {
   static const Color white = Color(0xFFFFFFFF);
@@ -34,8 +35,12 @@ abstract class AppTheme {
   static const Duration revealDuration = Duration(milliseconds: 180);
   static const Duration revealDelayStep = Duration(milliseconds: 24);
 
-  static ThemeData dark({Color accent = darkPrimary}) => ThemeData(
+  static ThemeData dark({
+    Color accent = darkPrimary,
+    FontModel fontName = FontModel.system,
+  }) => ThemeData(
     brightness: Brightness.dark,
+
     scaffoldBackgroundColor: darkBg,
     primaryColor: accent,
     colorScheme: ColorScheme.dark(
@@ -47,7 +52,8 @@ abstract class AppTheme {
       onSurfaceVariant: darkOnSurfaceVariant,
     ),
 
-    textTheme: _textTheme(darkOnSurface),
+    textTheme: _textTheme(darkOnSurface, fontName),
+    fontFamily: fontName.family,
     splashColor: accent.withAlpha(20),
     highlightColor: accent.withAlpha(10),
     iconTheme: IconThemeData(color: darkOnSurface),
@@ -60,7 +66,10 @@ abstract class AppTheme {
     sliderTheme: _sliderTheme(accent, darkSecondary),
   );
 
-  static ThemeData light({Color accent = lightPrimary}) => ThemeData(
+  static ThemeData light({
+    Color accent = lightPrimary,
+    FontModel fontName = FontModel.system,
+  }) => ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: lightBg,
     primaryColor: accent,
@@ -72,7 +81,8 @@ abstract class AppTheme {
       onSurface: lightOnSurface,
       onSurfaceVariant: lightOnSurfaceVariant,
     ),
-    textTheme: _textTheme(lightOnSurface),
+    fontFamily: fontName.family,
+    textTheme: _textTheme(lightOnSurface, fontName),
     splashColor: accent.withAlpha(20),
     highlightColor: accent.withAlpha(10),
     iconTheme: IconThemeData(color: lightOnSurface),
@@ -99,7 +109,7 @@ abstract class AppTheme {
   }
 
   /// App-wide type scale.
-  static TextTheme _textTheme(Color onSurface) {
+  static TextTheme _textTheme(Color onSurface, FontModel fontName) {
     final TextTheme base = Typography.material2021().black;
 
     TextStyle? style(
@@ -155,6 +165,6 @@ abstract class AppTheme {
 
       // Nav bar labels
       labelMedium: style(base.labelMedium, fontSize: 11),
-    );
+    ).apply(fontFamily: fontName.family);
   }
 }

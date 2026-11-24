@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:tunely/core/config/app_theme.dart';
+import 'package:tunely/features/settings/model/font_model.dart';
 import 'package:tunely/features/settings/repository/customization_repository.dart';
 
 class CustomizationService {
@@ -32,8 +33,6 @@ class CustomizationService {
     final bytes = await _query.queryArtwork(id, type);
     if (bytes == null || bytes.isEmpty) return null;
 
-    // Downscale before extracting so the palette reflects broad regions
-    // instead of fine pixel noise, and decode stays cheap.
     final palette = await PaletteGenerator.fromImageProvider(
       ResizeImage.resizeIfNeeded(256, 256, MemoryImage(bytes)),
       maximumColorCount: 24,
@@ -108,4 +107,16 @@ class CustomizationService {
   Color getAccentColor() => Color(_repo.accentColor);
   Future<void> setAccentColor(Color color) =>
       _repo.setAccentColor(color.toARGB32());
+
+  // Font
+  Future<void> setFont(FontModel fontModel) => _repo.setFont(fontModel.name);
+
+  FontModel getFont() {
+    final value = _repo.fontModel.toLowerCase();
+
+    return FontModel.values.firstWhere(
+      (font) => font.name == value || font.family?.toLowerCase() == value,
+      orElse: () => FontModel.system,
+    );
+  }
 }
