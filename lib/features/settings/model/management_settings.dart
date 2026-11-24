@@ -22,6 +22,9 @@ class ManagementSettings extends HiveObject {
   @HiveField(5)
   final int? dailyMixDateSeed;
 
+  @HiveField(6)
+  final List<String>? dailyMixPreviousPaths;
+
   ManagementSettings({
     this.artistDelimiters = const ['/', ',', ';', '&', '+'],
     this.minDurationMs = 5000,
@@ -29,6 +32,7 @@ class ManagementSettings extends HiveObject {
     this.dailyMixSize = 10,
     this.dailyMixTunePaths,
     this.dailyMixDateSeed,
+    this.dailyMixPreviousPaths,
   });
 
   ManagementSettings copyWith({
@@ -38,6 +42,7 @@ class ManagementSettings extends HiveObject {
     int? dailyMixSize,
     List<String>? dailyMixTunePaths,
     int? dailyMixDateSeed,
+    List<String>? dailyMixPreviousPaths,
   }) => ManagementSettings(
     artistDelimiters: artistDelimiters ?? this.artistDelimiters,
     minDurationMs: minDurationMs ?? this.minDurationMs,
@@ -45,6 +50,7 @@ class ManagementSettings extends HiveObject {
     dailyMixSize: dailyMixSize ?? this.dailyMixSize,
     dailyMixTunePaths: dailyMixTunePaths ?? this.dailyMixTunePaths,
     dailyMixDateSeed: dailyMixDateSeed ?? this.dailyMixDateSeed,
+    dailyMixPreviousPaths: dailyMixPreviousPaths ?? this.dailyMixPreviousPaths,
   );
 
   Map<String, dynamic> toJson() => {
@@ -54,6 +60,8 @@ class ManagementSettings extends HiveObject {
     'dailyMixSize': dailyMixSize,
     if (dailyMixTunePaths != null) 'dailyMixTunePaths': dailyMixTunePaths,
     if (dailyMixDateSeed != null) 'dailyMixDateSeed': dailyMixDateSeed,
+    if (dailyMixPreviousPaths != null)
+      'dailyMixPreviousPaths': dailyMixPreviousPaths,
   };
 
   factory ManagementSettings.fromJson(Map<String, dynamic> json) =>
@@ -66,5 +74,8 @@ class ManagementSettings extends HiveObject {
             ? List<String>.from(json['dailyMixTunePaths'])
             : null,
         dailyMixDateSeed: json['dailyMixDateSeed'] as int?,
+        dailyMixPreviousPaths: json['dailyMixPreviousPaths'] != null
+            ? List<String>.from(json['dailyMixPreviousPaths'])
+            : null,
       );
 }

@@ -6,6 +6,7 @@ import 'package:tunely/features/settings/cubit/management_cubit.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
+import 'package:tunely/shared/widget/pressable_scale.dart';
 
 class QueueSongTile extends StatelessWidget {
   const QueueSongTile({
@@ -64,38 +65,43 @@ class QueueSongTile extends StatelessWidget {
         ),
       ),
 
-      child: ListTile(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        enabled: !missing,
-        leading: Opacity(
-          opacity: missing ? 0.35 : 1,
-          child: AlbumArt(artUri: tune.artUri, size: const Size(46, 46)),
-        ),
-        title: Text(
-          tune.title.toTitleCase(),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: missing ? Colors.grey : null,
+      child: PressableScale(
+        onTap: () =>
+            context.read<PlaybackBloc>().add(SkipToQueueItemEvent(index)),
+        child: ListTile(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+
+          enabled: !missing,
+          leading: Opacity(
+            opacity: missing ? 0.35 : 1,
+            child: AlbumArt(artUri: tune.artUri, size: const Size(46, 46)),
           ),
-        ),
-        subtitle: Text(
-          formatArtistName(
-            context.read<ManagementCubit>().state.artistDelimiters,
-            tune.artist,
+          title: Text(
+            tune.title.toTitleCase(),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: missing ? Colors.grey : null,
+            ),
           ),
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.titleSmall?.copyWith(color: Colors.grey),
-        ),
-        trailing: reorderIndex == null
-            ? null
-            : ReorderableDragStartListener(
-                index: reorderIndex!,
-                child: Icon(
-                  Icons.drag_handle_rounded,
-                  color: theme.colorScheme.onSurfaceVariant,
+          subtitle: Text(
+            formatArtistName(
+              context.read<ManagementCubit>().state.artistDelimiters,
+              tune.artist,
+            ),
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleSmall?.copyWith(color: Colors.grey),
+          ),
+          trailing: reorderIndex == null
+              ? null
+              : ReorderableDragStartListener(
+                  index: reorderIndex!,
+                  child: Icon(
+                    Icons.drag_handle_rounded,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

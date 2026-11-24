@@ -27,13 +27,14 @@ class ManagementSettingsAdapter extends TypeAdapter<ManagementSettings> {
       dailyMixSize: fields[3] == null ? 10 : (fields[3] as num).toInt(),
       dailyMixTunePaths: (fields[4] as List?)?.cast<String>(),
       dailyMixDateSeed: (fields[5] as num?)?.toInt(),
+      dailyMixPreviousPaths: (fields[6] as List?)?.cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ManagementSettings obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.artistDelimiters)
       ..writeByte(1)
@@ -45,7 +46,9 @@ class ManagementSettingsAdapter extends TypeAdapter<ManagementSettings> {
       ..writeByte(4)
       ..write(obj.dailyMixTunePaths)
       ..writeByte(5)
-      ..write(obj.dailyMixDateSeed);
+      ..write(obj.dailyMixDateSeed)
+      ..writeByte(6)
+      ..write(obj.dailyMixPreviousPaths);
   }
 
   @override
