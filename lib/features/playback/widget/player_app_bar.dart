@@ -54,7 +54,7 @@ class PlayerAppBar extends StatelessWidget {
 
         IconButton(
           onPressed: () => showSleepSheet(context),
-          icon: Icon(Icons.dark_mode_outlined),
+          icon: Icon(Icons.timer_outlined),
         ),
       ],
     );
