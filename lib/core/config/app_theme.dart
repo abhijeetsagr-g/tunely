@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tunely/features/settings/model/font_model.dart';
+import 'package:tunely/features/settings/model/font_size_model.dart';
 
 abstract class AppTheme {
   static const Color white = Color(0xFFFFFFFF);
@@ -38,6 +39,7 @@ abstract class AppTheme {
   static ThemeData dark({
     Color accent = darkPrimary,
     FontModel fontName = FontModel.system,
+    FontSizeModel fontSize = FontSizeModel.medium,
   }) => ThemeData(
     brightness: Brightness.dark,
 
@@ -52,7 +54,7 @@ abstract class AppTheme {
       onSurfaceVariant: darkOnSurfaceVariant,
     ),
 
-    textTheme: _textTheme(darkOnSurface, fontName),
+    textTheme: _textTheme(darkOnSurface, fontName, fontSize),
     fontFamily: fontName.family,
     splashColor: accent.withAlpha(20),
     highlightColor: accent.withAlpha(10),
@@ -69,6 +71,7 @@ abstract class AppTheme {
   static ThemeData light({
     Color accent = lightPrimary,
     FontModel fontName = FontModel.system,
+    FontSizeModel fontSize = FontSizeModel.medium,
   }) => ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: lightBg,
@@ -82,7 +85,7 @@ abstract class AppTheme {
       onSurfaceVariant: lightOnSurfaceVariant,
     ),
     fontFamily: fontName.family,
-    textTheme: _textTheme(lightOnSurface, fontName),
+    textTheme: _textTheme(lightOnSurface, fontName, fontSize),
     splashColor: accent.withAlpha(20),
     highlightColor: accent.withAlpha(10),
     iconTheme: IconThemeData(color: lightOnSurface),
@@ -109,7 +112,11 @@ abstract class AppTheme {
   }
 
   /// App-wide type scale.
-  static TextTheme _textTheme(Color onSurface, FontModel fontName) {
+  static TextTheme _textTheme(
+    Color onSurface,
+    FontModel fontName,
+    FontSizeModel fontSizeModel,
+  ) {
     final TextTheme base = Typography.material2021().black;
 
     TextStyle? style(
@@ -117,7 +124,7 @@ abstract class AppTheme {
       required double fontSize,
       FontWeight fontWeight = FontWeight.w400,
     }) => textStyle?.copyWith(
-      fontSize: fontSize,
+      fontSize: fontSize * fontSizeModel.scale,
       fontWeight: fontWeight,
       color: onSurface,
     );

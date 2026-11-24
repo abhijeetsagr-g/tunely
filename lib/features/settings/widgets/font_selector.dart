@@ -2,126 +2,105 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 import 'package:tunely/features/settings/model/font_model.dart';
+import 'package:tunely/features/settings/widgets/settings_card.dart';
 
 class FontFamilySelector extends StatelessWidget {
   const FontFamilySelector({super.key});
 
-  static const List<FontModel> _fonts = [
-    FontModel.system,
-    FontModel.manrope,
-    FontModel.inter,
-  ];
-
-  String _fontName(FontModel font) => switch (font) {
-    FontModel.system => 'System',
-    FontModel.manrope => 'Manrope',
-    FontModel.inter => 'Inter',
-  };
-
-  String _fontDescription(FontModel font) => switch (font) {
-    FontModel.system => 'Your device default font.',
-    FontModel.manrope => 'Modern, geometric.',
-    FontModel.inter => 'Clean, highly readable.',
-  };
+  static const _fonts = FontModel.values;
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.watch<CustomizationCubit>();
-    final selectedFont = cubit.state.fontModel;
+    final selected = context.select<CustomizationCubit, FontModel>(
+      (c) => c.state.fontModel,
+    );
+    final cubit = context.read<CustomizationCubit>();
+
+    return SettingsCard(
+      title: 'Font family',
+      child: Row(
+        children: [
+          for (var i = 0; i < _fonts.length; i++) ...[
+            if (i > 0) const SizedBox(width: 10),
+            Expanded(
+              child: _FontCard(
+                font: _fonts[i],
+                selected: selected == _fonts[i],
+                onTap: () => cubit.setFontFamily(_fonts[i]),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _FontCard extends StatelessWidget {
+  const _FontCard({
+    required this.font,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final FontModel font;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurfaceVariant;
+    const radius = BorderRadius.all(Radius.circular(16));
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text('Font family', style: theme.textTheme.titleLarge),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: scheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  _fontName(selectedFont),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: scheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '${font.label} font',
+      excludeSemantics: true,
+      child: Material(
+        animationDuration: const Duration(milliseconds: 200),
+        color: selected
+            ? scheme.primaryContainer
+            : scheme.surfaceContainerHighest,
+        shape: RoundedRectangleBorder(
+          borderRadius: radius,
+          side: BorderSide(
+            color: selected ? scheme.primary : Colors.transparent,
+            width: 1.5,
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Choose the typography used throughout Tunely.',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SegmentedButton<FontModel>(
-            segments: _fonts.map((font) {
-              return ButtonSegment<FontModel>(
-                value: font,
-                label: Text(
+        ),
+        child: InkWell(
+          borderRadius: radius,
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              children: [
+                Text(
                   'Aa',
                   style: TextStyle(
                     fontFamily: font.family,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    height: 1.1,
+                    color: fg,
                   ),
                 ),
-                tooltip: _fontName(font),
-              );
-            }).toList(),
-            selected: {selectedFont},
-            showSelectedIcon: false,
-            onSelectionChanged: (selection) {
-              cubit.setFontFamily(selection.first);
-            },
-            style: SegmentedButton.styleFrom(
-              visualDensity: VisualDensity.comfortable,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: scheme.surfaceContainerLow,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: scheme.outlineVariant),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+                const SizedBox(height: 8),
                 Text(
-                  'The quick brown fox jumps over the lazy dog.',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontFamily: selectedFont.family,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  _fontDescription(selectedFont),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
+                  font.label,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontFamily: font.family,
+                    color: fg,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                   ),
                 ),
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:on_audio_query_pluse/on_audio_query.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/features/settings/model/font_model.dart';
+import 'package:tunely/features/settings/model/font_size_model.dart';
 import 'package:tunely/features/settings/repository/customization_repository.dart';
 
 class CustomizationService {
@@ -117,6 +118,19 @@ class CustomizationService {
     return FontModel.values.firstWhere(
       (font) => font.name == value || font.family?.toLowerCase() == value,
       orElse: () => FontModel.system,
+    );
+  }
+
+  // Font size
+  Future<void> setFontSize(FontSizeModel fontSize) =>
+      _repo.setFontSize(fontSize.name);
+
+  FontSizeModel getFontSize() {
+    final value = _repo.fontSizeModel.toLowerCase();
+
+    return FontSizeModel.values.firstWhere(
+      (size) => size.name == value,
+      orElse: () => FontSizeModel.medium,
     );
   }
 }

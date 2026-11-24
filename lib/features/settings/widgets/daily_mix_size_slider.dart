@@ -1,70 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/settings/cubit/management_cubit.dart';
+import 'package:tunely/features/settings/widgets/settings_slider.dart';
 
 class DailyMixSizeSlider extends StatelessWidget {
   const DailyMixSizeSlider({super.key});
 
-  static const List<int> _sizes = [10, 20, 30, 50];
+  static const _min = 10;
+  static const _max = 50;
+  static const _step = 5;
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.watch<ManagementCubit>();
-    final size = cubit.state.dailyMixSize;
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
+    final size = context.select<ManagementCubit, int>(
+      (c) => c.state.dailyMixSize,
+    );
+    final cubit = context.read<ManagementCubit>();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text('Daily mix size', style: theme.textTheme.titleLarge),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: scheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '$size songs',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: scheme.onPrimaryContainer,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Number of songs in the initial daily mix.',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 12),
-          SegmentedButton<int>(
-            segments: _sizes
-                .map((s) => ButtonSegment<int>(value: s, label: Text('$s')))
-                .toList(),
-            selected: {size},
-            showSelectedIcon: false,
-            onSelectionChanged: (selection) {
-              cubit.updateDailyMixSize(selection.first);
-            },
-            style: SegmentedButton.styleFrom(
-              visualDensity: VisualDensity.compact,
-            ),
-          ),
-        ],
-      ),
+    return SettingsSlider(
+      title: 'Daily mix size',
+      value: size.clamp(_min, _max).toDouble(),
+      min: _min.toDouble(),
+      max: _max.toDouble(),
+      divisions: (_max - _min) ~/ _step,
+      format: (v) => '${v.round()} songs',
+      minLabel: '$_min',
+      maxLabel: '$_max',
+      onCommit: (v) => cubit.updateDailyMixSize(v.round()),
     );
   }
 }

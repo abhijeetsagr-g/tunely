@@ -1,44 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
+import 'package:tunely/features/settings/widgets/settings_card.dart';
 
 class ThemePicker extends StatelessWidget {
   const ThemePicker({super.key});
 
+  static const _options = [
+    (ThemeMode.light, Icons.light_mode_rounded, 'Light'),
+    (ThemeMode.system, Icons.brightness_auto_rounded, 'System'),
+    (ThemeMode.dark, Icons.dark_mode_rounded, 'Dark'),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final cubit = context.watch<CustomizationCubit>();
-    final themeMode = cubit.state.themeMode;
+    final current = context.select<CustomizationCubit, ThemeMode>(
+      (c) => c.state.themeMode,
+    );
+    final cubit = context.read<CustomizationCubit>();
 
-    return Row(
-      children: [
-        Expanded(
-          child: _ThemeCard(
-            icon: Icons.light_mode_rounded,
-            label: 'Light',
-            selected: themeMode == ThemeMode.light,
-            onTap: () => cubit.setThemeMode(ThemeMode.light),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _ThemeCard(
-            icon: Icons.settings_rounded,
-            label: 'System',
-            selected: themeMode == ThemeMode.system,
-            onTap: () => cubit.setThemeMode(ThemeMode.system),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _ThemeCard(
-            icon: Icons.dark_mode_rounded,
-            label: 'Dark',
-            selected: themeMode == ThemeMode.dark,
-            onTap: () => cubit.setThemeMode(ThemeMode.dark),
-          ),
-        ),
-      ],
+    return SettingsCard(
+      title: 'Theme',
+      child: Row(
+        children: [
+          for (var i = 0; i < _options.length; i++) ...[
+            if (i > 0) const SizedBox(width: 10),
+            Expanded(
+              child: _ThemeCard(
+                icon: _options[i].$2,
+                label: _options[i].$3,
+                selected: current == _options[i].$1,
+                onTap: () => cubit.setThemeMode(_options[i].$1),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -58,30 +55,46 @@ class _ThemeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final fg = selected ? scheme.onPrimaryContainer : scheme.onSurfaceVariant;
+    const radius = BorderRadius.all(Radius.circular(16));
 
-    return Material(
-      color: selected
-          ? scheme.primaryContainer
-          : scheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                size: 32,
-                color: selected
-                    ? scheme.onPrimaryContainer
-                    : scheme.onSurfaceVariant,
-              ),
-              const SizedBox(height: 8),
-              Text(label, style: Theme.of(context).textTheme.labelMedium),
-            ],
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: '$label theme',
+      excludeSemantics: true,
+      child: Material(
+        animationDuration: const Duration(milliseconds: 200),
+        color: selected
+            ? scheme.primaryContainer
+            : scheme.surfaceContainerHighest,
+        shape: RoundedRectangleBorder(
+          borderRadius: radius,
+          side: BorderSide(
+            color: selected ? scheme.primary : Colors.transparent,
+            width: 1.5,
+          ),
+        ),
+        child: InkWell(
+          borderRadius: radius,
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 18),
+            child: Column(
+              children: [
+                Icon(icon, size: 28, color: fg),
+                const SizedBox(height: 8),
+                Text(
+                  label,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: fg,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

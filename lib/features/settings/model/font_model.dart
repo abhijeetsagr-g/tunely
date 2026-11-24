@@ -1,9 +1,10 @@
 enum FontModel {
-  system(null),
-  manrope('Manrope'),
-  inter('Inter');
+  system(null, 'System'),
+  manrope('Manrope', 'Manrope'),
+  inter('Inter', 'Inter');
 
-  const FontModel(this.family);
+  const FontModel(this.family, this.label);
 
   final String? family;
+  final String label;
 }

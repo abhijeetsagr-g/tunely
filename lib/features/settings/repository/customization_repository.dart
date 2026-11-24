@@ -5,6 +5,7 @@ class CustomizationRepository {
   final _keyThemeMode = 'theme_mode';
   final _keyAccentColor = 'accent_color';
   final _keyFontFamily = 'font_family';
+  final _keyFontSize = 'font_size';
 
   final SharedPreferences _prefs;
   CustomizationRepository(this._prefs);
@@ -28,4 +29,8 @@ class CustomizationRepository {
   String get fontModel => _prefs.getString(_keyFontFamily) ?? 'system';
   Future<void> setFont(String font) async =>
       await _prefs.setString(_keyFontFamily, font);
+
+  String get fontSizeModel => _prefs.getString(_keyFontSize) ?? 'medium';
+  Future<void> setFontSize(String size) async =>
+      await _prefs.setString(_keyFontSize, size);
 }

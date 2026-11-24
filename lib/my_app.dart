@@ -65,19 +65,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             initialRoute: AppRoute.splash,
             debugShowCheckedModeBanner: false,
             themeMode: theme.themeMode,
-            theme: AppTheme.light(accent: accent, fontName: theme.fontModel),
-            darkTheme: AppTheme.dark(accent: accent, fontName: theme.fontModel),
+            theme: AppTheme.light(
+              accent: accent,
+              fontName: theme.fontModel,
+              fontSize: theme.fontSizeModel,
+            ),
+            darkTheme: AppTheme.dark(
+              accent: accent,
+              fontName: theme.fontModel,
+              fontSize: theme.fontSizeModel,
+            ),
             themeAnimationCurve: AppTheme.enter,
 
             themeAnimationDuration: AppTheme.enterDuration,
             builder: (context, child) {
-              // Clamp Text To Match My sizes;
+              // Clamp text so the app preference and OS scaling combined
+              // never exceed 1.3x (or 1.15x when the app scale is smaller).
               final mq = MediaQuery.of(context);
+              final maxScaleFactor = (1.3 / theme.fontSizeModel.scale)
+                  .clamp(0.9, 1.15)
+                  .toDouble();
               return MediaQuery(
                 data: mq.copyWith(
                   textScaler: mq.textScaler.clamp(
                     minScaleFactor: 0.9,
-                    maxScaleFactor: 1.15,
+                    maxScaleFactor: maxScaleFactor,
                   ),
                 ),
                 child: child!,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/config/app_color.dart';
 import 'package:tunely/features/settings/model/font_model.dart';
+import 'package:tunely/features/settings/model/font_size_model.dart';
 import 'package:tunely/features/settings/service/customization_service.dart';
 
 part 'customization_state.dart';
@@ -16,6 +17,7 @@ class CustomizationCubit extends Cubit<CustomizationState> {
           accentColor: _customizer.getAccentColor(),
           useDynamic: false,
           fontModel: _customizer.getFont(),
+          fontSizeModel: _customizer.getFontSize(),
         ),
       );
 
@@ -36,6 +38,11 @@ class CustomizationCubit extends Cubit<CustomizationState> {
   Future<void> setFontFamily(FontModel fontModel) async {
     await _customizer.setFont(fontModel);
     emit(state.copyWith(fontModel: fontModel));
+  }
+
+  Future<void> setFontSize(FontSizeModel fontSizeModel) async {
+    await _customizer.setFontSize(fontSizeModel);
+    emit(state.copyWith(fontSizeModel: fontSizeModel));
   }
 
   Future<Color?> extractColors(
