@@ -3,29 +3,49 @@ import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
+import 'package:tunely/shared/widget/staggered_reveal.dart';
 
 class TuneSliverList extends StatelessWidget {
-  const TuneSliverList({super.key, required this.tunes, this.onRemove});
+  const TuneSliverList({
+    super.key,
+    required this.tunes,
+    this.onRemove,
+    this.staggered = false,
+  });
 
   final List<Tune> tunes;
   final void Function(int songId)? onRemove;
+
+  /// Reveals rows one after another when the list is first built.
+  final bool staggered;
 
   @override
   Widget build(BuildContext context) {
     return SliverList.builder(
       itemCount: tunes.length,
       itemBuilder: (context, index) {
-        if (onRemove == null) {
-          return SongTile(tunes: tunes, index: index);
-        }
         final tune = tunes[index];
-        return _TuneSliverItem(
-          key: ValueKey(tune.songId ?? tune.path),
-          tune: tune,
-          onRemove: () {
-            final id = tune.songId;
-            if (id != null) onRemove?.call(id);
-          },
+        final Widget tile;
+
+        if (onRemove == null) {
+          tile = SongTile(tunes: tunes, index: index);
+        } else {
+          tile = _TuneSliverItem(
+            key: ValueKey(tune.songId ?? tune.path),
+            tune: tune,
+            onRemove: () {
+              final id = tune.songId;
+              if (id != null) onRemove?.call(id);
+            },
+          );
+        }
+
+        if (!staggered) return tile;
+
+        return StaggeredReveal(
+          key: ValueKey('reveal-${tune.path}'),
+          index: index,
+          child: tile,
         );
       },
     );

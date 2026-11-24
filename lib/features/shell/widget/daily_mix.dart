@@ -4,6 +4,7 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/library/cubit/library_cubit.dart';
 import 'package:tunely/features/shell/widget/show_all.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
+import 'package:tunely/shared/widget/staggered_reveal.dart';
 
 class DailyMixWidget extends StatefulWidget {
   const DailyMixWidget({super.key});
@@ -51,7 +52,11 @@ class _DailyMixWidgetState extends State<DailyMixWidget> {
                       description: 'See what you have today!',
                     );
                   }
-                  return SongTile(tunes: dailyMix, index: i);
+                  return StaggeredReveal(
+                    key: ValueKey(dailyMix[i].path),
+                    index: i,
+                    child: SongTile(tunes: dailyMix, index: i),
+                  );
                 },
               ),
           ],

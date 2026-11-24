@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 
 class SortOption<T> {
   const SortOption({required this.label, required this.value});
@@ -46,7 +47,8 @@ class SortBar<T> extends StatelessWidget {
                   onTap: () => onSelected(option.value),
                   borderRadius: BorderRadius.circular(18),
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
+                    duration: AppTheme.enterDuration,
+                    curve: AppTheme.enter,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -79,8 +81,8 @@ class SortBar<T> extends StatelessWidget {
             padding: EdgeInsets.zero,
             icon: AnimatedRotation(
               turns: ascending ? 0 : 0.5,
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOutCubic,
+              duration: AppTheme.enterDuration,
+              curve: AppTheme.enter,
               child: Icon(
                 Icons.arrow_upward_rounded,
                 size: 20,

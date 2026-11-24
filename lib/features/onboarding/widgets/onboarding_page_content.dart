@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/features/onboarding/model/onboarding_page_data.dart';
 import 'package:tunely/features/onboarding/widgets/permission_card.dart';
 import 'package:tunely/features/settings/widgets/accent_color_picker.dart';
@@ -98,8 +99,8 @@ class _FadeSlideIn extends StatelessWidget {
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 420),
-      curve: Curves.easeOutCubic,
+      duration: AppTheme.enterDuration,
+      curve: AppTheme.enter,
       builder: (context, value, child) => Opacity(
         opacity: value,
         child: Transform.translate(

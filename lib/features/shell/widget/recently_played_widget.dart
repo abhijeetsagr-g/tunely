@@ -4,6 +4,7 @@ import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/features/shell/widget/show_all.dart';
 import 'package:tunely/features/stats/cubit/stats_cubit.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
+import 'package:tunely/shared/widget/staggered_reveal.dart';
 
 class RecentlyPlayedWidget extends StatelessWidget {
   const RecentlyPlayedWidget({super.key});
@@ -44,7 +45,11 @@ class RecentlyPlayedWidget extends StatelessWidget {
                         description: "Your Previous Tune",
                       );
                     }
-                    return SongTile(tunes: recent, index: i);
+                    return StaggeredReveal(
+                      key: ValueKey(recent[i].path),
+                      index: i,
+                      child: SongTile(tunes: recent, index: i),
+                    );
                   },
                 ),
             ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:tunely/core/extensions/title_case.dart';
@@ -31,9 +32,9 @@ class NextSongLabel extends StatelessWidget {
         }
 
         return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          switchInCurve: Curves.easeOut,
-          switchOutCurve: Curves.easeIn,
+          duration: AppTheme.enterDuration,
+          switchInCurve: AppTheme.enter,
+          switchOutCurve: AppTheme.exit,
           transitionBuilder: (child, animation) => FadeTransition(
             opacity: animation,
             child: SlideTransition(

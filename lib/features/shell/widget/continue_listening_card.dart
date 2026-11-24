@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
@@ -70,7 +71,9 @@ class _TopRow extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: AppTheme.enterDuration,
+                switchInCurve: AppTheme.enter,
+                switchOutCurve: AppTheme.exit,
                 child: Text(
                   tune.title.toTitleCase(),
                   key: ValueKey(tune.path),
@@ -82,7 +85,9 @@ class _TopRow extends StatelessWidget {
                 ),
               ),
               AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: AppTheme.enterDuration,
+                switchInCurve: AppTheme.enter,
+                switchOutCurve: AppTheme.exit,
                 child: Text(
                   formatArtistName(
                     context.read<ManagementCubit>().state.artistDelimiters,
@@ -123,7 +128,9 @@ class _PlayButton extends StatelessWidget {
         height: 44,
         decoration: BoxDecoration(color: cs.primary, shape: BoxShape.circle),
         child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 180),
+          duration: AppTheme.enterDuration,
+          switchInCurve: AppTheme.enter,
+          switchOutCurve: AppTheme.exit,
           transitionBuilder: (child, animation) => FadeTransition(
             opacity: animation,
             child: ScaleTransition(

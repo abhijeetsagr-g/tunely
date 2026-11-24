@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/shared/widget/album_art.dart';
@@ -26,12 +27,12 @@ class PlayerAlbumArt extends StatelessWidget {
             return Align(
               child: AnimatedScale(
                 scale: playScale,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
+                duration: AppTheme.expandDuration,
+                curve: AppTheme.enter,
                 child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 350),
-                  switchInCurve: Curves.easeOut,
-                  switchOutCurve: Curves.easeIn,
+                  duration: AppTheme.expandDuration,
+                  switchInCurve: AppTheme.enter,
+                  switchOutCurve: AppTheme.exit,
                   transitionBuilder: (child, animation) {
                     final scale = Tween<double>(
                       begin: 0.85,

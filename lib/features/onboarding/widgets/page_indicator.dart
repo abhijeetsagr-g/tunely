@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 
 /// Animated dot indicator for the onboarding [PageView].
 class OnboardingPageIndicator extends StatelessWidget {
@@ -30,8 +31,8 @@ class OnboardingPageIndicator extends StatelessWidget {
               // bigger touch target without a bigger dot
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOutCubic,
+                duration: AppTheme.expandDuration,
+                curve: AppTheme.enter,
                 width: selected ? 28 : 8,
                 height: 8,
                 decoration: BoxDecoration(

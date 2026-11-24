@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 
 class PermissionCard extends StatelessWidget {
   const PermissionCard({
@@ -18,8 +19,8 @@ class PermissionCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.easeOutCubic,
+      duration: AppTheme.enterDuration,
+      curve: AppTheme.enter,
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -64,10 +65,12 @@ class PermissionCard extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           AnimatedSize(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOutCubic,
+            duration: AppTheme.expandDuration,
+            curve: AppTheme.enter,
             child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
+              duration: AppTheme.enterDuration,
+              switchInCurve: AppTheme.enter,
+              switchOutCurve: AppTheme.exit,
               child: granted
                   ? _GrantedState(key: const ValueKey('granted'))
                   : _RequestButton(
@@ -93,7 +96,8 @@ class _IconBadge extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
+      duration: AppTheme.enterDuration,
+      curve: AppTheme.enter,
       width: 48,
       height: 48,
       decoration: BoxDecoration(
@@ -103,7 +107,9 @@ class _IconBadge extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 250),
+        duration: AppTheme.enterDuration,
+        switchInCurve: AppTheme.enter,
+        switchOutCurve: AppTheme.exit,
         transitionBuilder: (child, anim) =>
             ScaleTransition(scale: anim, child: child),
         child: Icon(

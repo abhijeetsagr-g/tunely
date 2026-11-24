@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 
 enum RouteTransition { slide, fade, scale }
 
@@ -8,26 +9,22 @@ class AppPageRoute<T> extends PageRouteBuilder<T> {
     required WidgetBuilder builder,
     RouteTransition transition = RouteTransition.slide,
   }) : super(
-         transitionDuration: const Duration(milliseconds: 320),
-         reverseTransitionDuration: const Duration(milliseconds: 260),
+         transitionDuration: AppTheme.enterDuration,
+         reverseTransitionDuration: AppTheme.exitDuration,
          pageBuilder: (context, _, _) => builder(context),
          transitionsBuilder: (context, animation, secondaryAnimation, child) {
            final curved = CurvedAnimation(
              parent: animation,
-             curve: Curves.easeOutCubic,
-             reverseCurve: Curves.easeInCubic,
+             curve: AppTheme.enter,
+             reverseCurve: AppTheme.exit,
            );
 
            return switch (transition) {
              RouteTransition.slide => SlideTransition(
-               position: Tween(begin: const Offset(0.0, 1.0), end: Offset.zero)
-                   .animate(
-                     CurvedAnimation(
-                       parent: animation,
-                       curve: Curves.easeOutCubic,
-                       reverseCurve: Curves.easeInCubic,
-                     ),
-                   ),
+               position: Tween(
+                 begin: const Offset(0.0, 1.0),
+                 end: Offset.zero,
+               ).animate(curved),
                child: child,
              ),
 

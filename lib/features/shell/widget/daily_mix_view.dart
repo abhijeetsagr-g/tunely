@@ -38,7 +38,7 @@ class DailyMixView extends StatelessWidget {
                 ],
               ),
               SongActionRowSliver(tunes: tunes),
-              TuneSliverList(tunes: tunes),
+              TuneSliverList(tunes: tunes, staggered: true),
               const SliverToBoxAdapter(child: SizedBox(height: 96)),
             ],
           ),

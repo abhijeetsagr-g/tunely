@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 
 /// Gives any tappable child a subtle press-down scale without competing with
 /// the child's own gesture recognizers (e.g. [InkWell]).
@@ -8,7 +9,7 @@ class PressableScale extends StatefulWidget {
     required this.child,
     this.onTap,
     this.scale = 0.97,
-    this.duration = const Duration(milliseconds: 120),
+    this.duration = AppTheme.exitDuration,
   });
 
   final Widget child;
@@ -40,7 +41,7 @@ class _PressableScaleState extends State<PressableScale> {
         child: AnimatedScale(
           scale: _pressed ? widget.scale : 1,
           duration: widget.duration,
-          curve: Curves.easeOut,
+          curve: AppTheme.exit,
           child: widget.child,
         ),
       ),

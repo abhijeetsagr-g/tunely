@@ -6,6 +6,7 @@ import 'package:tunely/features/playlist/widgets/playlist_song_list/selected_son
 import 'package:tunely/features/playlist/widgets/playlist_song_list/song_search_field.dart';
 import 'package:tunely/features/playlist/widgets/playlist_song_list/suggestion_song_tile.dart';
 import 'package:tunely/shared/model/tune.dart';
+import 'package:tunely/shared/widget/staggered_reveal.dart';
 
 /// Two-section song picker: a short list of addable suggestions and a
 /// reorderable list of selected songs.
@@ -104,10 +105,13 @@ class _PlaylistSongListState extends State<PlaylistSongList> {
                       itemCount: suggestions.length,
                       itemBuilder: (context, index) {
                         final tune = suggestions[index];
-                        return SuggestionSongTile(
-                          key: ValueKey(tune.path),
-                          tune: tune,
-                          onAdd: () => _controller.add(tune),
+                        return StaggeredReveal(
+                          key: ValueKey('suggestion-${tune.path}'),
+                          index: index,
+                          child: SuggestionSongTile(
+                            tune: tune,
+                            onAdd: () => _controller.add(tune),
+                          ),
                         );
                       },
                     ),
@@ -144,11 +148,14 @@ class _PlaylistSongListState extends State<PlaylistSongList> {
                   onReorderItem: _controller.reorder,
                   itemBuilder: (context, index) {
                     final tune = selected[index];
-                    return SelectedSongTile(
-                      key: ValueKey(tune.path),
-                      tune: tune,
+                    return StaggeredReveal(
+                      key: ValueKey('selected-${tune.path}'),
                       index: index,
-                      onRemove: () => _controller.remove(tune.path),
+                      child: SelectedSongTile(
+                        tune: tune,
+                        index: index,
+                        onRemove: () => _controller.remove(tune.path),
+                      ),
                     );
                   },
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/features/library/screen/library_view.dart';
 import 'package:tunely/features/playback/mini_player/mini_player.dart';
 import 'package:tunely/features/playback/mini_player/mini_player_state.dart';
@@ -53,8 +54,8 @@ class _ShellScreenState extends State<ShellScreen> {
                   valueListenable: snackBarOffset,
                   builder: (_, offset, _) {
                     return AnimatedPositioned(
-                      duration: const Duration(milliseconds: 250),
-                      curve: Curves.easeOut,
+                      duration: AppTheme.enterDuration,
+                      curve: AppTheme.enter,
                       bottom: (visible && !keyboardOpen)
                           ? bottom + offset
                           : -120,
@@ -88,8 +89,8 @@ class _ShellScreenState extends State<ShellScreen> {
   void _onNavTap(int index) {
     _pageController.animateToPage(
       index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+      duration: AppTheme.expandDuration,
+      curve: AppTheme.enter,
     );
   }
 

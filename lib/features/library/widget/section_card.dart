@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/shared/widget/pressable_scale.dart';
 
 class SectionCard extends StatelessWidget {
@@ -27,7 +28,8 @@ class SectionCard extends StatelessWidget {
         onTap: onSelect,
         borderRadius: BorderRadius.circular(12),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: AppTheme.enterDuration,
+          curve: AppTheme.enter,
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
             color: selected

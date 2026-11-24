@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/features/lyrics/model/lyrics_line.dart';
 
 class LyricsLineTile extends StatelessWidget {
@@ -24,8 +25,8 @@ class LyricsLineTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedDefaultTextStyle(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
+        duration: AppTheme.expandDuration,
+        curve: AppTheme.enter,
         style: TextStyle(
           fontSize: 18,
           fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
@@ -37,8 +38,8 @@ class LyricsLineTile extends StatelessWidget {
           height: 1.4,
         ),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOutCubic,
+          duration: AppTheme.expandDuration,
+          curve: AppTheme.enter,
           padding: EdgeInsets.symmetric(
             horizontal: 18,
             vertical: isActive ? 14 : 9,
@@ -47,8 +48,8 @@ class LyricsLineTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOutCubic,
+                duration: AppTheme.expandDuration,
+                curve: AppTheme.enter,
                 width: 3,
                 height: isActive ? 28 : 0,
                 margin: const EdgeInsets.only(right: 8, top: 2),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/extensions/title_case.dart';
 import 'package:tunely/core/utils/fur_artist_name.dart';
@@ -31,8 +32,8 @@ class _TopSongPageState extends State<TopSongWidget> {
     final playCount = context.read<StatsCubit>().playCount(widget.tune.path);
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
+      duration: AppTheme.expandDuration,
+      curve: AppTheme.enter,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),

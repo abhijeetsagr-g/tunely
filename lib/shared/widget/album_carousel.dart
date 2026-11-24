@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_art.dart';
 
@@ -27,8 +28,8 @@ class _AlbumCarouselState extends State<AlbumCarousel> {
           final next = (_currentPage + 1) % widget.tunes.length;
           _controller.animateToPage(
             next,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeInOut,
+            duration: AppTheme.expandDuration,
+            curve: AppTheme.enter,
           );
           _currentPage = next;
         }
@@ -69,10 +70,7 @@ class _AlbumCarouselState extends State<AlbumCarousel> {
               itemCount: widget.tunes.length,
               itemBuilder: (context, index) {
                 final tune = widget.tunes[index];
-                return AlbumArt(
-                  artUri: tune.artUri,
-                  size: size,
-                );
+                return AlbumArt(artUri: tune.artUri, size: size);
               },
             ),
             Positioned.fill(
@@ -107,7 +105,8 @@ class _AlbumCarouselState extends State<AlbumCarousel> {
                         children: List.generate(
                           widget.tunes.length > 5 ? 5 : widget.tunes.length,
                           (i) => AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
+                            duration: AppTheme.expandDuration,
+                            curve: AppTheme.enter,
                             margin: const EdgeInsets.symmetric(horizontal: 3),
                             width:
                                 _currentPage %

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/settings/cubit/customization_cubit.dart';
 
@@ -77,8 +78,8 @@ class _ExtractedGradientContainerState
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
+      duration: AppTheme.gradientDuration,
+      curve: AppTheme.enter,
       padding: widget.padding,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.borderRadius),

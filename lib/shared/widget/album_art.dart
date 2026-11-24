@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:flutter/services.dart';
 
 class AlbumArt extends StatefulWidget {
@@ -72,8 +73,8 @@ class _AlbumArtState extends State<AlbumArt> {
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: _borderRadius, end: widget.borderRadius),
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+      duration: AppTheme.expandDuration,
+      curve: AppTheme.enter,
       builder: (context, radius, child) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(radius),

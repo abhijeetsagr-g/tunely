@@ -23,11 +23,16 @@ abstract class AppTheme {
   // Animations
   static const Curve enter = Cubic(0.05, 0.7, 0.1, 1); // md3Decel
   static const Curve exit = Cubic(0.3, 0, 0.8, 0.15); // md3Accel
-  static const Duration enterDuration = Duration(milliseconds: 200);
+  static const Duration enterDuration = Duration(milliseconds: 300);
   static const Duration exitDuration = Duration(milliseconds: 150);
+  static const Duration gradientDuration = Duration(milliseconds: 600);
   static const Duration expandDuration = Duration(
     milliseconds: 300,
   ); // mini → player
+
+  // Staggered list reveals
+  static const Duration revealDuration = Duration(milliseconds: 180);
+  static const Duration revealDelayStep = Duration(milliseconds: 24);
 
   static ThemeData dark({Color accent = darkPrimary}) => ThemeData(
     brightness: Brightness.dark,

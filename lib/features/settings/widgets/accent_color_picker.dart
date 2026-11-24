@@ -97,7 +97,7 @@ class _ColorDot extends StatelessWidget {
       onTap: onTap,
       customBorder: const CircleBorder(),
       child: AnimatedContainer(
-        duration: AppTheme.expandDuration,
+        duration: AppTheme.enterDuration,
         curve: AppTheme.enter,
         width: 48,
         height: 48,

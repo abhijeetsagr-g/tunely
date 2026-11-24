@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_route.dart';
 import 'package:tunely/core/extensions/title_case.dart';
@@ -49,8 +50,8 @@ class _MiniPlayerState extends State<MiniPlayer> {
           },
           child: AnimatedContainer(
             key: _sizeKey,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
+            duration: AppTheme.expandDuration,
+            curve: AppTheme.enter,
             child: Card(
               margin: const EdgeInsets.symmetric(vertical: 4),
               elevation: 1,
@@ -68,9 +69,9 @@ class _MiniPlayerState extends State<MiniPlayer> {
                 child: Row(
                   children: [
                     AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 250),
-                      switchInCurve: Curves.easeOut,
-                      switchOutCurve: Curves.easeIn,
+                      duration: AppTheme.enterDuration,
+                      switchInCurve: AppTheme.enter,
+                      switchOutCurve: AppTheme.exit,
                       transitionBuilder: (child, animation) => FadeTransition(
                         opacity: animation,
                         child: ScaleTransition(
@@ -123,7 +124,9 @@ class _MiniPlayerState extends State<MiniPlayer> {
 
                     IconButton(
                       icon: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 180),
+                        duration: AppTheme.enterDuration,
+                        switchInCurve: AppTheme.enter,
+                        switchOutCurve: AppTheme.exit,
                         transitionBuilder: (child, animation) => FadeTransition(
                           opacity: animation,
                           child: ScaleTransition(

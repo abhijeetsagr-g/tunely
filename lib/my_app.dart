@@ -67,6 +67,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             themeMode: theme.themeMode,
             theme: AppTheme.light(accent: accent),
             darkTheme: AppTheme.dark(accent: accent),
+            themeAnimationCurve: AppTheme.enter,
+            themeAnimationDuration: AppTheme.enterDuration,
             builder: (context, child) {
               // Clamp Text To Match My sizes;
               final mq = MediaQuery.of(context);

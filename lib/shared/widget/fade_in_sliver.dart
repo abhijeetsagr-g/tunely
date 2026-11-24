@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 
 /// Fades a sliver in when it is first inserted into the tree.
 class FadeInSliver extends StatefulWidget {
   const FadeInSliver({
     super.key,
     required this.sliver,
-    this.duration = const Duration(milliseconds: 220),
+    this.duration = AppTheme.enterDuration,
   });
 
   final Widget sliver;
@@ -25,7 +26,7 @@ class _FadeInSliverState extends State<FadeInSliver>
     super.initState();
     _controller = AnimationController(vsync: this, duration: widget.duration)
       ..forward();
-    _opacity = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+    _opacity = CurvedAnimation(parent: _controller, curve: AppTheme.enter);
   }
 
   @override

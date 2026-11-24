@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 
 /// Full-screen animated gradient driven by a dominant [color].
 ///
@@ -27,11 +28,11 @@ class _AnimatedGradientBackgroundState extends State<AnimatedGradientBackground>
     super.initState();
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: AppTheme.gradientDuration,
     );
     _animation = CurvedAnimation(
       parent: _animController,
-      curve: Curves.easeInOutCubic,
+      curve: AppTheme.enter,
     );
 
     // Seed with surface color so there's no transparent flash on first frame

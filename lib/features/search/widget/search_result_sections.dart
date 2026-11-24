@@ -6,6 +6,7 @@ import 'package:tunely/shared/model/tune.dart';
 import 'package:tunely/shared/widget/album_card.dart';
 import 'package:tunely/shared/widget/artist_card.dart';
 import 'package:tunely/shared/widget/song_tile.dart';
+import 'package:tunely/shared/widget/staggered_reveal.dart';
 
 class SearchSongsSection extends StatelessWidget {
   const SearchSongsSection({
@@ -24,8 +25,15 @@ class SearchSongsSection extends StatelessWidget {
         SearchSectionHeader(label: 'Songs', count: tunes.length),
         SliverList.builder(
           itemCount: tunes.length,
-          itemBuilder: (context, i) =>
-              SongTile(index: i, tunes: tunes, onTap: () => onTap(tunes[i])),
+          itemBuilder: (context, i) => StaggeredReveal(
+            key: ValueKey(tunes[i].path),
+            index: i,
+            child: SongTile(
+              index: i,
+              tunes: tunes,
+              onTap: () => onTap(tunes[i]),
+            ),
+          ),
         ),
       ],
     );

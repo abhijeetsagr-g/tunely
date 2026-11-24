@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/features/playback/bloc/playback_bloc.dart';
 import 'package:tunely/features/shell/widget/top_song_page.dart';
@@ -108,7 +109,8 @@ class _TopSongsSectionState extends State<TopSongsSection> {
                 children: List.generate(
                   topSongs.length + 1,
                   (i) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
+                    duration: AppTheme.enterDuration,
+                    curve: AppTheme.enter,
                     margin: const EdgeInsets.symmetric(horizontal: 3),
                     width: _currentTopSongPage == i ? 24 : 8,
                     height: 8,

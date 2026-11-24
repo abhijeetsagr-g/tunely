@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tunely/core/config/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tunely/core/const/app_const.dart';
 import 'package:tunely/core/const/app_route.dart';
@@ -84,8 +85,8 @@ class _OnboardingViewState extends State<OnboardingView> {
   void _goTo(int index) {
     _controller.animateToPage(
       index,
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeInOutCubic,
+      duration: AppTheme.expandDuration,
+      curve: AppTheme.enter,
     );
   }
 
@@ -174,8 +175,8 @@ class _BottomBar extends StatelessWidget {
       child: Row(
         children: [
           AnimatedSize(
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeOutCubic,
+            duration: AppTheme.expandDuration,
+            curve: AppTheme.enter,
             child: onBack == null
                 ? const SizedBox.shrink()
                 : Padding(
@@ -207,7 +208,9 @@ class _BottomBar extends StatelessWidget {
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: AppTheme.enterDuration,
+                switchInCurve: AppTheme.enter,
+                switchOutCurve: AppTheme.exit,
                 child: Text(label, key: ValueKey(label)),
               ),
             ),
