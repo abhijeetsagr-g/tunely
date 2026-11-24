@@ -22,7 +22,7 @@ class DailyMixView extends StatelessWidget {
                 pinned: true,
                 stretch: true,
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.keyboard_arrow_left),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 flexibleSpace: FlexibleSpaceBar(
@@ -33,7 +33,7 @@ class DailyMixView extends StatelessWidget {
                   IconButton(
                     onPressed: () =>
                         context.read<LibraryCubit>().reloadDailyMix(),
-                    icon: const Icon(Icons.refresh),
+                    icon: const Icon(Icons.refresh, color: Colors.white),
                   ),
                 ],
               ),

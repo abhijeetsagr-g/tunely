@@ -15,11 +15,15 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        leading: IconButton(
+          icon: const Icon(Icons.keyboard_arrow_left),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text(
           'Settings',
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-            letterSpacing: -0.5,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineLarge?.copyWith(letterSpacing: -0.5),
         ),
       ),
       body: ListView(

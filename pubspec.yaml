@@ -87,11 +87,6 @@ flutter:
         - asset: assets/fonts/Manrope-ExtraBold.ttf
           weight: 800
 
-    - family: NunitoSans
-      fonts:
-        - asset: assets/fonts/NunitoSans.ttf
-          weight: 400
-
   assets:
     - assets/icon/
   #   - images/a_dot_ham.jpeg
