@@ -166,7 +166,7 @@ class _ProgressBody extends StatelessWidget {
           tween: Tween(end: fraction ?? 0),
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
-          builder: (_, value, __) => ClipRRect(
+          builder: (_, value, _) => ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               // Indeterminate until we know the total

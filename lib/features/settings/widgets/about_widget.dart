@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:tunely/core/utils/show_snackbar.dart';
+import 'package:tunely/features/credits/screen/credits_screen.dart';
 
 class AboutWidget extends StatefulWidget {
   const AboutWidget({super.key});
@@ -107,10 +107,13 @@ class _AboutWidgetState extends State<AboutWidget> {
                 trailing: const Icon(Icons.tag_faces_sharp, size: 14),
               ),
               _AboutCard(
-                icon: Icons.favorite_rounded,
-                title: 'Special Thanks',
-                value: 'You',
-                onTap: () => popUpNotifer(context, "Thank You Shawty"),
+                icon: Icons.movie_filter_rounded,
+                title: 'Credits',
+                value: 'Roll the tape',
+                trailing: const Icon(Icons.arrow_forward, size: 14),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const CreditsScreen()),
+                ),
               ),
             ],
           ),
